@@ -14,7 +14,7 @@ class RTSCAPSTONE_API ARifleInfantry : public AMasterInfantry
 {
 	GENERATED_BODY()
 public:
-
+	ARifleInfantry();
 	virtual void BeginPlay() override;
 	
 };

@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "MyRTSAIController.h"
-#include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "UObject/ConstructorHelpers.h" 
+#include "BehaviorTree/BehaviorTree.h"
 #include "MasterUnit.generated.h"
 
 UCLASS()
@@ -36,9 +38,6 @@ public:
 		UBehaviorTree *behavTree;
 
 	bool isPlayer, isCombat;
-
-	//The area that the units will look around in for danger
-	UBoxComponent* dangerDetection;
 
 	uint32 maxHealth;
 	uint32 currentHealth;
