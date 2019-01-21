@@ -26,7 +26,7 @@ void AMyRTSHUD::DrawHUD() {
 
 void AMyRTSHUD::SelectActors() {
 	//Select the actors themselves
-	GetActorsInSelectionRectangle<AMasterUnit>(startPos, mousePos, foundActors, false, false);
+	GetActorsInSelectionRectangle<ARifleInfantry>(startPos, mousePos, foundActors, false, false);
 	UE_LOG(LogTemp, Warning, TEXT("Selected %f Actors"), foundActors.Num());
 	if (foundActors.Num() > 0) {
 		UE_LOG(LogTemp, Warning, TEXT("Found Actors"));

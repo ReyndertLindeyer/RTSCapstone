@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "MasterUnit.h"
+#include "RifleInfantry.h"
 #include "MyRTSHUD.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -37,5 +38,5 @@ protected:
 
 	void Shift(); //State of either shift key
 
-	TArray <AMasterUnit*> selectedActors;
+	TArray <ARifleInfantry*> selectedActors;
 };

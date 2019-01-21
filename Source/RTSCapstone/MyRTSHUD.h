@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "MyGunCharacter.h"
 #include "MasterUnit.h"
+#include "RifleInfantry.h"
 #include "Logging/LogMacros.h"
 #include "MyRTSHUD.generated.h"
 
@@ -30,5 +31,5 @@ public:
 
 	bool isShift = false; //Checks to see if the shift button is being held down
 
-	TArray <AMasterUnit*> foundActors;
+	TArray <ARifleInfantry*> foundActors;
 };

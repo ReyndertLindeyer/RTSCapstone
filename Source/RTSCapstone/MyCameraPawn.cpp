@@ -21,17 +21,15 @@ AMyCameraPawn::AMyCameraPawn()
 	RootComponent = SphereComponenet;
 	SphereComponenet->InitSphereRadius(50.0f);
 	SphereComponenet->ComponentTags.Add(FName("Player"));
-	SphereComponenet->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SphereComponenet->SetSimulatePhysics(false);
 
 	//Create spring arm
 	OurCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 
 	//Swet the location of the spring arm as 50 units above the root and looking 60 degrees down
-	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(-60.0f, 0.0f, 0.0f));
+	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 500.0f), FRotator(-60.0f, 0.0f, 0.0f));
 	OurCameraSpringArm->TargetArmLength = 400.f;
 	OurCameraSpringArm->bEnableCameraLag = false;
-	OurCameraSpringArm->CameraLagSpeed = 3.0f;
 
 	//Create the camara and attach it to the spring arm
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
