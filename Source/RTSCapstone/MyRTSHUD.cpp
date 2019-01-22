@@ -4,6 +4,14 @@
 #include "Engine/Canvas.h"
 #include "CanvasItem.h"
 
+void AMyRTSHUD::BeginPlay()
+{
+	Super::BeginPlay(); 
+	selectionStart = false;
+	grabEverything = false;
+	isShift = false;
+}
+
 void AMyRTSHUD::DrawHUD() {
 	Super::DrawHUD();
 	if (selectionStart) {
@@ -22,18 +30,25 @@ void AMyRTSHUD::DrawHUD() {
 		mousePos = GetMousePos();
 		DrawRect(FLinearColor(0, 0, 1, 0.15f), startPos.X, startPos.Y, mousePos.X - startPos.X, mousePos.Y - startPos.Y);
 	}
-}
-
-void AMyRTSHUD::SelectActors() {
-	//Select the actors themselves
-	GetActorsInSelectionRectangle<ARifleInfantry>(startPos, mousePos, foundActors, false, false);
-	UE_LOG(LogTemp, Warning, TEXT("Selected %f Actors"), foundActors.Num());
-	if (foundActors.Num() > 0) {
-		UE_LOG(LogTemp, Warning, TEXT("Found Actors"));
-		for (int i = 0; i < foundActors.Num(); i++) {
-			//Code to show that the actors are selected
-			foundActors[i]->selected = true;
+	else if (!selectionStart && grabEverything) {
+		//Select the actors themselves
+		GetActorsInSelectionRectangle<AMasterUnit>(startPos, mousePos, foundActors, false, false);
+		if (foundActors.Num() > 0) {
+			for (int i = 0; i < foundActors.Num(); i++) {
+				//Code to show that the actors are selected
+				foundActors[i]->selected = true;
+			}
 		}
+		/*
+		GetActorsInSelectionRectangle<ABuilding>(startPos, mousePos, foundActors, false, false);
+		if (foundActors.Num() > 0) {
+			for (int i = 0; i < foundActors.Num(); i++) {
+				UE_LOG(LogTemp, Warning, TEXT("Found Actors"));
+				//Code to show that the actors are selected
+			}
+		}
+		*/
+		grabEverything = false;
 	}
 }
 

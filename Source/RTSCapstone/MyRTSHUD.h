@@ -19,17 +19,19 @@ class RTSCAPSTONE_API AMyRTSHUD : public AHUD
 	GENERATED_BODY()
 	
 public:
+	virtual void BeginPlay() override;
+
 	virtual void DrawHUD() override; //Override the basic HUD
 
 	FVector2D startPos, mousePos; //Where the player pressed down the left mouse button and the updated location of the mouse cursor
 
 	FVector2D GetMousePos();
 
-	void SelectActors();
+	bool selectionStart;
 
-	bool selectionStart = false;
+	bool grabEverything; //Grabs everything in the rectangle
 
-	bool isShift = false; //Checks to see if the shift button is being held down
+	bool isShift; //Checks to see if the shift button is being held down
 
-	TArray <ARifleInfantry*> foundActors;
+	TArray <AMasterUnit*> foundActors;
 };

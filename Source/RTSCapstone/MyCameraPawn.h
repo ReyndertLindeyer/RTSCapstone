@@ -47,7 +47,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UCameraComponent* OurCamera;
 	UPROPERTY(EditAnywhere)
-		USphereComponent* SphereComponenet;
+		USphereComponent* SphereComponent;
 	UPROPERTY(EditAnywhere)
 		int cameraQESpeed;
 	UPROPERTY(EditAnywhere)

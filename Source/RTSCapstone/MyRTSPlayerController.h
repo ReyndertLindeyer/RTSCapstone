@@ -29,14 +29,17 @@ public:
 	//Pointer to the HUD
 	AMyRTSHUD* HUDPtr;
 
+	bool rightClicked;
+
 protected:
 
 	void LeftMouseDown();
 	void LeftMouseUp();
 
 	void RightMouseUp();
+	void RightMouse();
 
 	void Shift(); //State of either shift key
 
-	TArray <ARifleInfantry*> selectedActors;
+	TArray <AMasterUnit*> selectedActors;
 };

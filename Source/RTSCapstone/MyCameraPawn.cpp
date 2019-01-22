@@ -15,21 +15,22 @@ AMyCameraPawn::AMyCameraPawn()
 	rightClicked = false;
 
 	//Create our components
-	SphereComponenet = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponenet"));
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponenet"));
 	
 	//Create Root Component
-	RootComponent = SphereComponenet;
-	SphereComponenet->InitSphereRadius(50.0f);
-	SphereComponenet->ComponentTags.Add(FName("Player"));
-	SphereComponenet->SetSimulatePhysics(false);
+	RootComponent = SphereComponent;
+	SphereComponent->InitSphereRadius(50.0f);
+	SphereComponent->ComponentTags.Add(FName("Player"));
+	SphereComponent->SetSimulatePhysics(false);
 
 	//Create spring arm
 	OurCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 
 	//Swet the location of the spring arm as 50 units above the root and looking 60 degrees down
-	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 500.0f), FRotator(-60.0f, 0.0f, 0.0f));
+	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(-60.0f, 0.0f, 0.0f));
 	OurCameraSpringArm->TargetArmLength = 400.f;
 	OurCameraSpringArm->bEnableCameraLag = false;
+	OurCameraSpringArm->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
 	//Create the camara and attach it to the spring arm
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
@@ -44,6 +45,7 @@ AMyCameraPawn::AMyCameraPawn()
 // Called when the game starts or when spawned
 void AMyCameraPawn::BeginPlay()
 {
+	//Get screen size when created
 	Super::BeginPlay();
 	rtsPC = Cast<AMyRTSPlayerController>(GetController());
 	rtsPC->GetViewportSize(screenSizeX, screenSizeY);
@@ -53,6 +55,9 @@ void AMyCameraPawn::BeginPlay()
 void AMyCameraPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//Get whether the right click is held down or not
+	rightClicked = rtsPC->rightClicked;
 
 	//Check to see if the right mouse button is pressed down so that the mouse isn't always changing the pitch and yaw
 	if (rightClicked) {
@@ -71,6 +76,7 @@ void AMyCameraPawn::Tick(float DeltaTime)
 		RootComponent->SetWorldRotation(NewRotation);
 	}
 
+	//Zoom controls
 	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 0.0f) {
 		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 100.0f, -zoom);
 	}
@@ -84,20 +90,23 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	//Get the mouse's position and use that to move the camera
 	rtsPC->GetMousePosition(mousePos.X, mousePos.Y);
 
-	//For some reason I had to switch around the X and Y's
-	//Using 15 as the margin size
-	if (mousePos.X < 15.0f) {
-		moveVec.Y += -1 * cameraSensitivity * 6;
-	}
-	else if (mousePos.X > screenSizeX - 15.0f) {
-		moveVec.Y += 1 * cameraSensitivity * 6;
-	}
+	//Don't want the camera to pan while the player is rotating the screen
+	if (!rightClicked) {
+		//For some reason I had to switch around the X and Y's
+		//Using 15 as the margin size
+		if (mousePos.X < 15.0f) {
+			moveVec.Y += -1 * cameraSensitivity * 6;
+		}
+		else if (mousePos.X > screenSizeX - 15.0f) {
+			moveVec.Y += 1 * cameraSensitivity * 6;
+		}
 
-	if (mousePos.Y < 15.0f) {
-		moveVec.X += 1 * cameraSensitivity * 6;
-	}
-	else if (mousePos.Y > screenSizeY - 15.0f) {
-		moveVec.X += -1 * cameraSensitivity * 6;
+		if (mousePos.Y < 15.0f) {
+			moveVec.X += 1 * cameraSensitivity * 6;
+		}
+		else if (mousePos.Y > screenSizeY - 15.0f) {
+			moveVec.X += -1 * cameraSensitivity * 6;
+		}
 	}
 
 	RootComponent->AddLocalOffset(moveVec);
@@ -113,7 +122,7 @@ void AMyCameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//Jump events
+	//Rightclick events, currently not working
 	PlayerInputComponent->BindAction("RightClick", IE_Pressed, this, &AMyCameraPawn::RightClick);
 	PlayerInputComponent->BindAction("RightClick", IE_Released, this, &AMyCameraPawn::RightClick);
 

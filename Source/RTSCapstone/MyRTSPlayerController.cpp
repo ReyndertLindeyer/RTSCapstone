@@ -7,6 +7,7 @@
 
 AMyRTSPlayerController::AMyRTSPlayerController() {
 	bShowMouseCursor = true;
+	rightClicked = false;
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -31,7 +32,9 @@ void AMyRTSPlayerController::SetupInputComponent() {
 	InputComponent->BindAction("LeftClick", IE_Pressed, this, &AMyRTSPlayerController::LeftMouseDown);
 	InputComponent->BindAction("LeftClick", IE_Released, this, &AMyRTSPlayerController::LeftMouseUp);
 
-	InputComponent->BindAction("LeftClick", IE_Released, this, &AMyRTSPlayerController::RightMouseUp);
+	InputComponent->BindAction("RightClick", IE_Released, this, &AMyRTSPlayerController::RightMouseUp);
+	InputComponent->BindAction("RightClick", IE_Pressed, this, &AMyRTSPlayerController::RightMouse);
+	InputComponent->BindAction("RightClick", IE_Released, this, &AMyRTSPlayerController::RightMouse);
 
 	InputComponent->BindAction("Shift", IE_Pressed, this, &AMyRTSPlayerController::Shift);
 	InputComponent->BindAction("Shift", IE_Released, this, &AMyRTSPlayerController::Shift);
@@ -43,14 +46,16 @@ void AMyRTSPlayerController::LeftMouseDown() {
 		HUDPtr->startPos = HUDPtr->GetMousePos();
 		HUDPtr->selectionStart = true;
 	}
+	if (!HUDPtr->isShift) {
+		selectedActors.Empty();
+	}
 }
 
 //Left mouse up to denote the end of the selection box
 void AMyRTSPlayerController::LeftMouseUp() {
 	if (HUDPtr != nullptr) {
-		HUDPtr->SelectActors();
 		HUDPtr->selectionStart = false;
-		selectedActors = HUDPtr->foundActors;
+		HUDPtr->grabEverything = true;
 	}
 }
 
@@ -62,9 +67,15 @@ void AMyRTSPlayerController::Shift() {
 }
 
 void AMyRTSPlayerController::RightMouseUp() {
-	if (selectedActors.Num() > 0) {
+	if (HUDPtr->foundActors.Num() > 0.0f) {
+		for (int i = 0; i < HUDPtr->foundActors.Num(); i++) {
+			selectedActors.Add(HUDPtr->foundActors[i]);
+		}
+	}
+	if (selectedActors.Num() > 0.0f) {
 		//Cycle through all units
 		for (int i = 0; i < selectedActors.Num(); i++) {
+			UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
 			//Find location that the player right clicked on and store it
 			FHitResult hit;
 			GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
@@ -76,4 +87,8 @@ void AMyRTSPlayerController::RightMouseUp() {
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(selectedActors[i]->GetController(), MoveLocation);
 		}
 	}
+}
+
+void AMyRTSPlayerController::RightMouse() {
+	rightClicked = !rightClicked;
 }
