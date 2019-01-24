@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "MyRTSAIController.h"
+#include "BuildingManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/ObjectMacros.h"
 #include "BuildingMaster.generated.h"
@@ -29,9 +30,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
 	
-	bool selected, isBuilding;
+	bool selected, isBuilding; //isBuilding means is the building under construction
 
 	AMyRTSAIController* rtsAI;
+
+	ABuildingManager* buildingManager;
 
 	UINT32 team, maxHealth, currentHealth, powerUsage, spawnTime, cost;
 

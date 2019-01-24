@@ -11,7 +11,8 @@ AResourceNode::AResourceNode()
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ResourceMesh"));
 	mesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Soldier_Gun_Cylinder001.Placeholder_Soldier_Gun_Cylinder001")).Get());
 	mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
-	mesh->SetupAttachment(RootComponent);
+	RootComponent = mesh;
+	//mesh->SetupAttachment(RootComponent);
 	mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	mesh->SetSimulatePhysics(false);
 

@@ -13,8 +13,9 @@ AResourceSpawner::AResourceSpawner()
 	mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	mesh->SetupAttachment(RootComponent);
 
-	spawnRadius = 100.0f;
-	richSpawnRadius = 20.0f;
+	spawnRadius = 200.0f;
+	richSpawnRadius = 41.0f;
+	richness = 20;
 }
 
 // Called when the game starts or when spawned
@@ -22,23 +23,30 @@ void AResourceSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	int num = 20;
-
+	float distance = spawnRadius / richness;
 	//Will use the location of the spawner as a base to spawn resources
-	for (int i = 0; i > num; i++) {
-		FVector spawnLocation = RootComponent->GetComponentLocation() + FVector(i / 2 * 20 + spawnRadius / 2, i % 2 * 20 + spawnRadius / 2, 0);
-		float distance = FVector::Dist(RootComponent->GetComponentLocation(), spawnLocation);
-		if (distance < spawnRadius && distance < richSpawnRadius) {
-			//Spawn rich resources
-			AResourceNode* temp = GetWorld()->SpawnActor<AResourceNode>(GetClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-			temp->yield = FMath::RandRange(200, 220);
-			richResources.Add(temp);
-		}
-		else if (distance < spawnRadius) {
-			//Spawn regular resources
-			AResourceNode* temp = GetWorld()->SpawnActor<AResourceNode>(GetClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-			temp->yield = FMath::RandRange(100, 120);
-			regularResources.Add(temp);
+	for (int i = 0; i <= richness; i++) {
+		for (int j = 0; j <= richness; j++) {
+			//Creates the spawn location for actors
+			FVector spawnLocation = RootComponent->GetComponentLocation() + FVector(i * richness - spawnRadius, j * richness - spawnRadius, 2.0f);
+
+			//Checks to see if they are within the determined spawn radius
+			float distance = FVector::Dist(RootComponent->GetComponentLocation(), spawnLocation);
+
+			//Small randomization of variables to remove grid
+			spawnLocation = FVector(spawnLocation.X + FMath::RandRange(-10.0f, 10.0f), spawnLocation.Y + FMath::RandRange(-10.0f, 10.0f), spawnLocation.Z);
+
+			if (distance < spawnRadius && distance < richSpawnRadius && distance > 1.0f) {
+				//Spawn rich resources
+				AResourceNode* temp = GetWorld()->SpawnActor<AResourceNode>(AResourceNode::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+				temp->yield = FMath::RandRange(200, 220);
+				temp->needsRespawning = true;
+			}
+			else if (distance < spawnRadius && distance > 1.0f) {
+				//Spawn regular resources
+				AResourceNode* temp = GetWorld()->SpawnActor<AResourceNode>(AResourceNode::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+				temp->yield = FMath::RandRange(100, 120);
+			}
 		}
 	}
 }

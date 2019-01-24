@@ -29,11 +29,13 @@ public:
 		UStaticMeshComponent* mesh;
 
 	UPROPERTY(EditAnywhere)
+		int richness; //Distance between objects
+
+	UPROPERTY(EditAnywhere)
 		float spawnRadius;
 
 	UPROPERTY(EditAnywhere)
 		float richSpawnRadius;
 
-	TArray<AResourceNode*> regularResources, richResources;
 
 };

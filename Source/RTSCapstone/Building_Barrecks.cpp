@@ -12,18 +12,10 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	cost = 100;
 	isBuilding = true;
 
-	/*
-	root = GetCapsuleComponent();
-	RootComponent = root;
-	root->InitCapsuleSize(6.0f, 15.0f);
-	root->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	root->SetSimulatePhysics(true);
-	*/
-
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarrecksMesh"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Barracks.Placeholder_Barracks")).Get());
 	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
-	buildingMesh->SetupAttachment(RootComponent);
+	RootComponent = buildingMesh;
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	buildingMesh->SetSimulatePhysics(false);
 
