@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MyGunCharacter.h"
 #include "MasterUnit.h"
+#include "BuildingMaster.h"
 #include "RifleInfantry.h"
 #include "Logging/LogMacros.h"
 #include "MyRTSHUD.generated.h"
@@ -33,5 +33,6 @@ public:
 
 	bool isShift; //Checks to see if the shift button is being held down
 
-	TArray <AMasterUnit*> foundActors;
+	TArray <AMasterUnit*> foundUnits;
+	TArray <ABuildingMaster*> foundBuildings;
 };

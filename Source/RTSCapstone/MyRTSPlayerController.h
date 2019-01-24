@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "MasterUnit.h"
 #include "RifleInfantry.h"
+#include "BuildingMaster.h"
+#include "Building_Construction_Yard.h"
 #include "MyRTSHUD.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -29,6 +31,15 @@ public:
 	//Pointer to the HUD
 	AMyRTSHUD* HUDPtr;
 
+	UPROPERTY(EditAnywhere)
+		ABuildingMaster* buildingToBuild;
+
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+		TSubclassOf<class UUserWidget> wUI;
+	// Variable to hold the widget After Creating it.
+	UUserWidget* MyUI;
+
 	bool rightClicked;
 
 protected:
@@ -41,5 +52,10 @@ protected:
 
 	void Shift(); //State of either shift key
 
-	TArray <AMasterUnit*> selectedActors;
+	void G();
+
+	TArray <AMasterUnit*> selectedUnits;
+	TArray <ABuildingMaster*> selectedBuildings;
+
+	bool constructingBuilding;
 };

@@ -16,14 +16,22 @@ void AMyRTSHUD::DrawHUD() {
 	Super::DrawHUD();
 	if (selectionStart) {
 		if (!isShift) {
-			//See if there are any actors already selected
-			if (foundActors.Num() > 0) {
-				for (int i = 0; i < foundActors.Num(); i++) {
+			//See if there are any units already selected
+			if (foundUnits.Num() > 0) {
+				for (int i = 0; i < foundUnits.Num(); i++) {
 					//Code to remove the selection from existing actors
 				}
 			}
 			//Empty the array
-			foundActors.Empty();
+			foundUnits.Empty();
+			//See if there are any structures already selected
+			if (foundBuildings.Num() > 0) {
+				for (int i = 0; i < foundBuildings.Num(); i++) {
+					//Code to remove the selection from existing actors
+				}
+			}
+			//Empty the array
+			foundBuildings.Empty();
 		}
 
 		//Get the position of the mouse and use it and the starting position to draw a rectangle to denote the selection area
@@ -32,22 +40,19 @@ void AMyRTSHUD::DrawHUD() {
 	}
 	else if (!selectionStart && grabEverything) {
 		//Select the actors themselves
-		GetActorsInSelectionRectangle<AMasterUnit>(startPos, mousePos, foundActors, false, false);
-		if (foundActors.Num() > 0) {
-			for (int i = 0; i < foundActors.Num(); i++) {
+		GetActorsInSelectionRectangle<AMasterUnit>(startPos, mousePos, foundUnits, false, false);
+		if (foundUnits.Num() > 0) {
+			for (int i = 0; i < foundUnits.Num(); i++) {
 				//Code to show that the actors are selected
-				foundActors[i]->selected = true;
+				foundUnits[i]->selected = true;
 			}
 		}
-		/*
-		GetActorsInSelectionRectangle<ABuilding>(startPos, mousePos, foundActors, false, false);
-		if (foundActors.Num() > 0) {
-			for (int i = 0; i < foundActors.Num(); i++) {
-				UE_LOG(LogTemp, Warning, TEXT("Found Actors"));
+		GetActorsInSelectionRectangle<ABuildingMaster>(startPos, mousePos, foundBuildings, false, false);
+		if (foundBuildings.Num() > 0) {
+			for (int i = 0; i < foundBuildings.Num(); i++) {
 				//Code to show that the actors are selected
 			}
 		}
-		*/
 		grabEverything = false;
 	}
 }

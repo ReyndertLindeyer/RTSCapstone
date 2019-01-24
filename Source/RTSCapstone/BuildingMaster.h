@@ -26,9 +26,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UCapsuleComponent* root;
-
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* buildingMesh;
 	
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
@@ -38,10 +35,19 @@ protected:
 
 	UINT32 team, maxHealth, currentHealth, powerUsage, spawnTime, cost;
 
-	float sightRadius;
+	UPROPERTY(EditAnywhere)
+		UMaterial* canBuildIndicator;
+	UPROPERTY(EditAnywhere)
+		UMaterial* cantBuildIndicator;
+
+	float sightRadius, buildRadius;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* buildingMesh;
+
+	virtual void constructAtLocation();
 };

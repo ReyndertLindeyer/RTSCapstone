@@ -16,4 +16,7 @@ class RTSCAPSTONE_API ABuilding_Construction_Yard : public ABuildingMaster
 	
 public:
 	ABuilding_Construction_Yard();
+	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
+	virtual void constructAtLocation() override;
 };
