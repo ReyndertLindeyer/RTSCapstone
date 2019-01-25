@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BuildingMaster.h"
 #include "BuildingManager.generated.h"
 
 UCLASS()
@@ -17,4 +18,5 @@ public:
 
 	uint32 power, resources;
 
+	TArray <ABuildingMaster*> buildings;
 };

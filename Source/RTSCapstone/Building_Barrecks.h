@@ -21,9 +21,22 @@ public:
 
 	ABuilding_Barrecks();
 
+	void BuildRiflemen();
+	void BuildRocketeer();
+	void BuildEngineer();
+	void AddToUnitQueue(int unitType);
+	void SpawnUnit(int unitType);
+
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
 
-	UINT32 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, harvesterBuildTime, harvesterCost;
+	bool constructingUnit;
+
+	TArray <uint8> unitQueue;
+
+	float countToCompleteUnit;
+
+	uint8 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, engineerBuildTime, engineerCost, harvesterBuildTime, harvesterCost;
 };

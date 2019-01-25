@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "MyRTSAIController.h"
-#include "BuildingManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/ObjectMacros.h"
 #include "BuildingMaster.generated.h"
@@ -20,6 +19,8 @@ public:
 	// Sets default values for this actor's properties
 	ABuildingMaster();
 
+	UINT32 team, maxHealth, currentHealth, powerUsage, spawnTime, cost;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,10 +31,6 @@ protected:
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
 	AMyRTSAIController* rtsAI;
-
-	ABuildingManager* buildingManager;
-
-	UINT32 team, maxHealth, currentHealth, powerUsage, spawnTime, cost;
 
 	UPROPERTY(EditAnywhere)
 		UMaterial* canBuildIndicator;
