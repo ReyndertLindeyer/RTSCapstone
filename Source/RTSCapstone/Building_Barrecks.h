@@ -26,6 +26,7 @@ public:
 	void BuildEngineer();
 	void AddToUnitQueue(int unitType);
 	void SpawnUnit(int unitType);
+	void SetWaypoint(FVector inVec);
 
 protected:
 	virtual void BeginPlay() override;

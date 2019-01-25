@@ -8,6 +8,7 @@
 #include "RifleInfantry.h"
 #include "BuildingMaster.h"
 #include "Building_Construction_Yard.h"
+#include "BuildingManager.h"
 #include "MyRTSHUD.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -56,6 +57,8 @@ protected:
 
 	TArray <AMasterUnit*> selectedUnits;
 	TArray <ABuildingMaster*> selectedBuildings;
+
+	ABuildingManager* buildingManager;
 
 	bool constructingBuilding;
 };

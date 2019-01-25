@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BuildingMaster.h"
+#include "Building_PowerPlant.h"
+#include "Building_Barrecks.h"
+#include "Building_Refinery.h"
 #include "BuildingManager.generated.h"
 
 UCLASS()
@@ -18,5 +21,11 @@ public:
 
 	uint32 power, resources;
 
-	TArray <ABuildingMaster*> buildings;
+	TArray <ABuildingMaster*> buildingArray;
+
+	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
+
+	bool constructBuilding(ABuildingMaster* toBuild);
+
+
 };

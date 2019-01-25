@@ -15,10 +15,21 @@ ABuildingMaster::ABuildingMaster()
 	cantBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/RedBuildingGhost")).Get();
 }
 
+uint8 ABuildingMaster::GetPowerUsage()
+{
+	return powerUsage;
+}
+
+uint8 ABuildingMaster::GetCost()
+{
+	return cost;
+}
+
 // Called when the game starts or when spawned
 void ABuildingMaster::BeginPlay()
 {
 	Super::BeginPlay();
+	buildingMesh->SetMaterial(0, canBuildIndicator);
 	
 }
 

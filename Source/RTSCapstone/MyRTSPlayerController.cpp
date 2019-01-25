@@ -72,9 +72,11 @@ void AMyRTSPlayerController::LeftMouseUp() {
 		}
 	}
 	if (constructingBuilding) {
-		buildingToBuild->constructAtLocation();
-		buildingToBuild = nullptr;
-		constructingBuilding = false;
+		bool canBuild = buildingManager->constructBuilding(buildingToBuild);
+		if (canBuild) {
+			buildingToBuild = nullptr;
+			constructingBuilding = false;
+		}
 	}
 }
 
@@ -120,6 +122,6 @@ void AMyRTSPlayerController::RightMouse() {
 void AMyRTSPlayerController::G() {
 	FHitResult hit;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-	buildingToBuild = GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
+	buildingToBuild = buildingManager->ghostBuilding(1, hit.Location);
 	constructingBuilding = true;
 }

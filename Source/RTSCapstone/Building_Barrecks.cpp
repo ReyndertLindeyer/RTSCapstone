@@ -29,6 +29,8 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	engineerBuildTime = 40;
 	engineerCost = 80;
 
+	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
+
 	countToCompleteUnit = 0.0f;
 
 	constructingUnit = false;
@@ -66,9 +68,13 @@ void ABuilding_Barrecks::AddToUnitQueue(int unitType)
 
 void ABuilding_Barrecks::SpawnUnit(int unitType)
 {
-	//Spawn the unit and information
+	//Spawn the unit and give it its information
 	constructingUnit = false;
 	unitQueue.RemoveAt(0);
+}
+
+void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
+	wayPoint = inVec - buildingMesh->RelativeLocation;
 }
 
 void ABuilding_Barrecks::BeginPlay()
