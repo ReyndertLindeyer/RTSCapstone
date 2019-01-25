@@ -15,12 +15,12 @@ ABuildingMaster::ABuildingMaster()
 	cantBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/RedBuildingGhost")).Get();
 }
 
-uint8 ABuildingMaster::GetPowerUsage()
+uint32 ABuildingMaster::GetPowerUsage()
 {
 	return powerUsage;
 }
 
-uint8 ABuildingMaster::GetCost()
+uint32 ABuildingMaster::GetCost()
 {
 	return cost;
 }

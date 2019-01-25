@@ -19,10 +19,10 @@ public:
 	// Sets default values for this actor's properties
 	ABuildingMaster();
 
-	uint8 team, maxHealth, currentHealth, spawnTime;
+	uint32 team, maxHealth, currentHealth, spawnTime;
 
-	uint8 GetPowerUsage();
-	uint8 GetCost();
+	uint32 GetPowerUsage();
+	uint32 GetCost();
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,7 +42,7 @@ protected:
 
 	float sightRadius, buildRadius;
 
-	uint8 powerUsage, cost;
+	uint32 powerUsage, cost;
 
 public:	
 	// Called every frame
