@@ -3,7 +3,7 @@
 #include "Building_Refinery.h"
 
 ABuilding_Refinery::ABuilding_Refinery() {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	//Setting up general values
 	team = 1;
 	maxHealth = 500;

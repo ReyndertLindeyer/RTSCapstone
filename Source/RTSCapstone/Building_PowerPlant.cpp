@@ -3,7 +3,7 @@
 #include "Building_PowerPlant.h"
 
 ABuilding_PowerPlant::ABuilding_PowerPlant() {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	//Setting up general values
 	team = 1;
 	maxHealth = 500;
