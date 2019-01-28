@@ -39,10 +39,19 @@ protected:
 		UMaterial* canBuildIndicator;
 	UPROPERTY(EditAnywhere)
 		UMaterial* cantBuildIndicator;
+	UPROPERTY(EditAnywhere)
+		UMaterial* regularMaterial;
 
 	float sightRadius, buildRadius;
 
 	uint32 powerUsage, cost;
+
+	bool constructed, isPlaced;
+
+	UFUNCTION()
+		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 public:	
 	// Called every frame
@@ -52,4 +61,5 @@ public:
 		UStaticMeshComponent* buildingMesh;
 
 	virtual void constructAtLocation();
+	bool overlapping;
 };

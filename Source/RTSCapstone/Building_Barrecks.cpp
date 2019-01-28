@@ -4,7 +4,7 @@
 #include "RifleInfantry.h"
 
 ABuilding_Barrecks::ABuilding_Barrecks() {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	//Setting up general values
 	team = 1;
 	maxHealth = 500;
@@ -13,12 +13,16 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	spawnTime = 2;
 	cost = 100;
 	isBuilding = true;
+	isPlaced = false;
 
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarracksMesh"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Barracks.Placeholder_Barracks")).Get());
-	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
+	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	RootComponent = buildingMesh;
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
+	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
+	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	//Setting up specific values
@@ -62,8 +66,10 @@ void ABuilding_Barrecks::BuildEngineer()
 
 void ABuilding_Barrecks::AddToUnitQueue(int unitType)
 {
-	PrimaryActorTick.bCanEverTick = true;
-	unitQueue.Add(unitType);
+	if (constructed) {
+		PrimaryActorTick.bCanEverTick = true;
+		unitQueue.Add(unitType);
+	}
 }
 
 void ABuilding_Barrecks::SpawnUnit(int unitType)
@@ -109,4 +115,13 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 	if (!constructingUnit && unitQueue.Num() == 0) {
 		PrimaryActorTick.bCanEverTick = false;
 	}
+
+	/*
+	if (!constructed && isPlaced) {
+		buildingMesh->SetWorldLocation(FMath::Lerp(FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z -40.0f), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 40.0f), DeltaTime));
+		if (buildingMesh->GetComponentLocation().Z <= 0.0f) {
+			constructed = true;
+		}
+	}
+	*/
 }

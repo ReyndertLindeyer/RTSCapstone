@@ -18,7 +18,11 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	RootComponent = buildingMesh;
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
+	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
+	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	//Spawn a harvester
+	//Harvester will know when it reaches the refinery and will unload its resources at that time
 }

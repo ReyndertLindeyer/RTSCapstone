@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BuildingManager.h"
+#include "BuildingManagerObject.h"
 
 // Sets default values
-ABuildingManager::ABuildingManager()
+UBuildingManagerObject::UBuildingManagerObject()
 {
 	power = 20;
 	resources = 5000;
 }
 
-ABuildingMaster * ABuildingManager::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)
+ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)
 {
 	ABuildingMaster* building;
 	if (whatBuilding == 1) {
@@ -28,7 +28,7 @@ ABuildingMaster * ABuildingManager::ghostBuilding(uint8 whatBuilding, FVector sp
 	return nullptr;
 }
 
-bool ABuildingManager::constructBuilding(ABuildingMaster * toBuild)
+bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
 {
 	if (toBuild->GetCost() > resources && toBuild->overlapping) {
 		resources -= toBuild->GetCost();

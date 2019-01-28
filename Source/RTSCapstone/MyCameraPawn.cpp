@@ -19,9 +19,10 @@ AMyCameraPawn::AMyCameraPawn()
 	
 	//Create Root Component
 	RootComponent = SphereComponent;
-	SphereComponent->InitSphereRadius(50.0f);
+	SphereComponent->InitSphereRadius(0.0000001f);
 	SphereComponent->ComponentTags.Add(FName("Player"));
 	SphereComponent->SetSimulatePhysics(false);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//Create spring arm
 	OurCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));

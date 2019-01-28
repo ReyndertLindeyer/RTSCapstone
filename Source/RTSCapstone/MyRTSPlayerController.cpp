@@ -10,6 +10,9 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	bShowMouseCursor = true;
 	rightClicked = false;
 	constructingBuilding = false;
+	//buildingManager = GetWorld()->SpawnActor<ABuildingManager>(ABuildingManager::StaticClass(), FVector::ZeroVector, FRotator(0.0f, 0.0f, 0.0f));
+	//buildingManagerObject = NewObject<UBuildingManagerObject>(this, UBuildingManagerObject::StaticClass());
+	//buildingManagerObject = ConstructObject<UBuildingManagerObject>(UBuildingManagerObject::StaticClass());
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -28,7 +31,7 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 	if (buildingToBuild!= nullptr) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild->SetActorLocation(hit.Location);
+		buildingToBuild->SetActorLocation(FVector(hit.Location.X, hit.Location.Y, buildingToBuild->GetActorLocation().Z));
 	}
 }
 
@@ -48,6 +51,8 @@ void AMyRTSPlayerController::SetupInputComponent() {
 	InputComponent->BindAction("Shift", IE_Released, this, &AMyRTSPlayerController::Shift);
 
 	InputComponent->BindAction("G", IE_Pressed, this, &AMyRTSPlayerController::G);
+	InputComponent->BindAction("H", IE_Pressed, this, &AMyRTSPlayerController::H);
+	InputComponent->BindAction("J", IE_Pressed, this, &AMyRTSPlayerController::J);
 }
 
 //Left mouse down to denote the start of the selection box
@@ -72,8 +77,9 @@ void AMyRTSPlayerController::LeftMouseUp() {
 		}
 	}
 	if (constructingBuilding) {
-		bool canBuild = buildingManager->constructBuilding(buildingToBuild);
+		bool canBuild = true;// = buildingManagerObject->constructBuilding(buildingToBuild);
 		if (canBuild) {
+			buildingToBuild->constructAtLocation();
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 		}
@@ -120,8 +126,31 @@ void AMyRTSPlayerController::RightMouse() {
 }
 
 void AMyRTSPlayerController::G() {
-	FHitResult hit;
-	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-	buildingToBuild = buildingManager->ghostBuilding(1, hit.Location);
-	constructingBuilding = true;
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		//buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
+		buildingToBuild = GetWorld()->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
+		constructingBuilding = true;
+	}
+}
+
+void AMyRTSPlayerController::H() {
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		//buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
+		buildingToBuild = GetWorld()->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
+		constructingBuilding = true;
+	}
+}
+
+void AMyRTSPlayerController::J() {
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		//buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
+		buildingToBuild = GetWorld()->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
+		constructingBuilding = true;
+	}
 }

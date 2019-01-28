@@ -7,8 +7,11 @@
 #include "MasterUnit.h"
 #include "RifleInfantry.h"
 #include "BuildingMaster.h"
-#include "Building_Construction_Yard.h"
+#include "Building_PowerPlant.h"
+#include "Building_Barrecks.h"
+#include "Building_Refinery.h"
 #include "BuildingManager.h"
+#include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -54,11 +57,15 @@ protected:
 	void Shift(); //State of either shift key
 
 	void G();
+	void H();
+	void J();
 
 	TArray <AMasterUnit*> selectedUnits;
 	TArray <ABuildingMaster*> selectedBuildings;
 
-	ABuildingManager* buildingManager;
+	//ABuildingManager* buildingManager;
+
+	//UBuildingManagerObject* buildingManagerObject;
 
 	bool constructingBuilding;
 };
