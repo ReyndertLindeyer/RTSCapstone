@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ResourceNode.h"
+#include "Components/CapsuleComponent.h"
 #include "ResourceSpawner.generated.h"
 
 UCLASS()
@@ -24,9 +25,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* mesh;
+		UCapsuleComponent* root;
 
 	UPROPERTY(EditAnywhere)
 		int richness; //Distance between objects

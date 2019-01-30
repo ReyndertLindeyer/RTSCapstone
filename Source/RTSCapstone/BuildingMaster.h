@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "MyRTSAIController.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Components/CapsuleComponent.h"
 #include "UObject/ObjectMacros.h"
 #include "BuildingMaster.generated.h"
 
@@ -42,11 +43,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UMaterial* regularMaterial;
 
+
+	UCapsuleComponent* canPlace; //Temp capsule collider that will be used to see if the player is constructing the building close enough to another one
+
 	float sightRadius, buildRadius;
 
 	uint32 powerUsage, cost;
 
-	bool constructed, isPlaced;
+	uint32 numOfCollisions; //Number of buildings or units that the building is colliding with during placement
+
+	bool constructed, isPlaced; //Is the building constructed, and has it been placed in the world
 
 	UFUNCTION()
 		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);

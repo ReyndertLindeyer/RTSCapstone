@@ -1,21 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ResourceSpawner.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 AResourceSpawner::AResourceSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ResourceSpawnerMesh"));
-	mesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Soldier_Gun_Cylinder001.Placeholder_Soldier_Gun_Cylinder001")).Get());
-	mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
-	mesh->SetupAttachment(RootComponent);
+	PrimaryActorTick.bCanEverTick = false;
 
 	spawnRadius = 200.0f;
 	richSpawnRadius = 41.0f;
 	richness = 20;
+
+	root = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
+	root->InitCapsuleSize(spawnRadius, 20);
+	root->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RootComponent = root;
 }
 
 // Called when the game starts or when spawned

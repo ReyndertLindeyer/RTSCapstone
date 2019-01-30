@@ -80,7 +80,7 @@ void ABuilding_Barrecks::SpawnUnit(int unitType)
 }
 
 void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
-	wayPoint = inVec - buildingMesh->RelativeLocation;
+	wayPoint = (inVec - buildingMesh->GetComponentLocation()) + buildingMesh->RelativeLocation;
 }
 
 void ABuilding_Barrecks::BeginPlay()
@@ -92,7 +92,7 @@ void ABuilding_Barrecks::BeginPlay()
 void ABuilding_Barrecks::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!constructingUnit && unitQueue.Num() > 0) {
+	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
 		if (unitQueue[0] == 1) {
 			BuildRiflemen();
 		}
@@ -115,13 +115,4 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 	if (!constructingUnit && unitQueue.Num() == 0) {
 		PrimaryActorTick.bCanEverTick = false;
 	}
-
-	/*
-	if (!constructed && isPlaced) {
-		buildingMesh->SetWorldLocation(FMath::Lerp(FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z -40.0f), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 40.0f), DeltaTime));
-		if (buildingMesh->GetComponentLocation().Z <= 0.0f) {
-			constructed = true;
-		}
-	}
-	*/
 }
