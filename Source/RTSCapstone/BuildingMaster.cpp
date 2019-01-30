@@ -54,19 +54,23 @@ void ABuildingMaster::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (isPlaced) {
-		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 40.0f), DeltaTime, spawnTime));
+		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 33.0f), DeltaTime, spawnTime));
 		if (buildingMesh->GetComponentLocation().Z >= 33.0f) {
 			PrimaryActorTick.bCanEverTick = false;
 		}
 	}
 }
 
-void ABuildingMaster::constructAtLocation()
+bool ABuildingMaster::constructAtLocation()
 {
-	buildingMesh->SetMaterial(0, regularMaterial);
-	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 40.0f));
-	constructed = true;
-	isPlaced = true;
+	if (!overlapping) {
+		buildingMesh->SetMaterial(0, regularMaterial);
+		buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 40.0f));
+		constructed = true;
+		isPlaced = true;
+		return true;
+	}
+	return false;
 	//canPlace->UnregisterComponent();
 }
 
@@ -74,13 +78,13 @@ void ABuildingMaster::constructAtLocation()
 
 void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
 	
-	if (OtherActor && (OtherActor != this) && OtherComp && !constructed)
+	if (!constructed)
 	{
 		if (!overlapping) {
 			overlapping = true;
 			buildingMesh->SetMaterial(0, cantBuildIndicator);
-			numOfCollisions++;
 		}
+		numOfCollisions++;
 		///Code to check to see if the building is within range of another
 		/*
 		if ("CapsuleComp" == OverlappedComponent->GetName) {
@@ -92,12 +96,13 @@ void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 void ABuildingMaster::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor && (OtherActor != this) && OtherComp && !constructed) {
+	if (!constructed && numOfCollisions > 0) {
 		numOfCollisions--;
 	}
-	if (OtherActor && (OtherActor != this) && OtherComp && !constructed && numOfCollisions == 0)
+	if (!constructed && numOfCollisions <= 0)
 	{
 		overlapping = false;
 		buildingMesh->SetMaterial(0, canBuildIndicator);
+		numOfCollisions = 0;
 	}
 }

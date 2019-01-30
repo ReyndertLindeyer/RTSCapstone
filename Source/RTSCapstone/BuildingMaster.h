@@ -66,6 +66,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
 
-	virtual void constructAtLocation();
+	bool constructAtLocation();
 	bool overlapping;
 };

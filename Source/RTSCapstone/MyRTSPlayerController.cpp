@@ -77,9 +77,8 @@ void AMyRTSPlayerController::LeftMouseUp() {
 		}
 	}
 	if (constructingBuilding) {
-		bool canBuild = true;// = buildingManagerObject->constructBuilding(buildingToBuild);
-		if (canBuild) {
-			buildingToBuild->constructAtLocation();
+		//bool canBuild = true;// = buildingManagerObject->constructBuilding(buildingToBuild);
+		if (buildingToBuild->constructAtLocation()) {			
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 		}
@@ -99,6 +98,12 @@ void AMyRTSPlayerController::RightMouseUp() {
 			selectedUnits.Add(HUDPtr->foundUnits[i]);
 		}
 	}
+
+	if (constructingBuilding) {
+		buildingToBuild->Destroy();
+		constructingBuilding = false;
+	}
+
 	if (selectedUnits.Num() > 0.0f) {
 		//Cycle through all units
 		for (int i = 0; i < selectedUnits.Num(); i++) {
