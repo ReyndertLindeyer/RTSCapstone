@@ -10,9 +10,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	bShowMouseCursor = true;
 	rightClicked = false;
 	constructingBuilding = false;
-	//buildingManager = GetWorld()->SpawnActor<ABuildingManager>(ABuildingManager::StaticClass(), FVector::ZeroVector, FRotator(0.0f, 0.0f, 0.0f));
-	//buildingManagerObject = NewObject<UBuildingManagerObject>(this, UBuildingManagerObject::StaticClass());
-	//buildingManagerObject = ConstructObject<UBuildingManagerObject>(UBuildingManagerObject::StaticClass());
+	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -55,6 +53,54 @@ void AMyRTSPlayerController::SetupInputComponent() {
 	InputComponent->BindAction("J", IE_Pressed, this, &AMyRTSPlayerController::J);
 }
 
+float AMyRTSPlayerController::GetResources()
+{
+	return buildingManagerObject->GetResources();
+}
+
+bool AMyRTSPlayerController::ConstructBuilding(int whatBuilding)
+{
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		buildingToBuild = buildingManagerObject->ghostBuilding(whatBuilding, hit.Location);
+
+		if (buildingToBuild != nullptr)
+			constructingBuilding = true;
+		return true;
+	}
+	return false;
+}
+
+int AMyRTSPlayerController::GetBuildingCost(int whatBuilding)
+{
+	return buildingManagerObject->GetBuildingCost((uint8)whatBuilding);
+}
+
+int AMyRTSPlayerController::GetBuildingConstructionTime(int whatBuilding)
+{
+	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
+}
+
+bool AMyRTSPlayerController::BuildPowerPlant()
+{
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location);
+
+		if (buildingToBuild != nullptr)
+			constructingBuilding = true;
+		return true;
+	}
+	return false;
+}
+
+bool AMyRTSPlayerController::UseHUDUI()
+{
+	return false;
+}
+
 //Left mouse down to denote the start of the selection box
 void AMyRTSPlayerController::LeftMouseDown() {
 	if (!constructingBuilding) {
@@ -77,8 +123,7 @@ void AMyRTSPlayerController::LeftMouseUp() {
 		}
 	}
 	if (constructingBuilding) {
-		//bool canBuild = true;// = buildingManagerObject->constructBuilding(buildingToBuild);
-		if (buildingToBuild->constructAtLocation()) {			
+		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 		}
@@ -134,9 +179,10 @@ void AMyRTSPlayerController::G() {
 	if (!constructingBuilding) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		//buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
-		buildingToBuild = GetWorld()->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
-		constructingBuilding = true;
+		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
+
+		if(buildingToBuild != nullptr)
+			constructingBuilding = true;
 	}
 }
 
@@ -144,9 +190,10 @@ void AMyRTSPlayerController::H() {
 	if (!constructingBuilding) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		//buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
-		buildingToBuild = GetWorld()->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
-		constructingBuilding = true;
+		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
+
+		if (buildingToBuild != nullptr)
+			constructingBuilding = true;
 	}
 }
 
@@ -154,8 +201,9 @@ void AMyRTSPlayerController::J() {
 	if (!constructingBuilding) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		//buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
-		buildingToBuild = GetWorld()->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), hit.Location, FRotator(0.0f, 0.0f, 0.0f));
-		constructingBuilding = true;
+		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location);
+
+		if (buildingToBuild != nullptr)
+			constructingBuilding = true;
 	}
 }

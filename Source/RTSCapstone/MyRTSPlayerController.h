@@ -10,7 +10,6 @@
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
 #include "Building_Refinery.h"
-#include "BuildingManager.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
 #include "MyRTSPlayerController.generated.h"
@@ -37,14 +36,27 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		ABuildingMaster* buildingToBuild;
-
-	// Reference UMG Asset in the Editor
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-		TSubclassOf<class UUserWidget> wUI;
-	// Variable to hold the widget After Creating it.
-	UUserWidget* MyUI;
-
+	
 	bool rightClicked;
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		float GetResources();
+	
+	UFUNCTION(BlueprintPure, Category = "UI")
+		bool ConstructBuilding(int whatBuilding);
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		int GetBuildingCost(int whatBuilding);
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		int GetBuildingConstructionTime(int whatBuilding);
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		bool BuildPowerPlant();
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		bool UseHUDUI();
+
 
 protected:
 
@@ -65,7 +77,7 @@ protected:
 
 	//ABuildingManager* buildingManager;
 
-	//UBuildingManagerObject* buildingManagerObject;
+	UBuildingManagerObject* buildingManagerObject;
 
 	bool constructingBuilding;
 };

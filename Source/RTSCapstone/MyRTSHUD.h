@@ -6,7 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "MasterUnit.h"
 #include "BuildingMaster.h"
-#include "RifleInfantry.h"
+#include "Blueprint/UserWidget.h"
 #include "Logging/LogMacros.h"
 #include "MyRTSHUD.generated.h"
 
@@ -19,6 +19,8 @@ class RTSCAPSTONE_API AMyRTSHUD : public AHUD
 	GENERATED_BODY()
 	
 public:
+	AMyRTSHUD();
+
 	virtual void BeginPlay() override;
 
 	virtual void DrawHUD() override; //Override the basic HUD
@@ -35,4 +37,14 @@ public:
 
 	TArray <AMasterUnit*> foundUnits;
 	TArray <ABuildingMaster*> foundBuildings;
+
+private:
+	/*
+	// Reference UMG Asset in the Editor
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+		TSubclassOf<class UUserWidget> HUDWidgetClass;
+	// Variable to hold the widget After Creating it.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+		class UUserWidget* MyUI;
+		*/
 };

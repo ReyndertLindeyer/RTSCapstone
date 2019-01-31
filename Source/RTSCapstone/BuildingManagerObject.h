@@ -22,11 +22,20 @@ public:
 	// Sets default values for this actor's properties
 	UBuildingManagerObject();
 
-	uint32 power, resources;
-
 	TArray <ABuildingMaster*> buildingArray;
 
 	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
 
 	bool constructBuilding(ABuildingMaster* toBuild);
+
+	bool trainInfantry(uint8 whatInfantry, ABuilding_Barrecks* whatBuilding);
+
+	float GetResources();
+
+	int GetBuildingCost(uint8 whatBuilding);
+
+	int GetConstructionTime(uint8 whatBuilding);
+
+private:
+	uint32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 };

@@ -4,7 +4,6 @@
 #include "RifleInfantry.h"
 
 ABuilding_Barrecks::ABuilding_Barrecks() {
-	PrimaryActorTick.bCanEverTick = true;
 	//Setting up general values
 	team = 1;
 	maxHealth = 500;
@@ -40,30 +39,6 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	constructingUnit = false;
 }
 
-void ABuilding_Barrecks::BuildRiflemen()
-{
-	if (!isBuilding) {
-		constructingUnit = true;
-		countToCompleteUnit = rifleBuildTime;
-	}
-}
-
-void ABuilding_Barrecks::BuildRocketeer()
-{
-	if (!isBuilding) {
-		constructingUnit = true;
-		countToCompleteUnit = rocketBuildTime;
-	}
-}
-
-void ABuilding_Barrecks::BuildEngineer()
-{
-	if (!isBuilding) {
-		constructingUnit = true;
-		countToCompleteUnit = engineerBuildTime;
-	}
-}
-
 void ABuilding_Barrecks::AddToUnitQueue(int unitType)
 {
 	if (constructed) {
@@ -83,6 +58,19 @@ void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 	wayPoint = (inVec - buildingMesh->GetComponentLocation()) + buildingMesh->RelativeLocation;
 }
 
+uint8 ABuilding_Barrecks::GetUnitCost(uint8 whatUnit)
+{
+	if (whatUnit == 1) {
+		return rifleInfantryCost;
+	}
+	else if (whatUnit == 2) {
+		return rocketInfantryCost;
+	}
+	else{
+		return engineerCost;
+	}
+}
+
 void ABuilding_Barrecks::BeginPlay()
 {
 	Super::BeginPlay();
@@ -94,14 +82,15 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
 		if (unitQueue[0] == 1) {
-			BuildRiflemen();
+			countToCompleteUnit = rifleBuildTime;
 		}
 		else if (unitQueue[0] == 2) {
-			BuildRocketeer();
+			countToCompleteUnit = rocketBuildTime;
 		}
 		else if (unitQueue[0] == 3) {
-			BuildEngineer();
+			countToCompleteUnit = engineerBuildTime;
 		}
+		constructingUnit = true;
 	}
 
 	if (constructingUnit) {

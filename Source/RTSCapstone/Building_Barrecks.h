@@ -21,12 +21,10 @@ public:
 
 	ABuilding_Barrecks();
 
-	void BuildRiflemen();
-	void BuildRocketeer();
-	void BuildEngineer();
 	void AddToUnitQueue(int unitType);
 	void SpawnUnit(int unitType);
 	void SetWaypoint(FVector inVec);
+	uint8 GetUnitCost(uint8 whatUnit);
 
 protected:
 	virtual void BeginPlay() override;

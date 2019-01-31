@@ -4,12 +4,29 @@
 #include "Engine/Canvas.h"
 #include "CanvasItem.h"
 
-void AMyRTSHUD::BeginPlay()
-{
-	Super::BeginPlay(); 
+AMyRTSHUD::AMyRTSHUD() {
 	selectionStart = false;
 	grabEverything = false;
 	isShift = false;
+
+	//static ConstructorHelpers::FClassFinder<UUserWidget> MyUI(TEXT("/Game/Game_Assets/Widgets/UIWidget"));
+	//HUDWidgetClass = MyUI.Class;
+}
+
+void AMyRTSHUD::BeginPlay()
+{
+	Super::BeginPlay(); 
+	/*if(HUDWidgetClass != nullptr){
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+
+		if(CurrentWidget){
+		
+			CurrentWidget->AddToViewport();
+		
+		}
+	
+	}
+	*/
 }
 
 void AMyRTSHUD::DrawHUD() {
