@@ -51,8 +51,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int GetBuildingConstructionTime(int whatBuilding);
 
-	UFUNCTION(BlueprintPure, Category = "UI")
-		bool BuildPowerPlant();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildPowerPlant();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildRefinery();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildBarracks();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void UseHUDUI();
@@ -70,10 +76,6 @@ protected:
 	void RightMouse();
 
 	void Shift(); //State of either shift key
-
-	void G();
-	void H();
-	void J();
 
 	TArray <AMasterUnit*> selectedUnits;
 	TArray <ABuildingMaster*> selectedBuildings;

@@ -46,10 +46,6 @@ void AMyRTSPlayerController::SetupInputComponent() {
 
 	InputComponent->BindAction("Shift", IE_Pressed, this, &AMyRTSPlayerController::Shift);
 	InputComponent->BindAction("Shift", IE_Released, this, &AMyRTSPlayerController::Shift);
-
-	InputComponent->BindAction("G", IE_Pressed, this, &AMyRTSPlayerController::G);
-	InputComponent->BindAction("H", IE_Pressed, this, &AMyRTSPlayerController::H);
-	InputComponent->BindAction("J", IE_Pressed, this, &AMyRTSPlayerController::J);
 }
 
 float AMyRTSPlayerController::GetResources()
@@ -81,7 +77,7 @@ int AMyRTSPlayerController::GetBuildingConstructionTime(int whatBuilding)
 	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
 }
 
-bool AMyRTSPlayerController::BuildPowerPlant()
+void AMyRTSPlayerController::BuildPowerPlant()
 {
 	if (!constructingBuilding) {
 		FHitResult hit;
@@ -90,9 +86,31 @@ bool AMyRTSPlayerController::BuildPowerPlant()
 
 		if (buildingToBuild != nullptr)
 			constructingBuilding = true;
-		return true;
 	}
-	return false;
+}
+
+void AMyRTSPlayerController::BuildRefinery()
+{
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
+
+		if (buildingToBuild != nullptr)
+			constructingBuilding = true;
+	}
+}
+
+void AMyRTSPlayerController::BuildBarracks()
+{
+	if (!constructingBuilding) {
+		FHitResult hit;
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
+
+		if (buildingToBuild != nullptr)
+			constructingBuilding = true;
+	}
 }
 
 void AMyRTSPlayerController::UseHUDUI()
@@ -175,37 +193,4 @@ void AMyRTSPlayerController::RightMouseUp() {
 
 void AMyRTSPlayerController::RightMouse() {
 	rightClicked = !rightClicked;
-}
-
-void AMyRTSPlayerController::G() {
-	if (!constructingBuilding) {
-		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
-
-		if(buildingToBuild != nullptr)
-			constructingBuilding = true;
-	}
-}
-
-void AMyRTSPlayerController::H() {
-	if (!constructingBuilding) {
-		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
-
-		if (buildingToBuild != nullptr)
-			constructingBuilding = true;
-	}
-}
-
-void AMyRTSPlayerController::J() {
-	if (!constructingBuilding) {
-		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location);
-
-		if (buildingToBuild != nullptr)
-			constructingBuilding = true;
-	}
 }
