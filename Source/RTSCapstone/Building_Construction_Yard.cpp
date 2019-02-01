@@ -19,8 +19,6 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	RootComponent = buildingMesh;
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Construction_Yard::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Construction_Yard::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 }
 
@@ -28,26 +26,10 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 void ABuilding_Construction_Yard::BeginPlay()
 {
 	Super::BeginPlay();
-	buildingMesh->SetMaterial(0, canBuildIndicator);
 }
 
 // Called every frame
 void ABuilding_Construction_Yard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void ABuilding_Construction_Yard::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-		buildingMesh->SetMaterial(0, cantBuildIndicator);
-	}
-}
-
-void ABuilding_Construction_Yard::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-		buildingMesh->SetMaterial(0, canBuildIndicator);
-	}
 }

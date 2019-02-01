@@ -54,8 +54,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UI")
 		bool BuildPowerPlant();
 
-	UFUNCTION(BlueprintPure, Category = "UI")
-		bool UseHUDUI();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void UseHUDUI();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void SubtractCost();
 
 
 protected:

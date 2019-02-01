@@ -19,8 +19,7 @@ void AMyRTSPlayerController::BeginPlay()
 
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
-
-
+	HUDPtr->UseWidget();
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -96,9 +95,12 @@ bool AMyRTSPlayerController::BuildPowerPlant()
 	return false;
 }
 
-bool AMyRTSPlayerController::UseHUDUI()
+void AMyRTSPlayerController::UseHUDUI()
 {
-	return false;
+}
+
+void AMyRTSPlayerController::SubtractCost()
+{
 }
 
 //Left mouse down to denote the start of the selection box

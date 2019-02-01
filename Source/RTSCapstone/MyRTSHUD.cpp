@@ -9,24 +9,13 @@ AMyRTSHUD::AMyRTSHUD() {
 	grabEverything = false;
 	isShift = false;
 
-	//static ConstructorHelpers::FClassFinder<UUserWidget> MyUI(TEXT("/Game/Game_Assets/Widgets/UIWidget"));
-	//HUDWidgetClass = MyUI.Class;
+	static ConstructorHelpers::FClassFinder<UUserWidget> MyUI(TEXT("/Game/Game_Assets/Widgets/UIWidget"));
+	HUDWidgetClass = MyUI.Class;
 }
 
 void AMyRTSHUD::BeginPlay()
 {
-	Super::BeginPlay(); 
-	/*if(HUDWidgetClass != nullptr){
-		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
-
-		if(CurrentWidget){
-		
-			CurrentWidget->AddToViewport();
-		
-		}
-	
-	}
-	*/
+	Super::BeginPlay();
 }
 
 void AMyRTSHUD::DrawHUD() {
@@ -82,4 +71,17 @@ FVector2D AMyRTSHUD::GetMousePos() {
 	GetOwningPlayerController()->GetMousePosition(posX, posY);
 
 	return FVector2D(posX, posY);
+}
+
+void AMyRTSHUD::UseWidget() {
+	if (HUDWidgetClass != nullptr) {
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+
+		if (CurrentWidget) {
+
+			CurrentWidget->AddToViewport();
+
+		}
+
+	}
 }

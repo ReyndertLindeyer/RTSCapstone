@@ -38,13 +38,12 @@ public:
 	TArray <AMasterUnit*> foundUnits;
 	TArray <ABuildingMaster*> foundBuildings;
 
-private:
-	/*
+	void UseWidget();
 	// Reference UMG Asset in the Editor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		TSubclassOf<class UUserWidget> HUDWidgetClass;
 	// Variable to hold the widget After Creating it.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-		class UUserWidget* MyUI;
-		*/
+		class UUserWidget* CurrentWidget;
+
 };
