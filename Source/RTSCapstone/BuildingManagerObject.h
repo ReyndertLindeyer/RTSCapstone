@@ -36,6 +36,9 @@ public:
 
 	int GetConstructionTime(uint8 whatBuilding);
 
+	void SubtractCost(int whatBuilding);
+	void AddCost(int whatBuilding);
+
 private:
 	uint32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 };

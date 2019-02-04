@@ -29,7 +29,7 @@ void AMyRTSAIController::Tick(float DeltaTime)
 void AMyRTSAIController::Possess(APawn *InPawn) {
 	Super::Possess(InPawn);
 
-	unit = Cast<AMasterUnit>(InPawn);
+	unit = Cast<AUnit_Master>(InPawn);
 
 	FString Path = "/Game/Game_Assets/AI/NewBehaviorTree01";
 	unit->behavTree = Cast<UBehaviorTree>(StaticLoadObject(UBehaviorTree::StaticClass(), nullptr, *Path));
@@ -48,16 +48,16 @@ TArray<struct FHitResult> AMyRTSAIController::DetectPawns()
 {
 	//Will check the area around the unit using its location, the sight radius, and the collision channel Pawn. The output of found actors will be put into the HitResults TArray
 	TArray<struct FHitResult> hitResults;
-	GetWorld()->SweepMultiByObjectType(hitResults, GetPawn()->GetActorLocation(), GetPawn()->GetActorLocation() + FVector::ForwardVector * unit->sightRadius, FQuat(), ECC_Pawn, FCollisionShape::MakeSphere(unit->sightRadius));
+	GetWorld()->SweepMultiByObjectType(hitResults, GetPawn()->GetActorLocation(), GetPawn()->GetActorLocation() + FVector::ForwardVector * unit->GetSightRadius(), FQuat(), ECC_Pawn, FCollisionShape::MakeSphere(unit->GetSightRadius()));
 	return hitResults;
 }
 
 //Will Check which pawn is closest and return it
 void AMyRTSAIController::TargetPawn()
 {
-	if (!unit->isCombat) {
+	/*if (!unit->isCombat) {
 		return;
-	}
+	}*/
 
 	TArray<struct FHitResult> hitResults = DetectPawns();
 	

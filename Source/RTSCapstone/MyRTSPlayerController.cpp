@@ -10,6 +10,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	bShowMouseCursor = true;
 	rightClicked = false;
 	constructingBuilding = false;
+	buildingConstructed = false;
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 }
 
@@ -84,8 +85,10 @@ void AMyRTSPlayerController::BuildPowerPlant()
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location);
 
-		if (buildingToBuild != nullptr)
+		if (buildingToBuild != nullptr) {
+			buildingConstructed = false;
 			constructingBuilding = true;
+		}
 	}
 }
 
@@ -96,8 +99,10 @@ void AMyRTSPlayerController::BuildRefinery()
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
 
-		if (buildingToBuild != nullptr)
+		if (buildingToBuild != nullptr) {
+			buildingConstructed = false;
 			constructingBuilding = true;
+		}
 	}
 }
 
@@ -108,8 +113,10 @@ void AMyRTSPlayerController::BuildBarracks()
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
 
-		if (buildingToBuild != nullptr)
+		if (buildingToBuild != nullptr) {
+			buildingConstructed = false;
 			constructingBuilding = true;
+		}
 	}
 }
 
@@ -117,8 +124,24 @@ void AMyRTSPlayerController::UseHUDUI()
 {
 }
 
-void AMyRTSPlayerController::SubtractCost()
+void AMyRTSPlayerController::SubtractCost(int whatBuilding)
 {
+	buildingManagerObject->SubtractCost(whatBuilding);
+}
+
+void AMyRTSPlayerController::AddCost(int whatBuilding)
+{
+	buildingManagerObject->AddCost(whatBuilding);
+}
+
+bool AMyRTSPlayerController::IsBuilt()
+{
+	return buildingConstructed;
+}
+
+int AMyRTSPlayerController::GetTime(int whatBuilding)
+{
+	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
 }
 
 //Left mouse down to denote the start of the selection box

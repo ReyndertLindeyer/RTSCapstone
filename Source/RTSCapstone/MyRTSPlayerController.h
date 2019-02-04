@@ -64,7 +64,16 @@ public:
 		void UseHUDUI();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void SubtractCost();
+		void SubtractCost(int whatBuilding);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void AddCost(int whatBuilding);
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		bool IsBuilt();
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		int GetTime(int whatBuilding);
 
 
 protected:
@@ -84,5 +93,5 @@ protected:
 
 	UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding;
+	bool constructingBuilding, buildingConstructed;
 };

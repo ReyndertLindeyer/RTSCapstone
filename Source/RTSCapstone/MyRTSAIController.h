@@ -9,6 +9,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
+#include "Unit_Master.h"
 #include "MasterUnit.h"
 #include "MyRTSAIController.generated.h"
 
@@ -32,7 +33,7 @@ public:
 
 	uint8 EnemyKeyID;
 
-	AMasterUnit* unit;
+	AUnit_Master* unit;
 
 	//Transient means set to zero initially
 	UPROPERTY(transient)

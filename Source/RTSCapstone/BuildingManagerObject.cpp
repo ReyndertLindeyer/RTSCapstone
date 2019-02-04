@@ -37,7 +37,6 @@ ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVec
 bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
 {
 	if (toBuild->GetCost() < resources && toBuild->constructAtLocation()) {
-		resources -= toBuild->GetCost();
 		power -= toBuild->GetPowerUsage();
 		buildingArray.Add(toBuild);
 		return true;
@@ -86,4 +85,30 @@ int UBuildingManagerObject::GetConstructionTime(uint8 whatBuilding)
 		return (int)barracksConstructionTime;
 	}
 	return 0;
+}
+
+void UBuildingManagerObject::SubtractCost(int whatBuilding)
+{
+	if (whatBuilding == 1) {
+		resources -= powerPlantCost;
+	}
+	else if (whatBuilding == 2) {
+		resources -= refineryCost;
+	}
+	else if (whatBuilding == 3) {
+		resources -= barracksCost;
+	}
+}
+
+void UBuildingManagerObject::AddCost(int whatBuilding)
+{
+	if (whatBuilding == 1) {
+		resources += powerPlantCost;
+	}
+	else if (whatBuilding == 2) {
+		resources += refineryCost;
+	}
+	else if (whatBuilding == 3) {
+		resources += barracksCost;
+	}
 }
