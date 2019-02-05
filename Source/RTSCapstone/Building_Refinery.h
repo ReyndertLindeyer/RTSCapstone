@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
+#include "Unit_Harvester.h"
+#include "Unit_HarvesterAIController.h"
 #include "Building_Refinery.generated.h"
 
 /**
@@ -16,4 +18,9 @@ class RTSCAPSTONE_API ABuilding_Refinery : public ABuildingMaster
 	
 public:
 	ABuilding_Refinery();
+
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	bool canSpawnHarvester;
 };

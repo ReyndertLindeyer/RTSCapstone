@@ -17,10 +17,20 @@ public:
 	// Sets default values for this actor's properties
 	AResourceNode();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	void setup(UINT32 resourceYield, bool canRespawn); //Set the yield of the resource node
+
+	void Harvest(float amountHarvested);
+
+	int RemainingResources();
+
+private:
+
+	bool respawnable;
 
 	UINT32 yield;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 	bool needsRespawning; //If the resource can start its respawn procedure
 
@@ -28,6 +38,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* mesh;
-
-	void setup(UINT32 resourceYield); //Set the yield of the resource node
 };

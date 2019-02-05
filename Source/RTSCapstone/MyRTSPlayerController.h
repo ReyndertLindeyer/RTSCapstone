@@ -72,6 +72,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UI")
 		bool IsBuilt();
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void ResetIsBuilt();
+
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int GetTime(int whatBuilding);
 

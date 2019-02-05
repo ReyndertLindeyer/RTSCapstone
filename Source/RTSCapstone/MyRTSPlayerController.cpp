@@ -86,7 +86,6 @@ void AMyRTSPlayerController::BuildPowerPlant()
 		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location);
 
 		if (buildingToBuild != nullptr) {
-			buildingConstructed = false;
 			constructingBuilding = true;
 		}
 	}
@@ -100,7 +99,6 @@ void AMyRTSPlayerController::BuildRefinery()
 		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
 
 		if (buildingToBuild != nullptr) {
-			buildingConstructed = false;
 			constructingBuilding = true;
 		}
 	}
@@ -114,7 +112,6 @@ void AMyRTSPlayerController::BuildBarracks()
 		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
 
 		if (buildingToBuild != nullptr) {
-			buildingConstructed = false;
 			constructingBuilding = true;
 		}
 	}
@@ -137,6 +134,11 @@ void AMyRTSPlayerController::AddCost(int whatBuilding)
 bool AMyRTSPlayerController::IsBuilt()
 {
 	return buildingConstructed;
+}
+
+void AMyRTSPlayerController::ResetIsBuilt()
+{
+	buildingConstructed = false;
 }
 
 int AMyRTSPlayerController::GetTime(int whatBuilding)
@@ -169,6 +171,7 @@ void AMyRTSPlayerController::LeftMouseUp() {
 		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
+			buildingConstructed = true;
 		}
 	}
 }
@@ -190,6 +193,7 @@ void AMyRTSPlayerController::RightMouseUp() {
 	if (constructingBuilding) {
 		buildingToBuild->Destroy();
 		constructingBuilding = false;
+		buildingConstructed = false;
 	}
 
 	if (selectedUnits.Num() > 0.0f) {

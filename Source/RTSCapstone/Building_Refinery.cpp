@@ -12,6 +12,9 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	spawnTime = 2;
 	cost = 100;
 	isBuilding = true;
+	canSpawnHarvester = true;
+
+	this->Tags.Add(FName("Refinery"));
 
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RefineryMesh"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Refinery.Placeholder_Refinery")).Get());
@@ -22,7 +25,26 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
+}
 
-	//Spawn a harvester
-	//Harvester will know when it reaches the refinery and will unload its resources at that time
+void ABuilding_Refinery::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (isPlaced) {
+		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 33.0f), DeltaTime, spawnTime));
+		if (buildingMesh->GetComponentLocation().Z >= 33.0f) {
+			PrimaryActorTick.bCanEverTick = false;
+			if (canSpawnHarvester) {
+				//Spawn a harvester
+				//Harvester will know when it reaches the refinery and will unload its resources at that time
+
+				AUnit_Harvester* temp = GetWorld()->SpawnActor<AUnit_Harvester>(AUnit_Harvester::StaticClass(), FVector(this->GetActorLocation() + FVector(30.0f, 10.0f, 0.0f)), FRotator(0.0f, 0.0f, 0.0f));
+				temp->SetActorScale3D(FVector(0.5, 0.5, 0.5));
+				//AUnit_HarvesterAIController* controller = NewObject<AUnit_HarvesterAIController>();
+				//controller->Possess(temp);
+				canSpawnHarvester = false;
+			}
+		}
+	}
 }

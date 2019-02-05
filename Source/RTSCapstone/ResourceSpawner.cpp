@@ -40,13 +40,12 @@ void AResourceSpawner::BeginPlay()
 			if (distance < spawnRadius && distance < richSpawnRadius && distance > 1.0f) {
 				//Spawn rich resources
 				AResourceNode* temp = GetWorld()->SpawnActor<AResourceNode>(AResourceNode::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-				temp->yield = FMath::RandRange(200, 220);
-				temp->needsRespawning = true;
+				temp->setup(FMath::RandRange(200, 220), true);
 			}
 			else if (distance < spawnRadius && distance > 1.0f) {
 				//Spawn regular resources
 				AResourceNode* temp = GetWorld()->SpawnActor<AResourceNode>(AResourceNode::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-				temp->yield = FMath::RandRange(100, 120);
+				temp->setup(FMath::RandRange(100, 120), false);
 			}
 		}
 	}

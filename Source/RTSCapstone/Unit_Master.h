@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Unit_Master.generated.h"
 
 UCLASS()
-class RTSCAPSTONE_API AUnit_Master : public AActor
+class RTSCAPSTONE_API AUnit_Master : public APawn
 {
 	GENERATED_BODY()
 	
