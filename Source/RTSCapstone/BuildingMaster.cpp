@@ -17,6 +17,9 @@ ABuildingMaster::ABuildingMaster()
 	regularMaterial = CreateDefaultSubobject<UMaterial>(TEXT("regularMaterial"));
 	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
 
+
+	this->Tags.Add(FName("Building"));
+
 	constructed = false;
 	overlapping = false;
 	isPlaced = false;
@@ -78,7 +81,7 @@ bool ABuildingMaster::constructAtLocation()
 
 void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
 	
-	if (!constructed)
+	if (!constructed && OtherActor->ActorHasTag(FName("Building")))
 	{
 		if (!overlapping) {
 			overlapping = true;
@@ -96,13 +99,16 @@ void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 void ABuildingMaster::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (!constructed && numOfCollisions > 0) {
-		numOfCollisions--;
-	}
-	if (!constructed && numOfCollisions <= 0)
+	if (!constructed && OtherActor->ActorHasTag(FName("Building")))
 	{
-		overlapping = false;
-		buildingMesh->SetMaterial(0, canBuildIndicator);
-		numOfCollisions = 0;
+		if (numOfCollisions > 0) {
+			numOfCollisions--;
+		}
+		if (numOfCollisions <= 0)
+		{
+			overlapping = false;
+			buildingMesh->SetMaterial(0, canBuildIndicator);
+			numOfCollisions = 0;
+		}
 	}
 }

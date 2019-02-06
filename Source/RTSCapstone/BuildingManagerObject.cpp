@@ -10,9 +10,9 @@ UBuildingManagerObject::UBuildingManagerObject()
 	powerPlantCost = 100;
 	refineryCost = 300;
 	barracksCost = 200;
-	powerPlantConstructionTime = 10;
-	refineryConstructionTime = 20;
-	barracksConstructionTime = 15;
+	powerPlantConstructionTime = 5;
+	refineryConstructionTime = 5;
+	barracksConstructionTime = 5;
 }
 
 ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)

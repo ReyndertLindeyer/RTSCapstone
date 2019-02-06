@@ -18,6 +18,8 @@ public:
 	void MoveOrder(FVector& location);
 
 	virtual void Possess(APawn *InPawn) override;
+
+	void GoToActor(AActor* inActor);
 	
 	void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 
