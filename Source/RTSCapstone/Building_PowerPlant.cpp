@@ -11,6 +11,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	powerUsage = -50;
 	spawnTime = 2;
 	cost = 100;
+	buildRadius = 500;
 	isBuilding = true;
 
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PowerPlantMesh"));
@@ -22,6 +23,20 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_PowerPlant::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_PowerPlant::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
+
+	decal->AttachTo(RootComponent);
+	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	decal->DecalSize = FVector(3, buildRadius, buildRadius);
+
+	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
+	buildRadiusSphere->InitSphereRadius(1.0f);
+	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_PowerPlant::BeginRadiusOverlap);
+	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_PowerPlant::OnRadiusOverlapEnd);
+	buildRadiusSphere->AttachTo(RootComponent);
+
+	buildingMesh->ComponentTags.Add(FName("Building"));
+	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
+	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 void ABuilding_PowerPlant::Upgrade()

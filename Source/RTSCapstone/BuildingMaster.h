@@ -7,8 +7,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "MyRTSAIController.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Components/CapsuleComponent.h"
 #include "UObject/ObjectMacros.h"
+#include "Components/DecalComponent.h"
+#include "Components/SphereComponent.h"
 #include "BuildingMaster.generated.h"
 
 UCLASS()
@@ -24,6 +25,8 @@ public:
 
 	uint32 GetPowerUsage();
 	uint32 GetCost();
+	void EnableBuildDecal();
+	void DisableBuildDecal();
 
 protected:
 	// Called when the game starts or when spawned
@@ -43,14 +46,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UMaterial* regularMaterial;
 
-
-	UCapsuleComponent* canPlace; //Temp capsule collider that will be used to see if the player is constructing the building close enough to another one
+	UPROPERTY(EditAnywhere)
+		class UDecalComponent * decal;
 
 	float sightRadius, buildRadius;
 
 	uint32 powerUsage, cost;
 
-	uint32 numOfCollisions; //Number of buildings or units that the building is colliding with during placement
+	uint32 numOfBuildingCollisions, numOfRadiusCollisions; //Number of buildings or units that the building is colliding with during placement
+
+	USphereComponent* buildRadiusSphere;
 
 	bool constructed, isPlaced; //Is the building constructed, and has it been placed in the world
 
@@ -58,6 +63,12 @@ protected:
 		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+	
+
+	UFUNCTION()
+		virtual void BeginRadiusOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+	UFUNCTION()
+		virtual void OnRadiusOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:	
 	// Called every frame
@@ -67,5 +78,5 @@ public:
 		UStaticMeshComponent* buildingMesh;
 
 	bool constructAtLocation();
-	bool overlapping;
+	bool overlapping, isInRadius;
 };

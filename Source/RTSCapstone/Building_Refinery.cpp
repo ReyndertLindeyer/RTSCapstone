@@ -11,6 +11,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	powerUsage = 20;
 	spawnTime = 2;
 	cost = 100;
+	buildRadius = 500;
 	isBuilding = true;
 	canSpawnHarvester = true;
 
@@ -25,6 +26,20 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
+
+	decal->AttachTo(RootComponent);
+	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+
+	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
+	buildRadiusSphere->InitSphereRadius(buildRadius);
+	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
+	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
+	buildRadiusSphere->AttachTo(RootComponent);
+
+	buildingMesh->ComponentTags.Add(FName("Building"));
+	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
+	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 void ABuilding_Refinery::Tick(float DeltaTime)

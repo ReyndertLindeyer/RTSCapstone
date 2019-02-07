@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "BuildingMaster.h"
+#include "Building_Construction_Yard.h"
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
 #include "Building_Refinery.h"
@@ -26,6 +27,8 @@ public:
 
 	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
 
+	void SpawnConstructionYard(FVector spawnLocation);
+
 	bool constructBuilding(ABuildingMaster* toBuild);
 
 	bool trainInfantry(uint8 whatInfantry, ABuilding_Barrecks* whatBuilding);
@@ -38,6 +41,9 @@ public:
 
 	void SubtractCost(int whatBuilding);
 	void AddCost(int whatBuilding);
+
+	void EnableAllDecals();
+	void DisableAllDecals();
 
 private:
 	uint32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;

@@ -10,6 +10,7 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	currentHealth = maxHealth;
 	powerUsage = 0;
 	spawnTime = 0;
+	buildRadius = 1000;
 	cost = 100;
 	isBuilding = false;
 
@@ -20,12 +21,29 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
 	buildingMesh->SetSimulatePhysics(false);
+
+	decal->AttachTo(RootComponent);
+	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+
+	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
+	buildRadiusSphere->InitSphereRadius(buildRadius);
+	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Construction_Yard::BeginOverlap);
+	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Construction_Yard::OnOverlapEnd);
+	buildRadiusSphere->AttachTo(RootComponent);
+
+	buildingMesh->ComponentTags.Add(FName("Building"));
+	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
+	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 // Called when the game starts or when spawned
 void ABuilding_Construction_Yard::BeginPlay()
 {
 	Super::BeginPlay();
+	buildingMesh->SetMaterial(0, regularMaterial);
+	constructed = true;
+	isPlaced = true;
 }
 
 // Called every frame

@@ -17,16 +17,21 @@ ABuildingMaster::ABuildingMaster()
 	regularMaterial = CreateDefaultSubobject<UMaterial>(TEXT("regularMaterial"));
 	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
 
-
-	this->Tags.Add(FName("Building"));
+	//Create the building area decal and sets the material, has to rotate by -90 for some reason
+	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
+	decal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get());
+	decal->CreateDynamicMaterialInstance();
+	decal->RelativeRotation = FRotator(-90, 0, 0);
 
 	constructed = false;
 	overlapping = false;
 	isPlaced = false;
+	isInRadius = false;
 	spawnTime = 1.0f;
 	buildRadius = 50;
 	sightRadius = 100;
-	numOfCollisions = 0;
+	numOfBuildingCollisions = 0;
+	numOfRadiusCollisions = 0;
 }
 
 uint32 ABuildingMaster::GetPowerUsage()
@@ -39,11 +44,21 @@ uint32 ABuildingMaster::GetCost()
 	return cost;
 }
 
+void ABuildingMaster::EnableBuildDecal()
+{
+	decal->SetVisibility(true);
+}
+
+void ABuildingMaster::DisableBuildDecal()
+{
+	decal->SetVisibility(false);
+}
+
 // Called when the game starts or when spawned
 void ABuildingMaster::BeginPlay()
 {
 	Super::BeginPlay();
-	buildingMesh->SetMaterial(0, canBuildIndicator);
+	buildingMesh->SetMaterial(0, cantBuildIndicator);
 	/*canPlace = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
 	canPlace->InitCapsuleSize(buildRadius, 20);
 	canPlace->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
@@ -66,11 +81,14 @@ void ABuildingMaster::Tick(float DeltaTime)
 
 bool ABuildingMaster::constructAtLocation()
 {
-	if (!overlapping) {
+	if (!overlapping && isInRadius) {
 		buildingMesh->SetMaterial(0, regularMaterial);
 		buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 40.0f));
 		constructed = true;
 		isPlaced = true;
+
+		buildRadiusSphere->SetSphereRadius(buildRadius);
+
 		return true;
 	}
 	return false;
@@ -80,35 +98,67 @@ bool ABuildingMaster::constructAtLocation()
 
 
 void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	
-	if (!constructed && OtherActor->ActorHasTag(FName("Building")))
-	{
-		if (!overlapping) {
-			overlapping = true;
-			buildingMesh->SetMaterial(0, cantBuildIndicator);
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (!constructed && OtherComp->ComponentHasTag(FName("Building")))
+		{
+			if (!overlapping) {
+				overlapping = true;
+				buildingMesh->SetMaterial(0, cantBuildIndicator);
+			}
+			numOfBuildingCollisions++;
+			///Code to check to see if the building is within range of another
+			/*
+			if ("CapsuleComp" == OverlappedComponent->GetName) {
+				buildingMesh->SetMaterial(0, canBuildIndicator);
+			}
+			*/
 		}
-		numOfCollisions++;
-		///Code to check to see if the building is within range of another
-		/*
-		if ("CapsuleComp" == OverlappedComponent->GetName) {
-			buildingMesh->SetMaterial(0, canBuildIndicator);
-		}
-		*/
 	}
 }
 
 void ABuildingMaster::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (!constructed && OtherActor->ActorHasTag(FName("Building")))
-	{
-		if (numOfCollisions > 0) {
-			numOfCollisions--;
-		}
-		if (numOfCollisions <= 0)
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (!constructed && OtherComp->ComponentHasTag(FName("Building")))
 		{
-			overlapping = false;
+			if (numOfBuildingCollisions > 0) {
+				numOfBuildingCollisions--;
+			}
+			if (numOfBuildingCollisions <= 0)
+			{
+				overlapping = false;
+				buildingMesh->SetMaterial(0, canBuildIndicator);
+				numOfBuildingCollisions = 0;
+			}
+		}
+	}
+}
+
+void ABuildingMaster::BeginRadiusOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (!constructed && OverlappedComponent->ComponentHasTag(FName("buildRadius")) && numOfBuildingCollisions <= 0) {
 			buildingMesh->SetMaterial(0, canBuildIndicator);
-			numOfCollisions = 0;
+			isInRadius = true;
+			numOfRadiusCollisions++;
+		}
+	}
+}
+
+void ABuildingMaster::OnRadiusOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (!constructed && OverlappedComp->ComponentHasTag(FName("buildRadius")) && numOfBuildingCollisions <= 0)
+		{
+			if (numOfRadiusCollisions > 0) {
+				numOfRadiusCollisions--;
+			}
+			if (numOfRadiusCollisions <= 0)
+			{
+				isInRadius = false;
+				buildingMesh->SetMaterial(0, cantBuildIndicator);
+				numOfRadiusCollisions = 0;
+			}
 		}
 	}
 }

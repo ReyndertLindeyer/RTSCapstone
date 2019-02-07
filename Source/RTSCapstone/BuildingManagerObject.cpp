@@ -20,25 +20,37 @@ ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVec
 	ABuildingMaster* building;
 	if (whatBuilding == 1) {
 		building = GetWorld()->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		building->EnableBuildDecal(); 
+		EnableAllDecals();
 		return building;
 	}
 	else if (whatBuilding == 2) {
 		building = GetWorld()->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		building->EnableBuildDecal();
+		EnableAllDecals();
 		return building;
 	}
 	else if (whatBuilding == 3) {
 		building = GetWorld()->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		building->EnableBuildDecal();
+		EnableAllDecals();
 		return building;
 	}
 
 	return nullptr;
 }
 
+void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
+{
+	buildingArray.Add(GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));
+}
+
 bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
 {
 	if (toBuild->GetCost() < resources && toBuild->constructAtLocation()) {
 		power -= toBuild->GetPowerUsage();
-		buildingArray.Add(toBuild);
+		buildingArray.Add(toBuild); 
+		DisableAllDecals();
 		return true;
 	}
 	return false;
@@ -110,5 +122,19 @@ void UBuildingManagerObject::AddCost(int whatBuilding)
 	}
 	else if (whatBuilding == 3) {
 		resources += barracksCost;
+	}
+}
+
+void UBuildingManagerObject::EnableAllDecals()
+{
+	for (int i = 0; i < buildingArray.Num(); i++) {
+		buildingArray[i]->EnableBuildDecal();
+	}
+}
+
+void UBuildingManagerObject::DisableAllDecals()
+{
+	for (int i = 0; i < buildingArray.Num(); i++) {
+		buildingArray[i]->DisableBuildDecal();
 	}
 }

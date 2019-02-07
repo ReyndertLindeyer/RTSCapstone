@@ -21,6 +21,14 @@ void AMyRTSPlayerController::BeginPlay()
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
 	HUDPtr->UseWidget();
+
+	int temp1, temp2;
+	GetViewportSize(temp1, temp2);
+	SetMouseLocation(temp1/2, temp2/2);
+	FHitResult hit;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+	buildingManagerObject->SpawnConstructionYard(hit.Location);
+	
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -194,6 +202,7 @@ void AMyRTSPlayerController::RightMouseUp() {
 		buildingToBuild->Destroy();
 		constructingBuilding = false;
 		buildingConstructed = false;
+		buildingManagerObject->DisableAllDecals();
 	}
 
 	if (selectedUnits.Num() > 0.0f) {

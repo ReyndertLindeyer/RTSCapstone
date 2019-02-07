@@ -11,6 +11,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	powerUsage = 10;
 	spawnTime = 2;
 	cost = 100;
+	buildRadius = 500;
 	isBuilding = true;
 	isPlaced = false;
 
@@ -37,6 +38,20 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	countToCompleteUnit = 0.0f;
 
 	constructingUnit = false;
+
+	decal->AttachTo(RootComponent);
+	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+
+	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
+	buildRadiusSphere->InitSphereRadius(buildRadius);
+	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
+	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
+	buildRadiusSphere->AttachTo(RootComponent);
+
+	buildingMesh->ComponentTags.Add(FName("Building"));
+	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
+	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 void ABuilding_Barrecks::AddToUnitQueue(int unitType)
