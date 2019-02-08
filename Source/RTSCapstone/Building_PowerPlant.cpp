@@ -24,6 +24,8 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_PowerPlant::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
+	decal->CreateDynamicMaterialInstance();
+	decal->RelativeRotation = FRotator(-90, 0, 0);
 	decal->AttachTo(RootComponent);
 	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);

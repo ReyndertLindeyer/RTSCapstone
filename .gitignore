@@ -76,5 +76,8 @@ DerivedDataCache/*
 #Starter Content
 Content/StarterContent/*
 
+#Robo Progress Bar Content
+Content/RoboBars/*
+
 #Models
 Content/Game_Assets/Models/*

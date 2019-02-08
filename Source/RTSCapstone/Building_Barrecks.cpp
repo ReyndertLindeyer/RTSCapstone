@@ -39,6 +39,8 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 
 	constructingUnit = false;
 
+	decal->CreateDynamicMaterialInstance();
+	decal->RelativeRotation = FRotator(-90, 0, 0);
 	decal->AttachTo(RootComponent);
 	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);

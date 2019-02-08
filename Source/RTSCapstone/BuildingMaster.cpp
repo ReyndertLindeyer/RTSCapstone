@@ -20,8 +20,6 @@ ABuildingMaster::ABuildingMaster()
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
 	decal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get());
-	decal->CreateDynamicMaterialInstance();
-	decal->RelativeRotation = FRotator(-90, 0, 0);
 
 	constructed = false;
 	overlapping = false;
@@ -93,6 +91,16 @@ bool ABuildingMaster::constructAtLocation()
 	}
 	return false;
 	//canPlace->UnregisterComponent();
+}
+
+int ABuildingMaster::GetHealth()
+{
+	return (int)currentHealth;
+}
+
+int ABuildingMaster::GetMaxHealth()
+{
+	return (int)maxHealth;
 }
 
 

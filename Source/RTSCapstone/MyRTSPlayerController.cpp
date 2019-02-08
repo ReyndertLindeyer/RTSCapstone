@@ -24,9 +24,8 @@ void AMyRTSPlayerController::BeginPlay()
 
 	int temp1, temp2;
 	GetViewportSize(temp1, temp2);
-	SetMouseLocation(temp1/2, temp2/2);
 	FHitResult hit;
-	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 	buildingManagerObject->SpawnConstructionYard(hit.Location);
 	
 }
