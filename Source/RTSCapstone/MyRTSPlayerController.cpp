@@ -20,7 +20,6 @@ void AMyRTSPlayerController::BeginPlay()
 
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
-	HUDPtr->UseWidget();
 
 	int temp1, temp2;
 	GetViewportSize(temp1, temp2);

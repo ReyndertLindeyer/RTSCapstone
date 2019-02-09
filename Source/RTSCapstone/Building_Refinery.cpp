@@ -16,28 +16,20 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	canSpawnHarvester = true;
 
 	this->Tags.Add(FName("Refinery"));
-
-	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RefineryMesh"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Refinery.Placeholder_Refinery")).Get());
-	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
-	RootComponent = buildingMesh;
-	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
-
+	
 	decal->CreateDynamicMaterialInstance();
 	decal->RelativeRotation = FRotator(-90, 0, 0);
 	decal->AttachTo(RootComponent);
 	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
-	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
-	buildRadiusSphere->InitSphereRadius(buildRadius);
+	buildRadiusSphere->SetSphereRadius(buildRadius);
 	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
 	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
-	buildRadiusSphere->AttachTo(RootComponent);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));

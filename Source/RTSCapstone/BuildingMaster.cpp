@@ -8,6 +8,15 @@ ABuildingMaster::ABuildingMaster()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	buildRadius = 100;
+
+
+	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
+	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
+	RootComponent = buildingMesh;
+	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
+
 	canBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("GreenBuildingGhost"));
 	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
 
@@ -21,6 +30,8 @@ ABuildingMaster::ABuildingMaster()
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
 	decal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get());
 
+	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
+	buildRadiusSphere->AttachTo(RootComponent);
 	constructed = false;
 	overlapping = false;
 	isPlaced = false;
@@ -57,11 +68,8 @@ void ABuildingMaster::BeginPlay()
 {
 	Super::BeginPlay();
 	buildingMesh->SetMaterial(0, cantBuildIndicator);
-	/*canPlace = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
-	canPlace->InitCapsuleSize(buildRadius, 20);
-	canPlace->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	canPlace->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	canPlace->SetupAttachment(RootComponent);*/
+
+	buildRadiusSphere->SetSphereRadius(buildRadius);
 }
 
 // Called every frame
@@ -90,7 +98,6 @@ bool ABuildingMaster::constructAtLocation()
 		return true;
 	}
 	return false;
-	//canPlace->UnregisterComponent();
 }
 
 int ABuildingMaster::GetHealth()

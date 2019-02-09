@@ -15,12 +15,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	isBuilding = true;
 	isPlaced = false;
 
-	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarracksMesh"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Barracks.Placeholder_Barracks")).Get());
-	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	RootComponent = buildingMesh;
-	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
@@ -45,11 +40,9 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
-	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
-	buildRadiusSphere->InitSphereRadius(buildRadius);
+	buildRadiusSphere->SetSphereRadius(buildRadius);
 	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
 	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
-	buildRadiusSphere->AttachTo(RootComponent);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));

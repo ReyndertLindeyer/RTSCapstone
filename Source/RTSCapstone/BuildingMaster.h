@@ -30,8 +30,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UCapsuleComponent* root;
 	
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
@@ -49,8 +47,6 @@ protected:
 
 	uint32 team, maxHealth, currentHealth, spawnTime;
 
-	USphereComponent* buildRadiusSphere;
-
 	bool constructed, isPlaced; //Is the building constructed, and has it been placed in the world
 
 public:	
@@ -61,8 +57,11 @@ public:
 		UStaticMeshComponent* buildingMesh;
 
 	UPROPERTY(EditAnywhere)
+		USphereComponent* buildRadiusSphere;
+	
+	UPROPERTY(EditAnywhere)
 		class UDecalComponent * decal;
-
+		
 	bool constructAtLocation();
 	bool overlapping, isInRadius;
 
