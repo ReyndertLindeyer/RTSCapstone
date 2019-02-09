@@ -20,6 +20,7 @@ public:
 	ABuilding_Refinery();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 private:
 	bool canSpawnHarvester;

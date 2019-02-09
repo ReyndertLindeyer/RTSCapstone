@@ -4,7 +4,7 @@
 
 
 ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	team = 1;
 	maxHealth = 2000;
 	currentHealth = maxHealth;
@@ -18,15 +18,13 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	RootComponent = buildingMesh;
 	buildingMesh->SetSimulatePhysics(false);
 	
-	decal->CreateDynamicMaterialInstance();
-	decal->RelativeRotation = FRotator(-90, 0, 0);
-	decal->AttachTo(RootComponent);
-	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 	
 	buildRadiusSphere->SetSphereRadius(buildRadius);
-	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Construction_Yard::BeginOverlap);
-	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Construction_Yard::OnOverlapEnd);
+	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Construction_Yard::BeginRadiusOverlap);
+	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Construction_Yard::OnRadiusOverlapEnd);
+	buildRadiusSphere->SetupAttachment(RootComponent);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));

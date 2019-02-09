@@ -35,16 +35,16 @@ public:
 
 	float GetResources();
 
-	int GetBuildingCost(uint8 whatBuilding);
+	int32 GetBuildingCost(uint8 whatBuilding);
 
-	int GetConstructionTime(uint8 whatBuilding);
+	int32 GetConstructionTime(uint8 whatBuilding);
 
-	void SubtractCost(int whatBuilding);
-	void AddCost(int whatBuilding);
+	void SubtractCost(int32 whatBuilding);
+	void AddCost(int32 whatBuilding);
 
 	void EnableAllDecals();
 	void DisableAllDecals();
 
 private:
-	uint32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+	int32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 };

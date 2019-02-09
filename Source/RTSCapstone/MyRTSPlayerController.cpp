@@ -11,7 +11,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	rightClicked = false;
 	constructingBuilding = false;
 	buildingConstructed = false;
-	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
+	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"), false);
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -21,7 +21,7 @@ void AMyRTSPlayerController::BeginPlay()
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
 
-	int temp1, temp2;
+	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
@@ -36,6 +36,11 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild->SetActorLocation(FVector(hit.Location.X, hit.Location.Y, buildingToBuild->GetActorLocation().Z));
+	}
+	if (buildingManagerObject == nullptr) {
+
+		UE_LOG(LogTemp, Warning, TEXT("building manager is null"));
+
 	}
 }
 
@@ -60,7 +65,7 @@ float AMyRTSPlayerController::GetResources()
 	return buildingManagerObject->GetResources();
 }
 
-bool AMyRTSPlayerController::ConstructBuilding(int whatBuilding)
+bool AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
 {
 	if (!constructingBuilding) {
 		FHitResult hit;
@@ -74,22 +79,22 @@ bool AMyRTSPlayerController::ConstructBuilding(int whatBuilding)
 	return false;
 }
 
-int AMyRTSPlayerController::GetBuildingCost(int whatBuilding)
+int32 AMyRTSPlayerController::GetBuildingCost(int32 whatBuilding)
 {
 	return buildingManagerObject->GetBuildingCost((uint8)whatBuilding);
 }
 
-int AMyRTSPlayerController::GetBuildingConstructionTime(int whatBuilding)
+int32 AMyRTSPlayerController::GetBuildingConstructionTime(int32 whatBuilding)
 {
 	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
 }
 
 void AMyRTSPlayerController::BuildPowerPlant()
 {
-	if (!constructingBuilding) {
+	if (!constructingBuilding && buildingManagerObject) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location);
+		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location); 
 
 		if (buildingToBuild != nullptr) {
 			constructingBuilding = true;
@@ -99,7 +104,7 @@ void AMyRTSPlayerController::BuildPowerPlant()
 
 void AMyRTSPlayerController::BuildRefinery()
 {
-	if (!constructingBuilding) {
+	if (!constructingBuilding && buildingManagerObject != nullptr) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
@@ -112,7 +117,7 @@ void AMyRTSPlayerController::BuildRefinery()
 
 void AMyRTSPlayerController::BuildBarracks()
 {
-	if (!constructingBuilding) {
+	if (!constructingBuilding && buildingManagerObject != nullptr) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
@@ -127,12 +132,12 @@ void AMyRTSPlayerController::UseHUDUI()
 {
 }
 
-void AMyRTSPlayerController::SubtractCost(int whatBuilding)
+void AMyRTSPlayerController::SubtractCost(int32 whatBuilding)
 {
 	buildingManagerObject->SubtractCost(whatBuilding);
 }
 
-void AMyRTSPlayerController::AddCost(int whatBuilding)
+void AMyRTSPlayerController::AddCost(int32 whatBuilding)
 {
 	buildingManagerObject->AddCost(whatBuilding);
 }
@@ -147,7 +152,7 @@ void AMyRTSPlayerController::ResetIsBuilt()
 	buildingConstructed = false;
 }
 
-int AMyRTSPlayerController::GetTime(int whatBuilding)
+int32 AMyRTSPlayerController::GetTime(int32 whatBuilding)
 {
 	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
 }
@@ -191,7 +196,7 @@ void AMyRTSPlayerController::Shift() {
 
 void AMyRTSPlayerController::RightMouseUp() {
 	if (HUDPtr->foundUnits.Num() > 0.0f) {
-		for (int i = 0; i < HUDPtr->foundUnits.Num(); i++) {
+		for (int32 i = 0; i < HUDPtr->foundUnits.Num(); i++) {
 			selectedUnits.Add(HUDPtr->foundUnits[i]);
 		}
 	}
@@ -205,7 +210,7 @@ void AMyRTSPlayerController::RightMouseUp() {
 
 	if (selectedUnits.Num() > 0.0f) {
 		//Cycle through all units
-		for (int i = 0; i < selectedUnits.Num(); i++) {
+		for (int32 i = 0; i < selectedUnits.Num(); i++) {
 			UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
 			//Find location that the player right clicked on and store it
 			FHitResult hit;
@@ -219,7 +224,7 @@ void AMyRTSPlayerController::RightMouseUp() {
 		}
 	}
 	if (HUDPtr->foundBuildings.Num() > 0.0f) {
-		for (int i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
+		for (int32 i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
 			selectedBuildings.Add(HUDPtr->foundBuildings[i]);
 		}
 	}

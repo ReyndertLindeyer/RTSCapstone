@@ -35,7 +35,7 @@ AUnit_Harvester::AUnit_Harvester() {
 	collectionSphere->InitSphereRadius(sightRadius);
 	collectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AUnit_Harvester::BeginOverlap);
 	collectionSphere->OnComponentEndOverlap.AddDynamic(this, &AUnit_Harvester::OnOverlapEnd);
-	collectionSphere->AttachTo(RootComponent);
+	collectionSphere->SetupAttachment(RootComponent);
 }
 
 

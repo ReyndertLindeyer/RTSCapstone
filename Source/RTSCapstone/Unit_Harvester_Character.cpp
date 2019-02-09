@@ -30,7 +30,7 @@ AUnit_Harvester_Character::AUnit_Harvester_Character() {
 	charMesh->OnComponentEndOverlap.AddDynamic(this, &AUnit_Harvester_Character::OnOverlapEnd);
 	charMesh->SetSimulatePhysics(false);
 
-	GetCapsuleComponent()->AttachTo(RootComponent);
+	GetCapsuleComponent()->SetupAttachment(RootComponent);
 	GetCapsuleComponent()->SetCapsuleSize(0.1f, 0.2f, true);
 
 	//AIControllerClass = AUnit_HarvesterAIController::StaticClass();
@@ -39,7 +39,7 @@ AUnit_Harvester_Character::AUnit_Harvester_Character() {
 	collectionSphere->InitSphereRadius(sightRadius);
 	collectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AUnit_Harvester_Character::BeginOverlap);
 	collectionSphere->OnComponentEndOverlap.AddDynamic(this, &AUnit_Harvester_Character::OnOverlapEnd);
-	collectionSphere->AttachTo(RootComponent);
+	collectionSphere->SetupAttachment(RootComponent);
 }
 
 void AUnit_Harvester_Character::BeginPlay()

@@ -8,9 +8,6 @@ ABuildingMaster::ABuildingMaster()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	buildRadius = 100;
-
-
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	RootComponent = buildingMesh;
@@ -29,15 +26,23 @@ ABuildingMaster::ABuildingMaster()
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
 	decal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get());
+	decal->CreateDynamicMaterialInstance();
+	decal->RelativeRotation = FRotator(-90, 0, 0);
+	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
+	decal->SetVisibility(false);
 
 	buildRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("buildRadiusSphere"));
-	buildRadiusSphere->AttachTo(RootComponent);
+
 	constructed = false;
 	overlapping = false;
 	isPlaced = false;
 	isInRadius = false;
+	maxHealth = 10;
+	currentHealth = 10;
+	powerUsage = 10;
+	team = 1;
 	spawnTime = 1.0f;
-	buildRadius = 50;
 	sightRadius = 100;
 	numOfBuildingCollisions = 0;
 	numOfRadiusCollisions = 0;
@@ -68,8 +73,6 @@ void ABuildingMaster::BeginPlay()
 {
 	Super::BeginPlay();
 	buildingMesh->SetMaterial(0, cantBuildIndicator);
-
-	buildRadiusSphere->SetSphereRadius(buildRadius);
 }
 
 // Called every frame
