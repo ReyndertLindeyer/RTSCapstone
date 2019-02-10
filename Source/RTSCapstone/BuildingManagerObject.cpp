@@ -50,6 +50,11 @@ ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVec
 	return nullptr;
 }
 
+ABuildingMaster * UBuildingManagerObject::getBuilding(int32 indexOfBuilding)
+{
+	return buildingArray[indexOfBuilding];
+}
+
 void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 {
 	buildingArray.Add(GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));

@@ -11,7 +11,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	rightClicked = false;
 	constructingBuilding = false;
 	buildingConstructed = false;
-	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"), false);
+	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -26,7 +26,8 @@ void AMyRTSPlayerController::BeginPlay()
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 	buildingManagerObject->SpawnConstructionYard(hit.Location);
-	
+
+	HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -36,11 +37,6 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild->SetActorLocation(FVector(hit.Location.X, hit.Location.Y, buildingToBuild->GetActorLocation().Z));
-	}
-	if (buildingManagerObject == nullptr) {
-
-		UE_LOG(LogTemp, Warning, TEXT("building manager is null"));
-
 	}
 }
 
@@ -180,6 +176,7 @@ void AMyRTSPlayerController::LeftMouseUp() {
 	}
 	if (constructingBuilding) {
 		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
+			HUDPtr->AddBuilding(buildingToBuild);
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 			buildingConstructed = true;

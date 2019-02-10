@@ -12,6 +12,7 @@
 #include "Building_Refinery.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
+#include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
 
 /**
@@ -43,13 +44,13 @@ public:
 		float GetResources();
 	
 	UFUNCTION(BlueprintPure, Category = "UI")
-		bool ConstructBuilding(int whatBuilding);
+		bool ConstructBuilding(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingCost(int whatBuilding);
+		int GetBuildingCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingConstructionTime(int whatBuilding);
+		int GetBuildingConstructionTime(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void BuildPowerPlant();
@@ -64,10 +65,10 @@ public:
 		void UseHUDUI();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void SubtractCost(int whatBuilding);
+		void SubtractCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void AddCost(int whatBuilding);
+		void AddCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		bool IsBuilt();
@@ -76,7 +77,7 @@ public:
 		void ResetIsBuilt();
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetTime(int whatBuilding);
+		int GetTime(int32 whatBuilding);
 
 
 protected:
@@ -94,7 +95,8 @@ protected:
 
 	//ABuildingManager* buildingManager;
 
-	UBuildingManagerObject* buildingManagerObject;
+	UPROPERTY()
+		UBuildingManagerObject* buildingManagerObject;
 
 	bool constructingBuilding, buildingConstructed;
 };

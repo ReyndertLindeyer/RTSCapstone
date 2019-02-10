@@ -23,9 +23,9 @@ public:
 	// Sets default values for this actor's properties
 	UBuildingManagerObject();
 
-	TArray <ABuildingMaster*> buildingArray;
-
 	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
+
+	ABuildingMaster* getBuilding(int32 indexOfBuilding);
 
 	void SpawnConstructionYard(FVector spawnLocation);
 
@@ -47,4 +47,6 @@ public:
 
 private:
 	int32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+
+	TArray <ABuildingMaster*> buildingArray;
 };

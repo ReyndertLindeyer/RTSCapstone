@@ -46,4 +46,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		class UUserWidget* CurrentWidget;
 
+	void AddBuilding(ABuildingMaster* building);
+	void RemoveBuilding(ABuildingMaster* building);
+	void DrawHealthBars();
+
+private:
+	TArray <ABuildingMaster*> existingBuildings;
 };

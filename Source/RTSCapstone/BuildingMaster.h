@@ -27,6 +27,8 @@ public:
 	void EnableBuildDecal();
 	void DisableBuildDecal();
 
+	int32 GetHeight();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

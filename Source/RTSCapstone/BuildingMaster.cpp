@@ -68,6 +68,11 @@ void ABuildingMaster::DisableBuildDecal()
 	decal->SetVisibility(false);
 }
 
+int32 ABuildingMaster::GetHeight()
+{
+	return buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z;
+}
+
 // Called when the game starts or when spawned
 void ABuildingMaster::BeginPlay()
 {
