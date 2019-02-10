@@ -5,6 +5,7 @@
 
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Runtime/Engine/Classes/Engine/CollisionProfile.h"
 #include "ProFow.generated.h"
 
 UCLASS()

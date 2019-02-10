@@ -12,7 +12,6 @@
 #include "Building_Refinery.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
-#include "FogOfWar.h"
 #include "ProFow.h"
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
