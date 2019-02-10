@@ -14,7 +14,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildRadius = 500;
 	isBuilding = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devPowerplant_v1.devPowerplant_v1")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_PowerPlant::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_PowerPlant::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);

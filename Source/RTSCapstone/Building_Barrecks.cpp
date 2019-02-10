@@ -15,7 +15,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	isBuilding = true;
 	isPlaced = false;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Barracks.Placeholder_Barracks")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
