@@ -35,6 +35,7 @@ void AMyRTSHUD::DrawHUD() {
 			if (foundBuildings.Num() > 0) {
 				for (int i = 0; i < foundBuildings.Num(); i++) {
 					//Code to remove the selection from existing actors
+					foundBuildings[i]->DeselectBuilding();
 				}
 			}
 			//Empty the array
@@ -58,6 +59,7 @@ void AMyRTSHUD::DrawHUD() {
 		if (foundBuildings.Num() > 0) {
 			for (int i = 0; i < foundBuildings.Num(); i++) {
 				//Code to show that the actors are selected
+				foundBuildings[i]->SelectBuilding();
 			}
 		}
 		grabEverything = false;
@@ -72,19 +74,6 @@ FVector2D AMyRTSHUD::GetMousePos() {
 	GetOwningPlayerController()->GetMousePosition(posX, posY);
 
 	return FVector2D(posX, posY);
-}
-
-void AMyRTSHUD::UseWidget() {
-	if (HUDWidgetClass != nullptr) {
-		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
-
-		if (CurrentWidget) {
-
-			CurrentWidget->AddToViewport();
-
-		}
-
-	}
 }
 
 void AMyRTSHUD::AddBuilding(ABuildingMaster * building)

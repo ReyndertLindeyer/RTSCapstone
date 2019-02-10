@@ -28,6 +28,10 @@ public:
 	void DisableBuildDecal();
 
 	int32 GetHeight();
+	float GetSightRadius();
+
+	void SelectBuilding();
+	void DeselectBuilding();
 
 protected:
 	// Called when the game starts or when spawned
@@ -50,6 +54,9 @@ protected:
 	uint32 team, maxHealth, currentHealth, spawnTime;
 
 	bool constructed, isPlaced; //Is the building constructed, and has it been placed in the world
+	
+	UPROPERTY(EditAnywhere)
+		class UDecalComponent * selectedDecal; //Decal to show the building is selected
 
 public:	
 	// Called every frame
@@ -62,7 +69,7 @@ public:
 		USphereComponent* buildRadiusSphere;
 	
 	UPROPERTY(EditAnywhere)
-		class UDecalComponent * decal;
+		class UDecalComponent * decal; //Decal to show the buildings construction radius
 		
 	bool constructAtLocation();
 	bool overlapping, isInRadius;

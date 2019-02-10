@@ -28,6 +28,9 @@ void AMyRTSPlayerController::BeginPlay()
 	buildingManagerObject->SpawnConstructionYard(hit.Location);
 
 	HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
+
+	m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
+	m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -56,9 +59,9 @@ void AMyRTSPlayerController::SetupInputComponent() {
 	InputComponent->BindAction("Shift", IE_Released, this, &AMyRTSPlayerController::Shift);
 }
 
-float AMyRTSPlayerController::GetResources()
+int32 AMyRTSPlayerController::GetResources()
 {
-	return buildingManagerObject->GetResources();
+	return (int32)buildingManagerObject->GetResources();
 }
 
 bool AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
@@ -124,10 +127,6 @@ void AMyRTSPlayerController::BuildBarracks()
 	}
 }
 
-void AMyRTSPlayerController::UseHUDUI()
-{
-}
-
 void AMyRTSPlayerController::SubtractCost(int32 whatBuilding)
 {
 	buildingManagerObject->SubtractCost(whatBuilding);
@@ -136,6 +135,16 @@ void AMyRTSPlayerController::SubtractCost(int32 whatBuilding)
 void AMyRTSPlayerController::AddCost(int32 whatBuilding)
 {
 	buildingManagerObject->AddCost(whatBuilding);
+}
+
+int32 AMyRTSPlayerController::GetCurrentPower()
+{
+	return buildingManagerObject->GetCurrentPower();
+}
+
+int32 AMyRTSPlayerController::GetMaxPower()
+{
+	return buildingManagerObject->GetMaxPower();
 }
 
 bool AMyRTSPlayerController::IsBuilt()
@@ -177,6 +186,7 @@ void AMyRTSPlayerController::LeftMouseUp() {
 	if (constructingBuilding) {
 		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
 			HUDPtr->AddBuilding(buildingToBuild);
+			m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 			buildingConstructed = true;

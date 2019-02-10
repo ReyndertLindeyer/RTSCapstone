@@ -5,14 +5,15 @@
 // Sets default values
 UBuildingManagerObject::UBuildingManagerObject()
 {
-	power = 20;
+	currentPower = 20;
+	maxPower = currentPower;
 	resources = 5000; 
 	powerPlantCost = 100;
 	refineryCost = 300;
 	barracksCost = 200;
 	powerPlantConstructionTime = 1;
-	refineryConstructionTime = 5;
-	barracksConstructionTime = 5;
+	refineryConstructionTime = 1;
+	barracksConstructionTime = 1;
 }
 
 ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)
@@ -63,7 +64,10 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
 {
 	if ((int32)toBuild->GetCost() < resources && toBuild->constructAtLocation()) {
-		power -= toBuild->GetPowerUsage();
+		currentPower -= toBuild->GetPowerUsage();
+		if (toBuild->GetPowerUsage() < 0) {
+			maxPower -= toBuild->GetPowerUsage();
+		}
 		buildingArray.Add(toBuild); 
 		DisableAllDecals();
 		return true;
@@ -112,6 +116,16 @@ int32 UBuildingManagerObject::GetConstructionTime(uint8 whatBuilding)
 		return (int32)barracksConstructionTime;
 	}
 	return 0;
+}
+
+int32 UBuildingManagerObject::GetCurrentPower()
+{
+	return currentPower;
+}
+
+int32 UBuildingManagerObject::GetMaxPower()
+{
+	return maxPower;
 }
 
 void UBuildingManagerObject::SubtractCost(int32 whatBuilding)

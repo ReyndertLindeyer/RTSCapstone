@@ -12,6 +12,8 @@
 #include "Building_Refinery.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
+#include "FogOfWar.h"
+#include "ProFow.h"
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -41,7 +43,7 @@ public:
 	bool rightClicked;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		float GetResources();
+		int32 GetResources();
 	
 	UFUNCTION(BlueprintPure, Category = "UI")
 		bool ConstructBuilding(int32 whatBuilding);
@@ -62,13 +64,16 @@ public:
 		void BuildBarracks();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void UseHUDUI();
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
 		void SubtractCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void AddCost(int32 whatBuilding);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		int32 GetCurrentPower();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		int32 GetMaxPower();
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		bool IsBuilt();
@@ -98,5 +103,8 @@ protected:
 	UPROPERTY()
 		UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding, buildingConstructed;
+	bool constructingBuilding, buildingConstructed; 
+	
+	UPROPERTY()
+		AProFow *m_fow;
 };

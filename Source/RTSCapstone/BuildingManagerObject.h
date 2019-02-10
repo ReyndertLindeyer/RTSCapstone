@@ -39,6 +39,10 @@ public:
 
 	int32 GetConstructionTime(uint8 whatBuilding);
 
+	int32 GetCurrentPower();
+
+	int32 GetMaxPower();
+
 	void SubtractCost(int32 whatBuilding);
 	void AddCost(int32 whatBuilding);
 
@@ -46,7 +50,7 @@ public:
 	void DisableAllDecals();
 
 private:
-	int32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 
 	TArray <ABuildingMaster*> buildingArray;
 };
