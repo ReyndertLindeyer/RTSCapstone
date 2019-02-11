@@ -46,6 +46,22 @@ ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVec
 				return building;
 			}
 		}
+		else if (whatBuilding == 4) {
+			building = World->SpawnActor<ABuilding_VehicleFactory>(ABuilding_VehicleFactory::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+
+			if (building) {
+				EnableAllDecals();
+				return building;
+			}
+		}
+		else if (whatBuilding == 5) {
+			building = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+
+			if (building) {
+				EnableAllDecals();
+				return building;
+			}
+		}
 	}
 
 	return nullptr;
@@ -53,12 +69,12 @@ ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVec
 
 ABuildingMaster * UBuildingManagerObject::getBuilding(int32 indexOfBuilding)
 {
-	return buildingArray[indexOfBuilding];
+	return masterArray[indexOfBuilding];
 }
 
 void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 {
-	buildingArray.Add(GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));
+	constructionYard = (GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));
 }
 
 bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
@@ -68,7 +84,26 @@ bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
 		if (toBuild->GetPowerUsage() < 0) {
 			maxPower -= toBuild->GetPowerUsage();
 		}
-		buildingArray.Add(toBuild); 
+
+		if(toBuild->IsA(ABuilding_PowerPlant::StaticClass())) {
+			powerPlantArray.Add((ABuilding_PowerPlant*)toBuild);
+		}
+		else if (toBuild->IsA(ABuilding_Refinery::StaticClass())) {
+			refineryArray.Add((ABuilding_Refinery*)toBuild);
+		}
+		else if (toBuild->IsA(ABuilding_Barrecks::StaticClass())) {
+			barrecksArray.Add((ABuilding_Barrecks*)toBuild);
+		}
+		else if (toBuild->IsA(ABuilding_VehicleFactory::StaticClass())) {
+			vehicleFactoryArray.Add((ABuilding_VehicleFactory*)toBuild);
+		}
+		else if (toBuild->IsA(ABuilding_TechCenter::StaticClass())) {
+			techCenterArray.Add((ABuilding_TechCenter*)toBuild);
+		}
+
+		masterArray.Add(toBuild);
+
+		//buildingArray.Add(toBuild);
 		DisableAllDecals();
 		return true;
 	}
@@ -156,31 +191,41 @@ void UBuildingManagerObject::AddCost(int32 whatBuilding)
 
 void UBuildingManagerObject::EnableAllDecals()
 {
-	if (buildingArray.Num() > 0) {
-		for (int32 i = 0; i < buildingArray.Num(); i++) {
-			buildingArray[i]->EnableBuildDecal();
+	if (masterArray.Num() > 0) {
+		for (int32 i = 0; i < masterArray.Num(); i++) {
+			masterArray[i]->EnableBuildDecal();
 		}
 	}
 }
 
 void UBuildingManagerObject::DisableAllDecals()
 {
-	if (buildingArray.Num() > 0) {
-		for (int32 i = 0; i < buildingArray.Num(); i++) {
-			buildingArray[i]->DisableBuildDecal();
+	if (masterArray.Num() > 0) {
+		for (int32 i = 0; i < masterArray.Num(); i++) {
+			masterArray[i]->DisableBuildDecal();
 		}
 	}
 }
 
 void UBuildingManagerObject::CheckForDestroyedBuildings()
 {
-	if (buildingArray.Num() > 0) {
-		for (int i = 0; i < buildingArray.Num(); i++) {
-			if (buildingArray[i]->IsDead()) {
-				ABuildingMaster * temp = buildingArray[i];
-				buildingArray.Remove(temp);
+	if (masterArray.Num() > 0) {
+		for (int i = 0; i < masterArray.Num(); i++) {
+			if (masterArray[i]->IsDead()) {
+				ABuildingMaster * temp = masterArray[i];
+				masterArray.Remove(temp);
 				temp->Suicide();
 			}
 		}
 	}
+}
+
+bool UBuildingManagerObject::IsTechCentreBuilt()
+{
+	return false;
+}
+
+bool UBuildingManagerObject::IsRefineryBuilt()
+{
+	return false;
 }

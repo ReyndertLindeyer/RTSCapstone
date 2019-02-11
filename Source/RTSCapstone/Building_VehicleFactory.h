@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-#include "Building_Barrecks.generated.h"
+#include "Building_VehicleFactory.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTSCAPSTONE_API ABuilding_Barrecks : public ABuildingMaster
+class RTSCAPSTONE_API ABuilding_VehicleFactory : public ABuildingMaster
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	UPROPERTY(EditAnywhere)
 		FVector wayPoint;
 
-	ABuilding_Barrecks();
+	ABuilding_VehicleFactory();
 
 	void AddToUnitQueue(int unitType);
 	void SpawnUnit(int unitType);
@@ -27,8 +27,6 @@ public:
 	uint8 GetUnitCost(uint8 whatUnit);
 
 protected:
-	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaTime) override;
 
 	bool constructingUnit;
@@ -37,5 +35,5 @@ protected:
 
 	float countToCompleteUnit;
 
-	uint8 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, engineerBuildTime, engineerCost;
+	int32 harvesterBuildTime, harvesterCost, humveeTime, humveeCost, tankTime, tankCost, artilleryTankBuildTime, artilleryTankCost, heavyTankTime, heavyTankCost, outpostTime, outpostCost;
 };

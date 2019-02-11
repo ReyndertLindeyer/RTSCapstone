@@ -49,4 +49,5 @@ void ABuilding_PowerPlant::Upgrade()
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	buildingMesh->SetSimulatePhysics(false);
 	*/
+	powerUsage = -100;
 }

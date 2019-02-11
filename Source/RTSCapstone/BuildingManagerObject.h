@@ -9,6 +9,8 @@
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
 #include "Building_Refinery.h"
+#include "Building_VehicleFactory.h"
+#include "Building_TechCenter.h"
 #include "BuildingManagerObject.generated.h"
 
 /**
@@ -50,8 +52,20 @@ public:
 	void DisableAllDecals();
 
 	void CheckForDestroyedBuildings();
+
+	bool IsTechCentreBuilt();
+	bool IsRefineryBuilt();
+
+
 private:
 	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 
-	TArray <ABuildingMaster*> buildingArray;
+	TArray <ABuilding_PowerPlant*> powerPlantArray;
+	TArray <ABuilding_Barrecks*> barrecksArray;
+	TArray <ABuilding_Refinery*> refineryArray;
+	TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
+	TArray <ABuilding_TechCenter*> techCenterArray;
+	ABuilding_Construction_Yard* constructionYard;
+
+	TArray <ABuildingMaster*> masterArray;
 };
