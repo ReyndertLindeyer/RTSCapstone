@@ -19,7 +19,8 @@ void AMyRTSHUD::BeginPlay()
 }
 
 void AMyRTSHUD::DrawHUD() {
-	Super::DrawHUD();
+	Super::DrawHUD(); 
+	DrawHealthBars();
 	if (selectionStart) {
 		if (!isShift) {
 			//See if there are any units already selected
@@ -34,6 +35,7 @@ void AMyRTSHUD::DrawHUD() {
 			if (foundBuildings.Num() > 0) {
 				for (int i = 0; i < foundBuildings.Num(); i++) {
 					//Code to remove the selection from existing actors
+					foundBuildings[i]->DeselectBuilding();
 				}
 			}
 			//Empty the array
@@ -57,6 +59,7 @@ void AMyRTSHUD::DrawHUD() {
 		if (foundBuildings.Num() > 0) {
 			for (int i = 0; i < foundBuildings.Num(); i++) {
 				//Code to show that the actors are selected
+				foundBuildings[i]->SelectBuilding();
 			}
 		}
 		grabEverything = false;
@@ -73,15 +76,72 @@ FVector2D AMyRTSHUD::GetMousePos() {
 	return FVector2D(posX, posY);
 }
 
-void AMyRTSHUD::UseWidget() {
-	if (HUDWidgetClass != nullptr) {
-		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+void AMyRTSHUD::AddBuilding(ABuildingMaster * building)
+{
+	existingBuildings.Add(building);
+}
 
-		if (CurrentWidget) {
+void AMyRTSHUD::RemoveBuilding(ABuildingMaster * building)
+{
+	existingBuildings.Remove(building);
+}
 
-			CurrentWidget->AddToViewport();
+void AMyRTSHUD::DrawHealthBars()
+{
+	for (int32 i = 0; i < existingBuildings.Num(); i++) {
+		if (existingBuildings[i]->IsSelected()) {
+			// Select the center point of the bar as the character's location
+			FVector center = existingBuildings[i]->GetActorLocation();
+			// Offsets of the bar
+			FVector extent = FVector(60.f, 34.f, 50.75f);
 
+			// Project function of Canvas translates a world position to the screen position
+			FVector2D center2D = FVector2D(Canvas->Project(FVector(center.X, center.Y, center.Z + extent.Z)));
+
+			float actorExtent = 50.f;
+			float healthPercentage = 0.5f;
+			float yOffset = 10.f;
+
+			healthPercentage = existingBuildings[i]->GetHealth() / existingBuildings[i]->GetMaxHealth();
+			actorExtent = existingBuildings[i]->GetHeight();
+
+			FVector pos1 = Canvas->Project(FVector(center.X, center.Y - actorExtent * 2, center.Z + extent.Z));
+			FVector pos2 = Canvas->Project(FVector(center.X, center.Y + actorExtent * 2, center.Z + extent.Z));
+
+			float barWidth = (pos2 - pos1).Size2D() * 0.2;
+			float barHeight = barWidth * 0.2f;
+
+			// Draw a background color first
+			/* Background tile */
+			barWidth += 2.f;
+			barHeight += 2.f;
+
+			float x = center2D.X - barWidth * 0.5f;
+			float y = center2D.Y;
+
+			FCanvasTileItem tileItem(FVector2D(x, y), FVector2D(barWidth, barHeight), FLinearColor(0.0f, 0.0f, 0.0f, 0.5f));
+			tileItem.BlendMode = SE_BLEND_Translucent;
+			Canvas->DrawItem(tileItem);
+			/* Background tile */
+
+			// Draw the health indicator
+			/* Health tile */
+			barWidth -= 2.f;
+			barHeight -= 2.f;
+
+			x = center2D.X - barWidth * 0.5f;
+			y = center2D.Y + 1.f;
+
+			tileItem.Position = FVector2D(x, y);
+			if (healthPercentage > 0.61)
+				tileItem.SetColor(FLinearColor::Green);
+			else if (healthPercentage > 0.3 && healthPercentage < 0.6)
+				tileItem.SetColor(FLinearColor::Yellow);
+			else
+				tileItem.SetColor(FLinearColor::Red);
+
+			tileItem.Size = FVector2D(barWidth * healthPercentage, barHeight);
+			Canvas->DrawItem(tileItem);
 		}
-
 	}
 }

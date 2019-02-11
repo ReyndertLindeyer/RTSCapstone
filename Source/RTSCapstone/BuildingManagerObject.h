@@ -5,9 +5,12 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "BuildingMaster.h"
+#include "Building_Construction_Yard.h"
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
 #include "Building_Refinery.h"
+#include "Building_VehicleFactory.h"
+#include "Building_TechCenter.h"
 #include "BuildingManagerObject.generated.h"
 
 /**
@@ -22,9 +25,11 @@ public:
 	// Sets default values for this actor's properties
 	UBuildingManagerObject();
 
-	TArray <ABuildingMaster*> buildingArray;
-
 	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
+
+	ABuildingMaster* getBuilding(int32 indexOfBuilding);
+
+	void SpawnConstructionYard(FVector spawnLocation);
 
 	bool constructBuilding(ABuildingMaster* toBuild);
 
@@ -32,13 +37,35 @@ public:
 
 	float GetResources();
 
-	int GetBuildingCost(uint8 whatBuilding);
+	int32 GetBuildingCost(uint8 whatBuilding);
 
-	int GetConstructionTime(uint8 whatBuilding);
+	int32 GetConstructionTime(uint8 whatBuilding);
 
-	void SubtractCost(int whatBuilding);
-	void AddCost(int whatBuilding);
+	int32 GetCurrentPower();
+
+	int32 GetMaxPower();
+
+	void SubtractCost(int32 whatBuilding);
+	void AddCost(int32 whatBuilding);
+
+	void EnableAllDecals();
+	void DisableAllDecals();
+
+	void CheckForDestroyedBuildings();
+
+	bool IsTechCentreBuilt();
+	bool IsRefineryBuilt();
+
 
 private:
-	uint32 power, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+
+	TArray <ABuilding_PowerPlant*> powerPlantArray;
+	TArray <ABuilding_Barrecks*> barrecksArray;
+	TArray <ABuilding_Refinery*> refineryArray;
+	TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
+	TArray <ABuilding_TechCenter*> techCenterArray;
+	ABuilding_Construction_Yard* constructionYard;
+
+	TArray <ABuildingMaster*> masterArray;
 };

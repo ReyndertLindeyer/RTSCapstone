@@ -12,6 +12,8 @@
 #include "Building_Refinery.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
+#include "ProFow.h"
+#include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
 
 /**
@@ -40,16 +42,16 @@ public:
 	bool rightClicked;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		float GetResources();
+		int32 GetResources();
 	
 	UFUNCTION(BlueprintPure, Category = "UI")
-		bool ConstructBuilding(int whatBuilding);
+		bool ConstructBuilding(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingCost(int whatBuilding);
+		int GetBuildingCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingConstructionTime(int whatBuilding);
+		int GetBuildingConstructionTime(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void BuildPowerPlant();
@@ -61,22 +63,34 @@ public:
 		void BuildBarracks();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void UseHUDUI();
+		void SubtractCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void SubtractCost(int whatBuilding);
+		void AddCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void AddCost(int whatBuilding);
+		int32 GetCurrentPower();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		int32 GetMaxPower();
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		bool IsBuilt();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasBarracksSelected();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasFactorySelected();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildUnit(int32 buildingType, int32 unitType);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
 
 	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetTime(int whatBuilding);
+		int GetTime(int32 whatBuilding);
 
 
 protected:
@@ -94,7 +108,11 @@ protected:
 
 	//ABuildingManager* buildingManager;
 
-	UBuildingManagerObject* buildingManagerObject;
+	UPROPERTY()
+		UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding, buildingConstructed;
+	bool constructingBuilding, buildingConstructed; 
+	
+	UPROPERTY()
+		AProFow *m_fow;
 };

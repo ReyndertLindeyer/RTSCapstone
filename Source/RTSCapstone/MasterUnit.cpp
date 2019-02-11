@@ -25,3 +25,7 @@ void AMasterUnit::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+float AMasterUnit::GetSightRadius()
+{
+	return sightRadius;
+}

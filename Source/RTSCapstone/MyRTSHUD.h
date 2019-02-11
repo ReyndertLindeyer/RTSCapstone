@@ -38,7 +38,6 @@ public:
 	TArray <AMasterUnit*> foundUnits;
 	TArray <ABuildingMaster*> foundBuildings;
 
-	void UseWidget();
 	// Reference UMG Asset in the Editor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		TSubclassOf<class UUserWidget> HUDWidgetClass;
@@ -46,4 +45,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		class UUserWidget* CurrentWidget;
 
+	void AddBuilding(ABuildingMaster* building);
+	void RemoveBuilding(ABuildingMaster* building);
+	void DrawHealthBars();
+
+private:
+	TArray <ABuildingMaster*> existingBuildings;
 };

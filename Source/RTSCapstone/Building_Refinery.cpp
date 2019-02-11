@@ -11,20 +11,32 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	powerUsage = 20;
 	spawnTime = 2;
 	cost = 100;
+	buildRadius = 500;
 	isBuilding = true;
 	canSpawnHarvester = true;
 
 	this->Tags.Add(FName("Refinery"));
-
-	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RefineryMesh"));
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Refinery.Placeholder_Refinery")).Get());
-	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
-	RootComponent = buildingMesh;
-	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devRefinery_v1.devRefinery_v1")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
+
+	decal->SetupAttachment(RootComponent);
+	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+
+	buildRadiusSphere->SetSphereRadius(10);
+	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginRadiusOverlap);
+	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnRadiusOverlapEnd);
+	buildRadiusSphere->SetupAttachment(RootComponent);
+
+	buildingMesh->ComponentTags.Add(FName("Building"));
+	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
+	decal->ComponentTags.Add(FName("BuildArea"));
+}
+
+void ABuilding_Refinery::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void ABuilding_Refinery::Tick(float DeltaTime)
@@ -39,10 +51,9 @@ void ABuilding_Refinery::Tick(float DeltaTime)
 				//Spawn a harvester
 				//Harvester will know when it reaches the refinery and will unload its resources at that time
 
-				AUnit_Harvester* temp = GetWorld()->SpawnActor<AUnit_Harvester>(AUnit_Harvester::StaticClass(), FVector(this->GetActorLocation() + FVector(30.0f, 10.0f, 0.0f)), FRotator(0.0f, 0.0f, 0.0f));
+				AUnit_Harvester_Character* temp = GetWorld()->SpawnActor<AUnit_Harvester_Character>(AUnit_Harvester_Character::StaticClass(), FVector(this->GetActorLocation() + FVector(30.0f, 10.0f, 0.0f)), FRotator(0.0f, 0.0f, 0.0f));
 				temp->SetActorScale3D(FVector(0.5, 0.5, 0.5));
-				//AUnit_HarvesterAIController* controller = NewObject<AUnit_HarvesterAIController>();
-				//controller->Possess(temp);
+
 				canSpawnHarvester = false;
 			}
 		}

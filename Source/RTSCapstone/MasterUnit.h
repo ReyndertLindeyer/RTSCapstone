@@ -39,6 +39,10 @@ public:
 
 	bool isPlayer, isCombat;
 
+	uint32 team, travelSpeed, spawnTime;
+
+	float GetSightRadius();
+
 	uint32 maxHealth;
 	uint32 currentHealth;
 	float sightRadius;

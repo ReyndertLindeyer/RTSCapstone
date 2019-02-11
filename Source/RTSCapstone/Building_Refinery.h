@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-#include "Unit_Harvester.h"
+#include "Unit_Harvester_Character.h"
 #include "Unit_HarvesterAIController.h"
 #include "Building_Refinery.generated.h"
 
@@ -20,6 +20,7 @@ public:
 	ABuilding_Refinery();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 private:
 	bool canSpawnHarvester;

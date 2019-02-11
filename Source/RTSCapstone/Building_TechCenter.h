@@ -4,17 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-#include "Building_PowerPlant.generated.h"
+#include "Building_TechCenter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTSCAPSTONE_API ABuilding_PowerPlant : public ABuildingMaster
+class RTSCAPSTONE_API ABuilding_TechCenter : public ABuildingMaster
 {
 	GENERATED_BODY()
 public:
-	ABuilding_PowerPlant();
-	virtual void BeginPlay() override;
-	void Upgrade();
+	ABuilding_TechCenter();
 };

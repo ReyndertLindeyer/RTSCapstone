@@ -15,7 +15,7 @@ AResourceNode::AResourceNode()
 	mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	RootComponent = mesh;
 	//mesh->SetupAttachment(RootComponent);
-	mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mesh->SetSimulatePhysics(false);
 
 	needsRespawning = false;

@@ -3,30 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Unit_Master.h"
+#include "MasterUnit.h"
 #include "ResourceNode.h"
 #include "Unit_HarvesterAIController.h"
 #include "Components/SphereComponent.h"
-#include "Unit_Harvester.generated.h"
+#include "Unit_Harvester_Character.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTSCAPSTONE_API AUnit_Harvester : public AUnit_Master
+class RTSCAPSTONE_API AUnit_Harvester_Character : public AMasterUnit
 {
 	GENERATED_BODY()
 
 public:
-	AUnit_Harvester();
+	AUnit_Harvester_Character();
 
 	void MoveToNextLocation();
-	
+
 private:
 
 	virtual void BeginPlay() override;
-
-	uint32 harvestingSpeed;
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -36,6 +34,10 @@ private:
 		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 	int resourseload, maxResourseLoad;
+
+	uint32 harvestingSpeed;
+
+	AUnit_HarvesterAIController* controller;
 
 	bool hasTarget, hasReachedResource;
 
