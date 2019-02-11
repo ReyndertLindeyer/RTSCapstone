@@ -78,6 +78,15 @@ public:
 		bool IsBuilt();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasBarracksSelected();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasFactorySelected();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildUnit(int32 buildingType, int32 unitType);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
 
 	UFUNCTION(BlueprintPure, Category = "UI")

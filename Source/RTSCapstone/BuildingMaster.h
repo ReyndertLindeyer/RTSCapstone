@@ -34,6 +34,9 @@ public:
 	void DeselectBuilding();
 
 	bool IsSelected();
+	bool IsDead();
+
+	void Suicide();
 
 protected:
 	// Called when the game starts or when spawned

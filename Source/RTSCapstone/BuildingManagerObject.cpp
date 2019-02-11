@@ -171,3 +171,16 @@ void UBuildingManagerObject::DisableAllDecals()
 		}
 	}
 }
+
+void UBuildingManagerObject::CheckForDestroyedBuildings()
+{
+	if (buildingArray.Num() > 0) {
+		for (int i = 0; i < buildingArray.Num(); i++) {
+			if (buildingArray[i]->IsDead()) {
+				ABuildingMaster * temp = buildingArray[i];
+				buildingArray.Remove(temp);
+				temp->Suicide();
+			}
+		}
+	}
+}

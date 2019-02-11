@@ -106,6 +106,21 @@ bool ABuildingMaster::IsSelected()
 	return selected;
 }
 
+bool ABuildingMaster::IsDead()
+{
+	if(currentHealth == 0){
+		return true;
+	}
+	return false;
+}
+
+void ABuildingMaster::Suicide()
+{
+	//Destroy self and play particle effect
+	Destroy();
+	//In future replace this with destructing mesh that lowers into ground before deletion
+}
+
 // Called when the game starts or when spawned
 void ABuildingMaster::BeginPlay()
 {

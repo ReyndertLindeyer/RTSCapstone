@@ -29,8 +29,8 @@ void AMyRTSPlayerController::BeginPlay()
 
 	HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
 
-	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
-	//m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
+	m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
+	m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -41,6 +41,7 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingToBuild->SetActorLocation(FVector(hit.Location.X, hit.Location.Y, buildingToBuild->GetActorLocation().Z));
 	}
+	buildingManagerObject->CheckForDestroyedBuildings();
 }
 
 void AMyRTSPlayerController::SetupInputComponent() {
@@ -152,6 +153,53 @@ bool AMyRTSPlayerController::IsBuilt()
 	return buildingConstructed;
 }
 
+bool AMyRTSPlayerController::HasBarracksSelected()
+{
+	return false;
+}
+
+bool AMyRTSPlayerController::HasFactorySelected()
+{
+	return false;
+}
+
+void AMyRTSPlayerController::BuildUnit(int32 buildingType, int32 unitType)
+{
+	if (buildingType == 1) {
+		//They are building something from a barracks
+		if (unitType == 1) {
+			//Spawn a rifleman from all selected barracks
+		}
+		else if (unitType == 2) {
+			//Spawn a rocket man from all selected barracks
+		}
+		else if (unitType == 3) {
+			//Spawn an engineer from all selected barracks
+		}
+	}
+	else if (buildingType == 2) {
+		//They are building something from a Vehicle Factory
+		if (unitType == 1) {
+			//Spawn a harvester from all selected barracks
+		}
+		else if (unitType == 2) {
+			//Spawn a humvee from all selected barracks
+		}
+		else if (unitType == 3) {
+			//Spawn an basic tank from all selected barracks
+		}
+		else if (unitType == 4) {
+			//Spawn a artillery tank from all selected barracks
+		}
+		else if (unitType == 5) {
+			//Spawn an heavy tank from all selected barracks
+		}
+		else if (unitType == 5) {
+			//Spawn an outpost creator from all selected barracks
+		}
+	}
+}
+
 void AMyRTSPlayerController::ResetIsBuilt()
 {
 	buildingConstructed = false;
@@ -186,7 +234,7 @@ void AMyRTSPlayerController::LeftMouseUp() {
 	if (constructingBuilding) {
 		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
 			HUDPtr->AddBuilding(buildingToBuild);
-			//m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
+			m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 			buildingConstructed = true;

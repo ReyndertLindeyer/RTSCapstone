@@ -49,6 +49,7 @@ public:
 	void EnableAllDecals();
 	void DisableAllDecals();
 
+	void CheckForDestroyedBuildings();
 private:
 	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 
