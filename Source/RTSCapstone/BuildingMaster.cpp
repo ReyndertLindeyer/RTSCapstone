@@ -70,11 +70,13 @@ uint32 ABuildingMaster::GetCost()
 void ABuildingMaster::EnableBuildDecal()
 {
 	decal->SetVisibility(true);
+	buildRadiusSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void ABuildingMaster::DisableBuildDecal()
 {
 	decal->SetVisibility(false);
+	buildRadiusSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 int32 ABuildingMaster::GetHeight()
@@ -90,11 +92,18 @@ float ABuildingMaster::GetSightRadius()
 void ABuildingMaster::SelectBuilding()
 {
 	selectedDecal->SetVisibility(true);
+	selected = true;
 }
 
 void ABuildingMaster::DeselectBuilding()
 {
 	selectedDecal->SetVisibility(false);
+	selected = false;
+}
+
+bool ABuildingMaster::IsSelected()
+{
+	return selected;
 }
 
 // Called when the game starts or when spawned

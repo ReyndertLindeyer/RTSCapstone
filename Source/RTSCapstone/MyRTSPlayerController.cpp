@@ -29,8 +29,8 @@ void AMyRTSPlayerController::BeginPlay()
 
 	HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
 
-	m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
-	m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
+	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
+	//m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -186,7 +186,7 @@ void AMyRTSPlayerController::LeftMouseUp() {
 	if (constructingBuilding) {
 		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
 			HUDPtr->AddBuilding(buildingToBuild);
-			m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
+			//m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
 			buildingToBuild = nullptr;
 			constructingBuilding = false;
 			buildingConstructed = true;

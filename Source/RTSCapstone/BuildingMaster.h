@@ -33,6 +33,8 @@ public:
 	void SelectBuilding();
 	void DeselectBuilding();
 
+	bool IsSelected();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
