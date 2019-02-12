@@ -8,7 +8,9 @@
 
 AMyRTSPlayerController::AMyRTSPlayerController() {
 	bShowMouseCursor = true;
-	rightClicked = false;
+	//DefaultMouseCursor = EMouseCursor::Custom; -- Potential way to implement our own cursor?
+
+	unlockCamera = false;
 	constructingBuilding = false;
 	buildingConstructed = false;
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
@@ -25,12 +27,18 @@ void AMyRTSPlayerController::BeginPlay()
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
-	buildingManagerObject->SpawnConstructionYard(hit.Location);
+	
+	/// Disabled for debugging
+	//buildingManagerObject->SpawnConstructionYard(hit.Location);
 
-	HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
+	/// Disabled for debugging
+	//HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
 
-	m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
-	m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
+	/// Disabled for debugging
+	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
+	
+	/// Disabled for debugging
+	//m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -49,13 +57,15 @@ void AMyRTSPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
 	//Jump events
-	InputComponent->BindAction("LeftClick", IE_Pressed, this, &AMyRTSPlayerController::LeftMouseDown);
-	InputComponent->BindAction("LeftClick", IE_Released, this, &AMyRTSPlayerController::LeftMouseUp);
+	InputComponent->BindAction("LeftClick", IE_Pressed, this, &AMyRTSPlayerController::OnLeftMousePressed);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &AMyRTSPlayerController::OnLeftMouseReleased);
 
-	InputComponent->BindAction("RightClick", IE_Released, this, &AMyRTSPlayerController::RightMouseUp);
-	InputComponent->BindAction("RightClick", IE_Pressed, this, &AMyRTSPlayerController::RightMouse);
-	InputComponent->BindAction("RightClick", IE_Released, this, &AMyRTSPlayerController::RightMouse);
+	InputComponent->BindAction("RightClick", IE_Released, this, &AMyRTSPlayerController::OnRightMousePressed);
+	InputComponent->BindAction("RightClick", IE_Pressed, this, &AMyRTSPlayerController::OnRightMouseReleased);
 
+	InputComponent->BindAction("MiddleClick", IE_Pressed, this, &AMyRTSPlayerController::OnMiddleMousePressed);
+	InputComponent->BindAction("MiddleClick", IE_Released, this, &AMyRTSPlayerController::OnMiddleMouseReleased);
+	
 	InputComponent->BindAction("Shift", IE_Pressed, this, &AMyRTSPlayerController::Shift);
 	InputComponent->BindAction("Shift", IE_Released, this, &AMyRTSPlayerController::Shift);
 }
@@ -211,26 +221,71 @@ int32 AMyRTSPlayerController::GetTime(int32 whatBuilding)
 }
 
 //Left mouse down to denote the start of the selection box
-void AMyRTSPlayerController::LeftMouseDown() {
-	if (!constructingBuilding) {
-		if (HUDPtr != nullptr) {
-			HUDPtr->startPos = HUDPtr->GetMousePos();
-			HUDPtr->selectionStart = true;
+void AMyRTSPlayerController::OnLeftMousePressed() {	
+	
+	if (!constructingBuilding) 
+	{
+		// If there is a selected structure, deselect it
+		if (SelectedStructure != nullptr)
+		{
+			Cast<II_Structure>(SelectedStructure)->SetSelection(false);
+			SelectedStructure = nullptr;
 		}
-		if (!HUDPtr->isShift) {
-			selectedUnits.Empty();
+
+		if (HUDPtr != nullptr) 
+		{
+			// Begin the selection box
+			HUDPtr->mouseStart = HUDPtr->GetMousePos2D();
+			HUDPtr->bStartSelecting = true;
+
+			// If isShift is false, empty the selected character list
+			/// Moved this inside of the HUDPtr check.  It will cause an error
+			/// if HUDPtr flagged as nullptr and this was left outside of it. 
+			/// (though it should work 100% of the time regardless, just coding practice)
+			if (!HUDPtr->isShift) 
+			{
+				SelectedCharacters.Empty();
+			}
 		}
 	}
 }
 
 //Left mouse up to denote the end of the selection box
-void AMyRTSPlayerController::LeftMouseUp() {
-	if (!constructingBuilding) {
-		if (HUDPtr != nullptr) {
-			HUDPtr->selectionStart = false;
-			HUDPtr->grabEverything = true;
+void AMyRTSPlayerController::OnLeftMouseReleased() {
+	
+	if (!constructingBuilding) 
+	{
+		// If there is no selected structure
+		if (SelectedStructure == nullptr)
+		{
+			// But there is a HUD
+			if (HUDPtr != nullptr) 
+			{
+				// Send out a Raycast
+				FHitResult hit;
+				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+
+				// If and actor is found and it inherits from I_Structure, select it.
+				if (Cast<II_Structure>(hit.Actor))
+				{
+					SelectedStructure = Cast<AActor>(hit.Actor);
+					Cast<II_Structure>(SelectedStructure)->SetSelection(true);
+				}
+
+				// Otherwise, if characters were found, select them.
+				else 
+				{
+					SelectedCharacters = HUDPtr->FoundCharacters;
+				}
+
+				HUDPtr->bStartSelecting = false;
+				//HUDPtr->grabEverything = true;
+			}
 		}
+
+		
 	}
+	
 	if (constructingBuilding) {
 		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
 			HUDPtr->AddBuilding(buildingToBuild);
@@ -249,12 +304,14 @@ void AMyRTSPlayerController::Shift() {
 	}
 }
 
-void AMyRTSPlayerController::RightMouseUp() {
-	if (HUDPtr->foundUnits.Num() > 0.0f) {
+void AMyRTSPlayerController::OnRightMousePressed() {
+	
+	/// This functionality was rewritten and moved to the DrawHUD in HUDPtr.cpp
+	/*if (HUDPtr->foundUnits.Num() > 0.0f) {
 		for (int32 i = 0; i < HUDPtr->foundUnits.Num(); i++) {
 			selectedUnits.Add(HUDPtr->foundUnits[i]);
 		}
-	}
+	}*/
 
 	if (constructingBuilding) {
 		buildingToBuild->Destroy();
@@ -263,9 +320,9 @@ void AMyRTSPlayerController::RightMouseUp() {
 		buildingManagerObject->DisableAllDecals();
 	}
 
-	if (selectedUnits.Num() > 0.0f) {
+	if (SelectedCharacters.Num() > 0.0f) {
 		//Cycle through all units
-		for (int32 i = 0; i < selectedUnits.Num(); i++) {
+		for (int32 i = 0; i < SelectedCharacters.Num(); i++) {
 			UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
 			//Find location that the player right clicked on and store it
 			FHitResult hit;
@@ -275,16 +332,31 @@ void AMyRTSPlayerController::RightMouseUp() {
 			FVector MoveLocation = hit.Location + FVector(i/2 * 100, i % 2 * 100, 0);
 
 			//Code to make the units move
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(selectedUnits[i]->GetController(), MoveLocation);
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(SelectedCharacters[i]->GetController(), MoveLocation);
 		}
 	}
-	if (HUDPtr->foundBuildings.Num() > 0.0f) {
+
+	/// This functionality was rewritten and moved to OnLeftMousePressed in this class
+	/*if (HUDPtr->foundBuildings.Num() > 0.0f) {
 		for (int32 i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
 			selectedBuildings.Add(HUDPtr->foundBuildings[i]);
 		}
-	}
+	}*/
 }
 
-void AMyRTSPlayerController::RightMouse() {
-	rightClicked = !rightClicked;
+void AMyRTSPlayerController::OnMiddleMousePressed() 
+{
+
+	unlockCamera = true;
+}
+
+void AMyRTSPlayerController::OnMiddleMouseReleased() 
+{
+	unlockCamera = false;
+}
+
+void AMyRTSPlayerController::OnRightMouseReleased() {
+	
+	/// Renamed to unlockCamera and moved to OnMiddleMousePressed in this class
+	// rightClicked = !rightClicked;
 }

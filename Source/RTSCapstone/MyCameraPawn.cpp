@@ -12,7 +12,7 @@ AMyCameraPawn::AMyCameraPawn()
 
 	cameraSensitivity = 2.0f;
 	cameraQESpeed = 4;
-	rightClicked = false;
+	unlocked = false;
 
 	//Create our components
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponenet"));
@@ -58,10 +58,10 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Get whether the right click is held down or not
-	rightClicked = rtsPC->rightClicked;
+	unlocked= rtsPC->unlockCamera;
 
 	//Check to see if the right mouse button is pressed down so that the mouse isn't always changing the pitch and yaw
-	if (rightClicked) {
+	if (unlocked) {
 		//Rotate our camera's pitch and yaw, but limit the pitch so we're always looking downward
 		FRotator NewRotation = OurCameraSpringArm->GetComponentRotation();
 		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CameraInput.Y * 2, -85.0f, -15.0f);
@@ -92,7 +92,7 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	rtsPC->GetMousePosition(mousePos.X, mousePos.Y);
 
 	//Don't want the camera to pan while the player is rotating the screen
-	if (!rightClicked) {
+	if (!unlocked) {
 		//For some reason I had to switch around the X and Y's
 		//Using 15 as the margin size
 		if (mousePos.X < 15.0f) {
@@ -123,9 +123,10 @@ void AMyCameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	/// Uneccessary Code.  We can delete this.
 	//Rightclick events, currently not working
-	PlayerInputComponent->BindAction("RightClick", IE_Pressed, this, &AMyCameraPawn::RightClick);
-	PlayerInputComponent->BindAction("RightClick", IE_Released, this, &AMyCameraPawn::RightClick);
+	//PlayerInputComponent->BindAction("RightClick", IE_Pressed, this, &AMyCameraPawn::RightClick);
+	//PlayerInputComponent->BindAction("RightClick", IE_Released, this, &AMyCameraPawn::RightClick);
 
 	//Hook up every-frame handling for our four axes
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCameraPawn::MoveX);
@@ -149,14 +150,14 @@ void AMyCameraPawn::MoveY(float AxisValue)
 
 void AMyCameraPawn::PitchCamera(float AxisValue)
 {
-	if (rightClicked) {
+	if (unlocked) {
 		CameraInput.Y = AxisValue;
 	}
 }
 
 void AMyCameraPawn::YawCamera(float AxisValue)
 {
-	if (rightClicked) {
+	if (unlocked) {
 		CameraInput.X = AxisValue;
 	}
 }
@@ -172,7 +173,8 @@ void AMyCameraPawn::Zoom(float AxisValue)
 	zoom = AxisValue;
 }
 
-void AMyCameraPawn::RightClick()
-{
-	rightClicked = !rightClicked;
-}
+/// Code functionality moved to RTSPlayerController
+//void AMyCameraPawn::RightClick()
+//{
+//	unlocked = !unlocked;
+//}

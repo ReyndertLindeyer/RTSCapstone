@@ -39,7 +39,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		ABuildingMaster* buildingToBuild;
 	
-	bool rightClicked;
+	UPROPERTY()
+		bool unlockCamera;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int32 GetResources();
@@ -95,16 +96,38 @@ public:
 
 protected:
 
-	void LeftMouseDown();
-	void LeftMouseUp();
 
-	void RightMouseUp();
-	void RightMouse();
+	/// Renamed the functions for clarity.
+	UFUNCTION()
+		void OnLeftMousePressed();
 
+	UFUNCTION()
+		void OnLeftMouseReleased();
+
+	UFUNCTION()
+		void OnRightMousePressed();
+
+	UFUNCTION()
+		void OnRightMouseReleased();
+
+	UFUNCTION()
+		void OnMiddleMousePressed();
+
+	UFUNCTION()
+		void OnMiddleMouseReleased();
+
+	UPROPERTY()
+		TArray<ACharacter*> SelectedCharacters;
+
+	UPROPERTY()
+		AActor* SelectedStructure;
+		/// TScriptInterface<II_Structure> SelectedStructure;  -- Leave this here for future reference
+
+	
 	void Shift(); //State of either shift key
 
-	TArray <AMasterUnit*> selectedUnits;
-	TArray <ABuildingMaster*> selectedBuildings;
+	/// TArray <AMasterUnit*> selectedUnits; -- Removed and replaced with SelectedCharacters 
+	/// TArray <ABuildingMaster*> selectedBuildings; -- Removed and replaced with SelectedStructure
 
 	//ABuildingManager* buildingManager;
 

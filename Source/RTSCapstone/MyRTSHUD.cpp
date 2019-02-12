@@ -5,9 +5,9 @@
 #include "CanvasItem.h"
 
 AMyRTSHUD::AMyRTSHUD() {
-	selectionStart = false;
-	grabEverything = false;
-	isShift = false;
+	//selectionStart = false;
+	//grabEverything = false;
+	//isShift = false;
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> MyUI(TEXT("/Game/Game_Assets/Widgets/UIWidget"));
 	HUDWidgetClass = MyUI.Class;
@@ -20,54 +20,101 @@ void AMyRTSHUD::BeginPlay()
 
 void AMyRTSHUD::DrawHUD() {
 	Super::DrawHUD(); 
+	
 	DrawHealthBars();
-	if (selectionStart) {
+	
+	if (bStartSelecting) {
+		
+		// If shift is held down, ignore emptying the array. 
+		/// Note :: Possible issue.  Need to confirm if the array is being filled with duplicates.
+		/// The intention of emptying the array was because the selection was readding them to the array.
 		if (!isShift) {
+			
+			
+			/////////////////////////////////////////////
+			// Deselection -- Empties the previous selection
+			/////////////////////////////////////////////
+
 			//See if there are any units already selected
-			if (foundUnits.Num() > 0) {
-				for (int i = 0; i < foundUnits.Num(); i++) {
+			if (FoundCharacters.Num() > 0) 
+			{
+				for (int i = 0; i < FoundCharacters.Num(); i++) 
+				{
 					//Code to remove the selection from existing actors
+					
+					/// Now Checks to see if the character has inheritence from the I_Unit interface
+					/// Which should trigger 100% of the time, since it's a requirement to be added to the array in the first place.
+					if (Cast<II_Unit>(FoundCharacters[i]))
+					{
+						/// Calls the inherited function from the unit.
+						Cast<II_Unit>(FoundCharacters[i])->SetSelection(false);
+					}
+
 				}
 			}
+
 			//Empty the array
-			foundUnits.Empty();
-			//See if there are any structures already selected
-			if (foundBuildings.Num() > 0) {
-				for (int i = 0; i < foundBuildings.Num(); i++) {
-					//Code to remove the selection from existing actors
-					foundBuildings[i]->DeselectBuilding();
-				}
-			}
-			//Empty the array
-			foundBuildings.Empty();
+			FoundCharacters.Empty();
 		}
 
+		/////////////////////////////////////////////
+		// Draw Selection Box -- Like a Box.
+		/////////////////////////////////////////////
+
 		//Get the position of the mouse and use it and the starting position to draw a rectangle to denote the selection area
-		mousePos = GetMousePos();
-		DrawRect(FLinearColor(0, 0, 1, 0.15f), startPos.X, startPos.Y, mousePos.X - startPos.X, mousePos.Y - startPos.Y);
-	}
-	else if (!selectionStart && grabEverything) {
-		//Select the actors themselves
-		GetActorsInSelectionRectangle<AMasterUnit>(startPos, mousePos, foundUnits, false, false);
-		if (foundUnits.Num() > 0) {
-			for (int i = 0; i < foundUnits.Num(); i++) {
-				//Code to show that the actors are selected
-				foundUnits[i]->selected = true;
+		mouseEnd = GetMousePos2D();
+
+		// Selection Box
+		DrawRect
+		(
+			FLinearColor(0, 0, 1, 0.15f),   /// Determines the color and opacity of the selection box
+			mouseStart.X,					/// The Starting X position of the rectangle
+			mouseStart.Y,					/// The Starting Y position of the rectangle
+			mouseEnd.X - mouseStart.X,		/// The Final X position of the rectangle
+			mouseEnd.Y - mouseStart.Y		/// The Final Y position of the rectangle
+		);
+
+
+		/////////////////////////////////////////////
+		// Begin Selection -- Adds the new selection
+		/////////////////////////////////////////////
+
+		GetActorsInSelectionRectangle<ACharacter>(mouseStart, mouseEnd, FoundCharacters, false, false);
+
+		if (FoundCharacters.Num() > 0)
+		{
+			for (int32 i = 0; i < FoundCharacters.Num(); i++)
+			{
+				if (Cast<II_Unit>(FoundCharacters[i]))
+				{
+					Cast<II_Unit>(FoundCharacters[i])->SetSelection(true);
+				}
 			}
 		}
-		GetActorsInSelectionRectangle<ABuildingMaster>(startPos, mousePos, foundBuildings, false, false);
-		if (foundBuildings.Num() > 0) {
-			for (int i = 0; i < foundBuildings.Num(); i++) {
-				//Code to show that the actors are selected
-				foundBuildings[i]->SelectBuilding();
-			}
-		}
-		grabEverything = false;
 	}
+
+	//else if (!selectionStart && grabEverything) {
+	//	//Select the actors themselves
+	//	GetActorsInSelectionRectangle<AMasterUnit>(startPos, mousePos, foundUnits, false, false);
+	//	if (foundUnits.Num() > 0) {
+	//		for (int i = 0; i < foundUnits.Num(); i++) {
+	//			//Code to show that the actors are selected
+	//			foundUnits[i]->selected = true;
+	//		}
+	//	}
+	//	GetActorsInSelectionRectangle<ABuildingMaster>(startPos, mousePos, foundBuildings, false, false);
+	//	if (foundBuildings.Num() > 0) {
+	//		for (int i = 0; i < foundBuildings.Num(); i++) {
+	//			//Code to show that the actors are selected
+	//			foundBuildings[i]->SelectBuilding();
+	//		}
+	//	}
+	//	grabEverything = false;
+	//}
 }
 
 //Get the location of the mouse and then return it
-FVector2D AMyRTSHUD::GetMousePos() {
+FVector2D AMyRTSHUD::GetMousePos2D() {
 
 	float posX = 1.0f, posY = 1.0f;
 

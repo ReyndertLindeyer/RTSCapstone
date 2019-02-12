@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MasterUnit.h"
+
+// Interfaces
+#include "I_Unit.h"
+#include "I_Structure.h"
+
 #include "BuildingMaster.h"
 #include "Blueprint/UserWidget.h"
 #include "Logging/LogMacros.h"
@@ -25,18 +29,26 @@ public:
 
 	virtual void DrawHUD() override; //Override the basic HUD
 
-	FVector2D startPos, mousePos; //Where the player pressed down the left mouse button and the updated location of the mouse cursor
+	UPROPERTY()
+		FVector2D mouseStart;
 
-	FVector2D GetMousePos();
+	UPROPERTY()
+		FVector2D mouseEnd;
 
-	bool selectionStart;
+	UPROPERTY()
+		bool bStartSelecting = false;
 
-	bool grabEverything; //Grabs everything in the rectangle
+	UPROPERTY()
+		TArray<ACharacter*> FoundCharacters;
+
+	UFUNCTION()
+		FVector2D GetMousePos2D();
+
 
 	bool isShift; //Checks to see if the shift button is being held down
 
-	TArray <AMasterUnit*> foundUnits;
-	TArray <ABuildingMaster*> foundBuildings;
+	// bool grabEverything; //Grabs everything in the rectangle
+	
 
 	// Reference UMG Asset in the Editor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")

@@ -29,7 +29,7 @@ protected:
 	FVector velocity;
 	int zoom;
 	float qOrE;
-	bool rightClicked;
+	bool unlocked;
 
 	//Input functions
 	void MoveX(float AxisValue);
