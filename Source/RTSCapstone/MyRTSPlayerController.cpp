@@ -68,7 +68,71 @@ void AMyRTSPlayerController::SetupInputComponent() {
 	
 	InputComponent->BindAction("Shift", IE_Pressed, this, &AMyRTSPlayerController::Shift);
 	InputComponent->BindAction("Shift", IE_Released, this, &AMyRTSPlayerController::Shift);
+
+	InputComponent->BindAction("DEBUG_1", IE_Pressed, this, &AMyRTSPlayerController::DEBUG_DamageSelected);
 }
+
+
+void AMyRTSPlayerController::DEBUG_DamageSelected()
+{
+	if (SelectedStructure != nullptr)
+	{
+		
+		II_Entity* entity = Cast<II_Entity>(SelectedStructure);
+		
+		// If the Entity will survive the damage
+		if (entity->GetCurrentHealth() - (entity->GetMaxHealth() / 10) > 0)
+		{
+			// Inflict 10% of Max Health as Damage
+			entity->DealDamage(entity->GetMaxHealth() / 10);
+			UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+		}
+
+		// Otherwise Destroy it
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Destroyed"));
+			SelectedStructure = nullptr;
+			entity->DestroyEntity();
+			return;
+		}
+	}
+
+	else if (SelectedCharacters.Num() > 0)
+	{
+		TArray<ACharacter*> deletionArray;
+
+		for (int i = 0; i < SelectedCharacters.Num(); i++)
+		{
+			II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+
+			// If the Entity will survive the damage
+			if (entity->GetCurrentHealth() - (entity->GetMaxHealth() / 10) > 0)
+			{
+				// Inflict 10% of Max Health as Damage
+				entity->DealDamage(entity->GetMaxHealth() / 10);
+				UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+			}
+
+			// Otherwise Destroy it
+			else
+			{
+				deletionArray.Add(SelectedCharacters[i]);
+				UE_LOG(LogTemp, Warning, TEXT("Destroyed"));
+			}
+		}
+
+		if (deletionArray.Num() > 0)
+		{
+			for (int i = 0; i < deletionArray.Num(); i++)
+			{
+				SelectedCharacters.Remove(deletionArray[i]);
+				Cast<II_Entity>(deletionArray[i])->DestroyEntity();
+			}
+		}
+	}
+}
+
 
 int32 AMyRTSPlayerController::GetResources()
 {
@@ -270,12 +334,26 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				{
 					SelectedStructure = Cast<AActor>(hit.Actor);
 					Cast<II_Structure>(SelectedStructure)->SetSelection(true);
+					
+					/// Debugging
+					II_Entity* entity = Cast<II_Entity>(SelectedStructure);
+					UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					/// End Debug
+
 				}
 
 				// Otherwise, if characters were found, select them.
 				else 
 				{
 					SelectedCharacters = HUDPtr->FoundCharacters;
+
+					/// Debugging
+					for (int i = 0; i < SelectedCharacters.Num(); i++)
+					{
+						II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+						UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					}
+					/// End Debug
 				}
 
 				HUDPtr->bStartSelecting = false;

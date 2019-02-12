@@ -4,10 +4,11 @@
 
 // Add default functionality here for any II_Unit functions that are not pure virtual.
 
-void II_Unit::SetDestination(FVector destination)
-{
-	// Do Nothing
-}
+/// Disabled for now.  Keep for reference
+//void II_Unit::SetDestination(FVector destination)
+//{
+//	// Do Nothing
+//}
 
 void II_Unit::SetSelection(bool state)
 {

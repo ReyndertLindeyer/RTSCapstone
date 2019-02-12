@@ -13,6 +13,10 @@
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
 #include "ProFow.h"
+
+// Interfaces
+#include "I_Entity.h"
+
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -138,4 +142,10 @@ protected:
 	
 	UPROPERTY()
 		AProFow *m_fow;
+
+	///////////////////////////////////
+	// DEBUG FUNCTIONS
+	///////////////////////////////////
+	UFUNCTION()
+		void DEBUG_DamageSelected();
 };

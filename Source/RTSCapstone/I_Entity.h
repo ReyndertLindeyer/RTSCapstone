@@ -22,4 +22,22 @@ class RTSCAPSTONE_API II_Entity
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+
+	/// Once we implement ownership, we'll be adding an additional argument to this function.
+	void InitializeEntity(FString name, float maxHealth);
+
+	void DealDamage(float amount);
+
+	FString GetName();
+	float GetCurrentHealth();
+	float GetMaxHealth();
+	float GetHealthPercentage();
+	
+	virtual void DestroyEntity();
+
+
+private:
+	bool isInitialized = false;
+	FString name;
+	float currentHealth, maxHealth = 100.0f;
 };

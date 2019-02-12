@@ -25,7 +25,10 @@ class RTSCAPSTONE_API II_Unit
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void SetDestination(FVector destination);
+	
+	/// Disabled for now.  Keep for reference.  
+	/// Right now we have movement that doesn't need this.  However, when we implement more complex movement, we might need it.
+	//virtual void SetDestination(FVector destination);
 	virtual void SetSelection(bool state);
 	
 	/// Disabled for now.  Keep for reference

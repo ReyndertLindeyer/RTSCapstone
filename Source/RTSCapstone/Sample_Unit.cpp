@@ -22,6 +22,8 @@ ASample_Unit::ASample_Unit()
 void ASample_Unit::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitializeEntity("Sample_Unit", 100.0f);
 	
 }
 
@@ -39,11 +41,12 @@ void ASample_Unit::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
-void ASample_Unit::SetDestination(FVector destination)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Overridden: Setting Destination"));
-
-}
+/// Disabled for now.  Keep for reference
+//void ASample_Unit::SetDestination(FVector destination)
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("Overridden: Setting Destination"));
+//
+//}
 
 /// Disabled for now.  Keep for reference
 //AController* ASample_Unit::GetUnitController()
@@ -54,5 +57,10 @@ void ASample_Unit::SetDestination(FVector destination)
 void ASample_Unit::SetSelection(bool state)
 {
 	SelectionIndicator->SetVisibility(state);
+}
+
+void ASample_Unit::DestroyEntity()
+{
+	Destroy(this);
 }
 

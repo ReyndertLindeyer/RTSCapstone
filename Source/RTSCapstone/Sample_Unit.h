@@ -7,6 +7,7 @@
 
 // Interface
 #include "I_Unit.h"
+#include "I_Entity.h"
 
 // Meshes
 #include "Components/StaticMeshComponent.h"
@@ -14,7 +15,7 @@
 #include "Sample_Unit.generated.h"
 
 UCLASS()
-class RTSCAPSTONE_API ASample_Unit : public ACharacter, public II_Unit
+class RTSCAPSTONE_API ASample_Unit : public ACharacter, public II_Unit, public II_Entity
 {
 	GENERATED_BODY()
 
@@ -39,10 +40,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Movement
-	virtual void SetDestination(FVector destination) override;
-
 	
+	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Movement
+	/// Disabled for now.  Keep for reference.
+	//virtual void SetDestination(FVector destination) override;
+
 	// OVERRIDDEN CLASS [II_Unit] -- Getter for AI Controller
 	/// Disabled for now.  Keep for reference
 	//virtual AController* GetUnitController() override;
@@ -54,6 +56,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
+	virtual void DestroyEntity() override;
 
 };
