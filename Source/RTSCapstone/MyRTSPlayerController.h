@@ -39,24 +39,21 @@ public:
 
 	//Pointer to the HUD
 	AMyRTSHUD* HUDPtr;
-
-	UPROPERTY(EditAnywhere)
-		ABuildingMaster* buildingToBuild;
 	
 	UPROPERTY()
 		bool unlockCamera;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int32 GetResources();
-	
-	UFUNCTION(BlueprintPure, Category = "UI")
-		bool ConstructBuilding(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int GetBuildingCost(int32 whatBuilding);
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int GetBuildingConstructionTime(int32 whatBuilding);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool ConstructBuilding(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void BuildPowerPlant();

@@ -33,7 +33,11 @@ public:
 	void SelectBuilding();
 	void DeselectBuilding();
 
+	bool GetIsOverlapping();
+	bool GetIsInRadius();
+
 	bool IsSelected();
+
 	bool IsDead();
 
 	void Suicide();
@@ -45,10 +49,6 @@ protected:
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
 	AMyRTSAIController* rtsAI;
-
-	UMaterial* canBuildIndicator;
-	UMaterial* cantBuildIndicator;
-	UMaterial* regularMaterial;
 
 	float sightRadius, buildRadius;
 
@@ -63,18 +63,21 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * selectedDecal; //Decal to show the building is selected
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
 
 	UPROPERTY(EditAnywhere)
 		USphereComponent* buildRadiusSphere;
-	
+
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * decal; //Decal to show the buildings construction radius
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UStaticMeshComponent* GetBuildingMesh();
 		
 	bool constructAtLocation();
 	bool overlapping, isInRadius;

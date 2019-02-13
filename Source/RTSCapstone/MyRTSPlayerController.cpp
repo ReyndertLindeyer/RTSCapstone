@@ -29,10 +29,7 @@ void AMyRTSPlayerController::BeginPlay()
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 	
 	/// Disabled for debugging
-	//buildingManagerObject->SpawnConstructionYard(hit.Location);
-
-	/// Disabled for debugging
-	//HUDPtr->AddBuilding(buildingManagerObject->getBuilding(0));
+	buildingManagerObject->SpawnConstructionYard(hit.Location);
 
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
@@ -44,11 +41,18 @@ void AMyRTSPlayerController::BeginPlay()
 void AMyRTSPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (buildingToBuild!= nullptr) {
+
+	if (SelectedStructure != nullptr)
+	{
+		HUDPtr->DrawBuildingHealthBars((ABuildingMaster*)SelectedStructure);
+	}
+
+	if (constructingBuilding == true) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild->SetActorLocation(FVector(hit.Location.X, hit.Location.Y, buildingToBuild->GetActorLocation().Z));
+		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, buildingManagerObject->GetBuildingToBuild()->GetActorLocation().Z));
 	}
+
 	buildingManagerObject->CheckForDestroyedBuildings();
 }
 
@@ -144,10 +148,10 @@ bool AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
 	if (!constructingBuilding) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(whatBuilding, hit.Location);
+		
+		buildingManagerObject->ghostBuilding(whatBuilding, hit.Location);
 
-		if (buildingToBuild != nullptr)
-			constructingBuilding = true;
+		constructingBuilding = true;
 		return true;
 	}
 	return false;
@@ -168,11 +172,10 @@ void AMyRTSPlayerController::BuildPowerPlant()
 	if (!constructingBuilding && buildingManagerObject) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(1, hit.Location); 
+		
+		buildingManagerObject->ghostBuilding(1, hit.Location); 
 
-		if (buildingToBuild != nullptr) {
-			constructingBuilding = true;
-		}
+		constructingBuilding = true;
 	}
 }
 
@@ -181,11 +184,11 @@ void AMyRTSPlayerController::BuildRefinery()
 	if (!constructingBuilding && buildingManagerObject != nullptr) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(2, hit.Location);
+		
+		buildingManagerObject->ghostBuilding(2, hit.Location);
 
-		if (buildingToBuild != nullptr) {
 			constructingBuilding = true;
-		}
+
 	}
 }
 
@@ -194,11 +197,10 @@ void AMyRTSPlayerController::BuildBarracks()
 	if (!constructingBuilding && buildingManagerObject != nullptr) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingToBuild = buildingManagerObject->ghostBuilding(3, hit.Location);
+		buildingManagerObject->ghostBuilding(3, hit.Location);
 
-		if (buildingToBuild != nullptr) {
 			constructingBuilding = true;
-		}
+
 	}
 }
 
@@ -239,38 +241,14 @@ bool AMyRTSPlayerController::HasFactorySelected()
 
 void AMyRTSPlayerController::BuildUnit(int32 buildingType, int32 unitType)
 {
+	///As this should only be called when a unit producing structure is selected the code will be simpler
 	if (buildingType == 1) {
-		//They are building something from a barracks
-		if (unitType == 1) {
-			//Spawn a rifleman from all selected barracks
-		}
-		else if (unitType == 2) {
-			//Spawn a rocket man from all selected barracks
-		}
-		else if (unitType == 3) {
-			//Spawn an engineer from all selected barracks
-		}
+		//They are building something from a barrack
+		Cast<ABuilding_Barrecks>(SelectedStructure)->AddToUnitQueue(unitType);
 	}
 	else if (buildingType == 2) {
 		//They are building something from a Vehicle Factory
-		if (unitType == 1) {
-			//Spawn a harvester from all selected barracks
-		}
-		else if (unitType == 2) {
-			//Spawn a humvee from all selected barracks
-		}
-		else if (unitType == 3) {
-			//Spawn an basic tank from all selected barracks
-		}
-		else if (unitType == 4) {
-			//Spawn a artillery tank from all selected barracks
-		}
-		else if (unitType == 5) {
-			//Spawn an heavy tank from all selected barracks
-		}
-		else if (unitType == 5) {
-			//Spawn an outpost creator from all selected barracks
-		}
+		Cast<ABuilding_VehicleFactory>(SelectedStructure)->AddToUnitQueue(unitType);
 	}
 }
 
@@ -365,10 +343,9 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 	}
 	
 	if (constructingBuilding) {
-		if (buildingManagerObject->constructBuilding(buildingToBuild)) {
-			HUDPtr->AddBuilding(buildingToBuild);
-			m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
-			buildingToBuild = nullptr;
+		if (buildingManagerObject->constructBuilding()) {
+			///HUDPtr->AddBuilding(buildingToBuild);
+			///m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
 			constructingBuilding = false;
 			buildingConstructed = true;
 		}
@@ -392,7 +369,7 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 	}*/
 
 	if (constructingBuilding) {
-		buildingToBuild->Destroy();
+		///buildingToBuild->Destroy();
 		constructingBuilding = false;
 		buildingConstructed = false;
 		buildingManagerObject->DisableAllDecals();

@@ -25,13 +25,15 @@ public:
 	// Sets default values for this actor's properties
 	UBuildingManagerObject();
 
-	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
+	void ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
 
-	ABuildingMaster* getBuilding(int32 indexOfBuilding);
+	void MoveBuilding(FVector location);
+
+	ABuildingMaster* GetBuildingToBuild();
 
 	void SpawnConstructionYard(FVector spawnLocation);
 
-	bool constructBuilding(ABuildingMaster* toBuild);
+	bool constructBuilding();
 
 	bool trainInfantry(uint8 whatInfantry, ABuilding_Barrecks* whatBuilding);
 
@@ -58,6 +60,11 @@ public:
 
 
 private:
+
+	UMaterial* canBuildIndicator;
+	UMaterial* cantBuildIndicator;
+	UMaterial* regularMaterial;
+
 	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
 
 	TArray <ABuilding_PowerPlant*> powerPlantArray;
@@ -68,4 +75,6 @@ private:
 	ABuilding_Construction_Yard* constructionYard;
 
 	TArray <ABuildingMaster*> masterArray;
+
+	ABuildingMaster* buildingToBuild;
 };

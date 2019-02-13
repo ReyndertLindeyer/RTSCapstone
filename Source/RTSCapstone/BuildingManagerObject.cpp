@@ -14,62 +14,55 @@ UBuildingManagerObject::UBuildingManagerObject()
 	powerPlantConstructionTime = 1;
 	refineryConstructionTime = 1;
 	barracksConstructionTime = 1;
+
+	canBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("GreenBuildingGhost"));
+	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
+
+	cantBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("cantBuildIndicator"));
+	cantBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/RedBuildingGhost")).Get();
+
+	regularMaterial = CreateDefaultSubobject<UMaterial>(TEXT("regularMaterial"));
+	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
 }
 
-ABuildingMaster * UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)
+void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)
 {
 	UWorld* const World = this->GetWorld();
 	if (World)
 	{
-		ABuildingMaster* building;
 		if (whatBuilding == 1) {
-			building = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-
-			if (building) {
-				EnableAllDecals();
-				return building;
-			}
+			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding == 2) {
-			building = World->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-
-			if (building) {
-				EnableAllDecals();
-				return building;
-			}
+			buildingToBuild = World->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding == 3) {
-			building = World->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-
-			if (building) {
-				EnableAllDecals();
-				return building;
-			}
+			buildingToBuild = World->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding == 4) {
-			building = World->SpawnActor<ABuilding_VehicleFactory>(ABuilding_VehicleFactory::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-
-			if (building) {
-				EnableAllDecals();
-				return building;
-			}
+			buildingToBuild = World->SpawnActor<ABuilding_VehicleFactory>(ABuilding_VehicleFactory::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding == 5) {
-			building = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
-
-			if (building) {
-				EnableAllDecals();
-				return building;
-			}
+			buildingToBuild = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
+		EnableAllDecals();
 	}
-
-	return nullptr;
 }
 
-ABuildingMaster * UBuildingManagerObject::getBuilding(int32 indexOfBuilding)
+void UBuildingManagerObject::MoveBuilding(FVector location)
 {
-	return masterArray[indexOfBuilding];
+	buildingToBuild->SetActorLocation(location);
+	if (buildingToBuild->GetIsInRadius() && !buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != canBuildIndicator) {
+		buildingToBuild->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
+	}
+	else if (!buildingToBuild->GetIsInRadius() || buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != cantBuildIndicator) {
+		buildingToBuild->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
+	}
+}
+
+ABuildingMaster * UBuildingManagerObject::GetBuildingToBuild()
+{
+	return buildingToBuild;
 }
 
 void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
@@ -77,33 +70,36 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 	constructionYard = (GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));
 }
 
-bool UBuildingManagerObject::constructBuilding(ABuildingMaster * toBuild)
+bool UBuildingManagerObject::constructBuilding()
 {
-	if ((int32)toBuild->GetCost() < resources && toBuild->constructAtLocation()) {
-		currentPower -= toBuild->GetPowerUsage();
-		if (toBuild->GetPowerUsage() < 0) {
-			maxPower -= toBuild->GetPowerUsage();
+	if ((int32)buildingToBuild->GetCost() < resources && buildingToBuild->constructAtLocation()) {
+		currentPower -= buildingToBuild->GetPowerUsage();
+		if (buildingToBuild->GetPowerUsage() < 0) {
+			maxPower -= buildingToBuild->GetPowerUsage();
 		}
 
-		if(toBuild->IsA(ABuilding_PowerPlant::StaticClass())) {
-			powerPlantArray.Add((ABuilding_PowerPlant*)toBuild);
+		if(buildingToBuild->IsA(ABuilding_PowerPlant::StaticClass())) {
+			powerPlantArray.Add((ABuilding_PowerPlant*)buildingToBuild);
 		}
-		else if (toBuild->IsA(ABuilding_Refinery::StaticClass())) {
-			refineryArray.Add((ABuilding_Refinery*)toBuild);
+		else if (buildingToBuild->IsA(ABuilding_Refinery::StaticClass())) {
+			refineryArray.Add((ABuilding_Refinery*)buildingToBuild);
 		}
-		else if (toBuild->IsA(ABuilding_Barrecks::StaticClass())) {
-			barrecksArray.Add((ABuilding_Barrecks*)toBuild);
+		else if (buildingToBuild->IsA(ABuilding_Barrecks::StaticClass())) {
+			barrecksArray.Add((ABuilding_Barrecks*)buildingToBuild);
 		}
-		else if (toBuild->IsA(ABuilding_VehicleFactory::StaticClass())) {
-			vehicleFactoryArray.Add((ABuilding_VehicleFactory*)toBuild);
+		else if (buildingToBuild->IsA(ABuilding_VehicleFactory::StaticClass())) {
+			vehicleFactoryArray.Add((ABuilding_VehicleFactory*)buildingToBuild);
 		}
-		else if (toBuild->IsA(ABuilding_TechCenter::StaticClass())) {
-			techCenterArray.Add((ABuilding_TechCenter*)toBuild);
+		else if (buildingToBuild->IsA(ABuilding_TechCenter::StaticClass())) {
+			techCenterArray.Add((ABuilding_TechCenter*)buildingToBuild);
 		}
 
-		masterArray.Add(toBuild);
+		buildingToBuild->GetBuildingMesh()->SetMaterial(0, regularMaterial);
 
-		//buildingArray.Add(toBuild);
+		masterArray.Add(buildingToBuild);
+
+		buildingToBuild = nullptr;
+
 		DisableAllDecals();
 		return true;
 	}

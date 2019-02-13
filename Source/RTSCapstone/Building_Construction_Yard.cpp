@@ -35,7 +35,6 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 void ABuilding_Construction_Yard::BeginPlay()
 {
 	Super::BeginPlay();
-	buildingMesh->SetMaterial(0, regularMaterial);
 	constructed = true;
 	isPlaced = true;
 }
