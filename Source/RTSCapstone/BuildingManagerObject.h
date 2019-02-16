@@ -60,24 +60,35 @@ public:
 
 
 private:
-
-	UMaterial* canBuildIndicator;
-	UMaterial* cantBuildIndicator;
-	UMaterial* regularMaterial;
+	UPROPERTY()
+		UMaterial* canBuildIndicator;
+	UPROPERTY()
+		UMaterial* cantBuildIndicator;
+	UPROPERTY()
+		UMaterial* regularMaterial;
 
 	int32 currentPower, maxPower, resources;
 
-	TArray<int32> buildingCosts;
-	TArray<int32> buildingConstructionTimes;
+	UPROPERTY()
+		TArray<int32> buildingCosts;
+	UPROPERTY()
+		TArray<int32> buildingConstructionTimes;
 
-	TArray <ABuilding_PowerPlant*> powerPlantArray;
-	TArray <ABuilding_Barrecks*> barrecksArray;
-	TArray <ABuilding_Refinery*> refineryArray;
-	TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
-	TArray <ABuilding_TechCenter*> techCenterArray;
-	ABuilding_Construction_Yard* constructionYard;
+	UPROPERTY()
+		TArray <ABuilding_PowerPlant*> powerPlantArray;
+	UPROPERTY()
+		TArray <ABuilding_Barrecks*> barrecksArray;
+	UPROPERTY()
+		TArray <ABuilding_Refinery*> refineryArray;
+	UPROPERTY()
+		TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
+	UPROPERTY()
+		TArray <ABuilding_TechCenter*> techCenterArray;
+	UPROPERTY()
+		ABuilding_Construction_Yard* constructionYard;
+	UPROPERTY()
+		TArray <ABuildingMaster*> masterArray;
 
-	TArray <ABuildingMaster*> masterArray;
-
-	ABuildingMaster* buildingToBuild;
+	UPROPERTY()
+		ABuildingMaster* buildingToBuild;
 };

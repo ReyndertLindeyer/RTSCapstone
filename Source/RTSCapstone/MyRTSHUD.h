@@ -60,5 +60,8 @@ public:
 	void DrawUnitHealthBars(TArray<II_Unit*> SelectedUnits);
 	void DrawBuildingHealthBars(ABuildingMaster* SelectedBuilding);
 
+	void SetSelectedBuilding(ABuildingMaster* SelectedBuilding);
 
+private:
+	ABuildingMaster* building;
 };

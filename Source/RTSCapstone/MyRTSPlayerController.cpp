@@ -46,19 +46,10 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (SelectedStructure != nullptr)
-	{
-		HUDPtr->DrawBuildingHealthBars((ABuildingMaster*)SelectedStructure);
-	}
-
 	if (constructingBuilding == true) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, buildingManagerObject->GetBuildingToBuild()->GetActorLocation().Z));
-	}
-
-	if (SelectedStructure != nullptr) {
-		HUDPtr->DrawBuildingHealthBars(Cast<ABuildingMaster>(SelectedStructure));
 	}
 
 	buildingManagerObject->CheckForDestroyedBuildings();
@@ -236,8 +227,10 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 		// If there is a selected structure, deselect it
 		if (SelectedStructure != nullptr)
 		{
-			Cast<II_Structure>(SelectedStructure)->SetSelection(false);
+			SelectedStructure->SetSelection(false);
 			SelectedStructure = nullptr;
+
+			HUDPtr->SetSelectedBuilding(SelectedStructure);
 
 			selectedBarracks = false;
 			selectedFactory = false;
@@ -279,11 +272,12 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				// If and actor is found and it inherits from I_Structure, select it.
 				if (Cast<ABuildingMaster>(hit.Actor))
 				{
-					SelectedStructure = Cast<AActor>(hit.Actor);
-					Cast<ABuildingMaster>(SelectedStructure)->SetSelection(true);
+					SelectedStructure = Cast<ABuildingMaster>(hit.Actor);
+					SelectedStructure->SetSelection(true);
 
 					UE_LOG(LogTemp, Warning, TEXT("Selected structure"));
 
+					
 					if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
 						selectedBarracks = true;
 					}
@@ -291,9 +285,12 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 						selectedFactory = true;
 					}
 
+					HUDPtr->SetSelectedBuilding(SelectedStructure);
+					
+
 					/// Debugging
-					II_Entity* entity = Cast<II_Entity>(SelectedStructure);
-					UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					//II_Entity* entity = Cast<II_Entity>(SelectedStructure);
+					//UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 					/// End Debug
 
 				}

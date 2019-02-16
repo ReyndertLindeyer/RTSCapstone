@@ -20,6 +20,10 @@ void AMyRTSHUD::BeginPlay()
 
 void AMyRTSHUD::DrawHUD() {
 	Super::DrawHUD(); 
+
+	if (building != nullptr) {
+		DrawBuildingHealthBars(building);
+	}
 	
 	if (bStartSelecting) {
 		
@@ -236,4 +240,9 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 		tileItem.Size = FVector2D(barWidth * healthPercentage, barHeight);
 		Canvas->DrawItem(tileItem);
 	
+}
+
+void AMyRTSHUD::SetSelectedBuilding(ABuildingMaster * SelectedBuilding)
+{
+	building = SelectedBuilding;
 }

@@ -109,7 +109,7 @@ protected:
 		TArray<ACharacter*> SelectedCharacters;
 
 	UPROPERTY()
-		AActor* SelectedStructure;
+		ABuildingMaster* SelectedStructure;
 		/// TScriptInterface<II_Structure> SelectedStructure;  -- Leave this here for future reference
 
 	
