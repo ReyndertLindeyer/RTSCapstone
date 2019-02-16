@@ -39,9 +39,9 @@ public:
 
 	float GetResources();
 
-	int32 GetBuildingCost(uint8 whatBuilding);
+	TArray<int32> GetBuildingCost();
 
-	int32 GetConstructionTime(uint8 whatBuilding);
+	TArray<int32> GetConstructionTime();
 
 	int32 GetCurrentPower();
 
@@ -65,7 +65,10 @@ private:
 	UMaterial* cantBuildIndicator;
 	UMaterial* regularMaterial;
 
-	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+	int32 currentPower, maxPower, resources;
+
+	TArray<int32> buildingCosts;
+	TArray<int32> buildingConstructionTimes;
 
 	TArray <ABuilding_PowerPlant*> powerPlantArray;
 	TArray <ABuilding_Barrecks*> barrecksArray;

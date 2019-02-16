@@ -15,7 +15,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	isBuilding = true;
 	isPlaced = false;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_VehicleFactory::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_VehicleFactory::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);

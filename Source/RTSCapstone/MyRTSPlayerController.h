@@ -46,23 +46,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int32 GetResources();
 
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingCost(int32 whatBuilding);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		TArray<int32> GetBuildingCost();
 
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingConstructionTime(int32 whatBuilding);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		TArray<int32> GetBuildingConstructionTime();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		bool ConstructBuilding(int32 whatBuilding);
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildPowerPlant();
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildRefinery();
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildBarracks();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void SubtractCost(int32 whatBuilding);
@@ -90,9 +81,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
-
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetTime(int32 whatBuilding);
 
 
 protected:
@@ -130,12 +118,10 @@ protected:
 	/// TArray <AMasterUnit*> selectedUnits; -- Removed and replaced with SelectedCharacters 
 	/// TArray <ABuildingMaster*> selectedBuildings; -- Removed and replaced with SelectedStructure
 
-	//ABuildingManager* buildingManager;
-
 	UPROPERTY()
 		UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding, buildingConstructed; 
+	bool constructingBuilding, buildingConstructed, selectedBarracks, selectedFactory; 
 	
 	UPROPERTY()
 		AProFow *m_fow;

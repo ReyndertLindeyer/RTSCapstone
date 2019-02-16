@@ -80,16 +80,10 @@ float ABuildingMaster::GetSightRadius()
 	return sightRadius;
 }
 
-void ABuildingMaster::SelectBuilding()
+void ABuildingMaster::SetSelection(bool selectionType)
 {
-	selectedDecal->SetVisibility(true);
-	selected = true;
-}
-
-void ABuildingMaster::DeselectBuilding()
-{
-	selectedDecal->SetVisibility(false);
-	selected = false;
+	selectedDecal->SetVisibility(selectionType);
+	selected = selectionType;
 }
 
 bool ABuildingMaster::GetIsOverlapping()

@@ -8,12 +8,16 @@ UBuildingManagerObject::UBuildingManagerObject()
 	currentPower = 20;
 	maxPower = currentPower;
 	resources = 5000; 
-	powerPlantCost = 100;
-	refineryCost = 300;
-	barracksCost = 200;
-	powerPlantConstructionTime = 1;
-	refineryConstructionTime = 1;
-	barracksConstructionTime = 1;
+	buildingCosts.Add(100);
+	buildingCosts.Add(300);
+	buildingCosts.Add(200);
+	buildingCosts.Add(500);
+	buildingCosts.Add(1000);
+	buildingConstructionTimes.Add(1);
+	buildingConstructionTimes.Add(1);
+	buildingConstructionTimes.Add(1);
+	buildingConstructionTimes.Add(1);
+	buildingConstructionTimes.Add(1);
 
 	canBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("GreenBuildingGhost"));
 	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
@@ -56,7 +60,7 @@ void UBuildingManagerObject::MoveBuilding(FVector location)
 		buildingToBuild->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
 	}
 	else if (!buildingToBuild->GetIsInRadius() || buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != cantBuildIndicator) {
-		buildingToBuild->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
+		buildingToBuild->GetBuildingMesh()->SetMaterial(0, cantBuildIndicator);
 	}
 }
 
@@ -68,6 +72,8 @@ ABuildingMaster * UBuildingManagerObject::GetBuildingToBuild()
 void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 {
 	constructionYard = (GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));
+	masterArray.Add(constructionYard);
+
 }
 
 bool UBuildingManagerObject::constructBuilding()
@@ -121,32 +127,14 @@ float UBuildingManagerObject::GetResources() {
 }
 
 
-int32 UBuildingManagerObject::GetBuildingCost(uint8 whatBuilding) {
-	if (whatBuilding == 1) {
-		return (int32)powerPlantCost;
-	}
-	else if (whatBuilding == 2) {
-		return (int32)refineryCost;
-	}
-	else if (whatBuilding == 3) {
-		return (int32)barracksCost;
-	}
-
-	return 0;
+TArray<int32> UBuildingManagerObject::GetBuildingCost() 
+{
+	return buildingCosts;
 }
 
-int32 UBuildingManagerObject::GetConstructionTime(uint8 whatBuilding)
+TArray<int32> UBuildingManagerObject::GetConstructionTime()
 {
-	if (whatBuilding == 1) {
-		return (int32)powerPlantConstructionTime;
-	}
-	else if (whatBuilding == 2) {
-		return (int32)refineryConstructionTime;
-	}
-	else if (whatBuilding == 3) {
-		return (int32)barracksConstructionTime;
-	}
-	return 0;
+	return buildingConstructionTimes;
 }
 
 int32 UBuildingManagerObject::GetCurrentPower()
@@ -161,28 +149,12 @@ int32 UBuildingManagerObject::GetMaxPower()
 
 void UBuildingManagerObject::SubtractCost(int32 whatBuilding)
 {
-	if (whatBuilding == 1) {
-		resources -= powerPlantCost;
-	}
-	else if (whatBuilding == 2) {
-		resources -= refineryCost;
-	}
-	else if (whatBuilding == 3) {
-		resources -= barracksCost;
-	}
+	resources -= buildingCosts[whatBuilding - 1];
 }
 
 void UBuildingManagerObject::AddCost(int32 whatBuilding)
 {
-	if (whatBuilding == 1) {
-		resources += powerPlantCost;
-	}
-	else if (whatBuilding == 2) {
-		resources += refineryCost;
-	}
-	else if (whatBuilding == 3) {
-		resources += barracksCost;
-	}
+	resources += buildingCosts[whatBuilding - 1];
 }
 
 void UBuildingManagerObject::EnableAllDecals()

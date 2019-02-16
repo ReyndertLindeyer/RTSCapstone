@@ -24,14 +24,15 @@ public:
 
 	uint32 GetPowerUsage();
 	uint32 GetCost();
+	uint32 GetBuildTime();
+
 	void EnableBuildDecal();
 	void DisableBuildDecal();
 
 	int32 GetHeight();
 	float GetSightRadius();
 
-	void SelectBuilding();
-	void DeselectBuilding();
+	void SetSelection(bool selectionType);
 
 	bool GetIsOverlapping();
 	bool GetIsInRadius();

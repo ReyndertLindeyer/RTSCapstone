@@ -13,6 +13,10 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	unlockCamera = false;
 	constructingBuilding = false;
 	buildingConstructed = false;
+
+	selectedBarracks = false;
+	selectedFactory = false;
+
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 }
 
@@ -51,6 +55,10 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, buildingManagerObject->GetBuildingToBuild()->GetActorLocation().Z));
+	}
+
+	if (SelectedStructure != nullptr) {
+		HUDPtr->DrawBuildingHealthBars(Cast<ABuildingMaster>(SelectedStructure));
 	}
 
 	buildingManagerObject->CheckForDestroyedBuildings();
@@ -157,51 +165,14 @@ bool AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
 	return false;
 }
 
-int32 AMyRTSPlayerController::GetBuildingCost(int32 whatBuilding)
+TArray<int32> AMyRTSPlayerController::GetBuildingCost()
 {
-	return buildingManagerObject->GetBuildingCost((uint8)whatBuilding);
+	return buildingManagerObject->GetBuildingCost();
 }
 
-int32 AMyRTSPlayerController::GetBuildingConstructionTime(int32 whatBuilding)
+TArray<int32> AMyRTSPlayerController::GetBuildingConstructionTime()
 {
-	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
-}
-
-void AMyRTSPlayerController::BuildPowerPlant()
-{
-	if (!constructingBuilding && buildingManagerObject) {
-		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		
-		buildingManagerObject->ghostBuilding(1, hit.Location); 
-
-		constructingBuilding = true;
-	}
-}
-
-void AMyRTSPlayerController::BuildRefinery()
-{
-	if (!constructingBuilding && buildingManagerObject != nullptr) {
-		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		
-		buildingManagerObject->ghostBuilding(2, hit.Location);
-
-			constructingBuilding = true;
-
-	}
-}
-
-void AMyRTSPlayerController::BuildBarracks()
-{
-	if (!constructingBuilding && buildingManagerObject != nullptr) {
-		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingManagerObject->ghostBuilding(3, hit.Location);
-
-			constructingBuilding = true;
-
-	}
+	return buildingManagerObject->GetConstructionTime();
 }
 
 void AMyRTSPlayerController::SubtractCost(int32 whatBuilding)
@@ -231,12 +202,12 @@ bool AMyRTSPlayerController::IsBuilt()
 
 bool AMyRTSPlayerController::HasBarracksSelected()
 {
-	return false;
+	return selectedBarracks;
 }
 
 bool AMyRTSPlayerController::HasFactorySelected()
 {
-	return false;
+	return selectedFactory;
 }
 
 void AMyRTSPlayerController::BuildUnit(int32 buildingType, int32 unitType)
@@ -257,11 +228,6 @@ void AMyRTSPlayerController::ResetIsBuilt()
 	buildingConstructed = false;
 }
 
-int32 AMyRTSPlayerController::GetTime(int32 whatBuilding)
-{
-	return buildingManagerObject->GetConstructionTime((uint8)whatBuilding);
-}
-
 //Left mouse down to denote the start of the selection box
 void AMyRTSPlayerController::OnLeftMousePressed() {	
 	
@@ -272,6 +238,9 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 		{
 			Cast<II_Structure>(SelectedStructure)->SetSelection(false);
 			SelectedStructure = nullptr;
+
+			selectedBarracks = false;
+			selectedFactory = false;
 		}
 
 		if (HUDPtr != nullptr) 
@@ -308,11 +277,20 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
 				// If and actor is found and it inherits from I_Structure, select it.
-				if (Cast<II_Structure>(hit.Actor))
+				if (Cast<ABuildingMaster>(hit.Actor))
 				{
 					SelectedStructure = Cast<AActor>(hit.Actor);
-					Cast<II_Structure>(SelectedStructure)->SetSelection(true);
-					
+					Cast<ABuildingMaster>(SelectedStructure)->SetSelection(true);
+
+					UE_LOG(LogTemp, Warning, TEXT("Selected structure"));
+
+					if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+						selectedBarracks = true;
+					}
+					if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+						selectedFactory = true;
+					}
+
 					/// Debugging
 					II_Entity* entity = Cast<II_Entity>(SelectedStructure);
 					UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
