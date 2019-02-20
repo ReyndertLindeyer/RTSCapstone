@@ -7,6 +7,12 @@ AEnemy_BaseManager::AEnemy_BaseManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	baseRadius = 10;
+
+	baseRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
+	baseRadiusSphere->SetSphereRadius(baseRadius);
+	baseRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy_BaseManager::BeginOverlap);
+	baseRadiusSphere->SetupAttachment(RootComponent);
 
 }
 
@@ -24,3 +30,11 @@ void AEnemy_BaseManager::Tick(float DeltaTime)
 
 }
 
+void AEnemy_BaseManager::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (Cast<ABuilding_Enemy_Spawner>(OtherActor))
+		{
+			buildingsArray.Add(Cast<ABuilding_Enemy_Spawner>(OtherActor));
+		}
+	}
+}

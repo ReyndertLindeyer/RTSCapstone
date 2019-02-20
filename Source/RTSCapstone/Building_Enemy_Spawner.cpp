@@ -6,37 +6,36 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 
 	PrimaryActorTick.bCanEverTick = false;
 
-	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
-	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
-	RootComponent = buildingMesh;
-	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	buildingMesh->SetCollisionProfileName(TEXT("Trigger"));
 
-	maxHealth = 10;
-	currentHealth = 10;
+	buildingMesh->SetSimulatePhysics(false);
+
+	decal->SetupAttachment(RootComponent);
+	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	waypoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
+
+	buildingType = 0;
 }
 
-void ABuilding_Enemy_Spawner::SpawnUnit(int unitType)
+void ABuilding_Enemy_Spawner::SpawnUnit()
 {
-	if (type == 1) {
+	if (buildingType == 1) {
 		///Spawn small melee unit
 	}
-	else if (type == 2) {
+	else if (buildingType == 2) {
 		///Spawn small ranged unit
 	}
-	else if (type == 3) {
+	else if (buildingType == 3) {
 		///Spawn large melee unit
 	}
-	else if (type == 4) {
+	else if (buildingType == 4) {
 		///Spawn large ranged unit
 	}
 }
 
-void ABuilding_Enemy_Spawner::SetBuldingType(FVector inVec, UStaticMesh * inMesh, int32 buildingType)
+void ABuilding_Enemy_Spawner::SetupBulding(FVector inVec, UStaticMesh * inMesh, int32 type)
 {
 	waypoint = inVec;
 	buildingMesh->SetStaticMesh(inMesh);
-	type = buildingType;
+	buildingType = type;
 }

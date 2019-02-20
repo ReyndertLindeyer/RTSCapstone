@@ -201,14 +201,24 @@ bool AMyRTSPlayerController::HasFactorySelected()
 	return selectedFactory;
 }
 
-void AMyRTSPlayerController::BuildUnit(int32 buildingType, int32 unitType)
+bool AMyRTSPlayerController::HasBuiltRefinery()
+{
+	return buildingManagerObject->IsRefineryBuilt();
+}
+
+bool AMyRTSPlayerController::HasBuiltTechCenter()
+{
+	return buildingManagerObject->IsTechCentreBuilt();
+}
+
+void AMyRTSPlayerController::BuildUnit(int32 unitType)
 {
 	///As this should only be called when a unit producing structure is selected the code will be simpler
-	if (buildingType == 1) {
+	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
 		//They are building something from a barrack
 		Cast<ABuilding_Barrecks>(SelectedStructure)->AddToUnitQueue(unitType);
 	}
-	else if (buildingType == 2) {
+	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
 		//They are building something from a Vehicle Factory
 		Cast<ABuilding_VehicleFactory>(SelectedStructure)->AddToUnitQueue(unitType);
 	}

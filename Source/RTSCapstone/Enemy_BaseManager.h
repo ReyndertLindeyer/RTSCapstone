@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Building_Enemy_Spawner.h"
+#include "Components/SphereComponent.h"
 #include "Enemy_BaseManager.generated.h"
 
 UCLASS()
@@ -20,8 +21,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY()
+		USphereComponent* baseRadiusSphere; //Collision sphere to get a reference to all structures in the area
+
+	UFUNCTION()
+		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UPROPERTY()
+		TArray <ABuilding_Enemy_Spawner*> buildingsArray;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere)
+		int32 baseRadius;
 
 };

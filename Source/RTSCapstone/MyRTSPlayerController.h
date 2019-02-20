@@ -77,7 +77,13 @@ public:
 		bool HasFactorySelected();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildUnit(int32 buildingType, int32 unitType);
+		bool HasBuiltRefinery(); //Has the player built a refinery, if so they will be able to construct advanced buildings
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasBuiltTechCenter(); //Has the player built a Tech Center, if so they will be able to construct advanced Units
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildUnit(int32 unitType);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();

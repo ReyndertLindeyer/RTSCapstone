@@ -1,0 +1,10 @@
+Name,Cost,Buildtime
+RifleInfantry,300,3
+RocketInfantry,400,4
+Engineer,500,5
+Humvee,700,7
+LightTank,1100,11
+Harvester,1400,14
+ArtillaryTank,2000,20
+HeavyTank,2500,25
+OutpostCreator,1500,15

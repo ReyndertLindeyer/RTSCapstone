@@ -8,16 +8,43 @@ UBuildingManagerObject::UBuildingManagerObject()
 	currentPower = 20;
 	maxPower = currentPower;
 	resources = 5000; 
-	buildingCosts.Add(100);
-	buildingCosts.Add(300);
-	buildingCosts.Add(200);
-	buildingCosts.Add(500);
-	buildingCosts.Add(1000);
-	buildingConstructionTimes.Add(1);
-	buildingConstructionTimes.Add(1);
-	buildingConstructionTimes.Add(1);
-	buildingConstructionTimes.Add(1);
-	buildingConstructionTimes.Add(1);
+
+	whatBuilding = 0;
+
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTable(TEXT("/Game/Game_Assets/DataTables/BuildingVariables.BuildingVariables"));
+	buildingDataTable = tempDataTable.Get();
+
+	static const FString ContextString(TEXT("Building Variable Context"));
+
+	//Power Plant Variables
+	FBuildingVariables* buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("PowerPlant")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Refinery Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Barracks Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("Barracks")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//War Factory Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Tech Center Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
 
 	canBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("GreenBuildingGhost"));
 	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
@@ -29,26 +56,27 @@ UBuildingManagerObject::UBuildingManagerObject()
 	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
 }
 
-void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding, FVector spawnLocation)
+void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLocation)
 {
 	UWorld* const World = this->GetWorld();
 	if (World)
 	{
-		if (whatBuilding == 1) {
+		if (whatBuilding_ == 1) {
 			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
-		else if (whatBuilding == 2) {
+		else if (whatBuilding_ == 2) {
 			buildingToBuild = World->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
-		else if (whatBuilding == 3) {
+		else if (whatBuilding_ == 3) {
 			buildingToBuild = World->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
-		else if (whatBuilding == 4) {
+		else if (whatBuilding_ == 4) {
 			buildingToBuild = World->SpawnActor<ABuilding_VehicleFactory>(ABuilding_VehicleFactory::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
-		else if (whatBuilding == 5) {
+		else if (whatBuilding_ == 5) {
 			buildingToBuild = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
+		whatBuilding = whatBuilding_ - 1;
 		EnableAllDecals();
 	}
 }
@@ -79,9 +107,9 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 bool UBuildingManagerObject::constructBuilding()
 {
 	if ((int32)buildingToBuild->GetCost() < resources && buildingToBuild->constructAtLocation()) {
-		currentPower -= buildingToBuild->GetPowerUsage();
-		if (buildingToBuild->GetPowerUsage() < 0) {
-			maxPower -= buildingToBuild->GetPowerUsage();
+		currentPower -= buildingPowerConsumption[whatBuilding];
+		if (buildingPowerConsumption[whatBuilding] < 0) {
+			maxPower -= buildingPowerConsumption[whatBuilding];
 		}
 
 		if(buildingToBuild->IsA(ABuilding_PowerPlant::StaticClass())) {
@@ -112,20 +140,9 @@ bool UBuildingManagerObject::constructBuilding()
 	return false;
 }
 
-bool UBuildingManagerObject::trainInfantry(uint8 whatInfantry, ABuilding_Barrecks * whatBuilding)
-{
-	if (whatBuilding->GetUnitCost(whatInfantry) <= resources) {
-		resources -= whatBuilding->GetUnitCost(whatInfantry);
-		whatBuilding->AddToUnitQueue(whatInfantry);
-		return true;
-	}
-	return false;
-}
-
 float UBuildingManagerObject::GetResources() {
 	return (float)resources;
 }
-
 
 TArray<int32> UBuildingManagerObject::GetBuildingCost() 
 {
@@ -147,14 +164,14 @@ int32 UBuildingManagerObject::GetMaxPower()
 	return maxPower;
 }
 
-void UBuildingManagerObject::SubtractCost(int32 whatBuilding)
+void UBuildingManagerObject::SubtractCost(int32 whatBuilding_)
 {
-	resources -= buildingCosts[whatBuilding - 1];
+	resources -= buildingCosts[whatBuilding_ - 1];
 }
 
-void UBuildingManagerObject::AddCost(int32 whatBuilding)
+void UBuildingManagerObject::AddCost(int32 whatBuilding_)
 {
-	resources += buildingCosts[whatBuilding - 1];
+	resources += buildingCosts[whatBuilding_ - 1];
 }
 
 void UBuildingManagerObject::EnableAllDecals()
@@ -190,10 +207,16 @@ void UBuildingManagerObject::CheckForDestroyedBuildings()
 
 bool UBuildingManagerObject::IsTechCentreBuilt()
 {
+	if (techCenterArray.Num() > 0) {
+		return true;
+	}
 	return false;
 }
 
 bool UBuildingManagerObject::IsRefineryBuilt()
 {
+	if (refineryArray.Num() > 0) {
+		return true;
+	}
 	return false;
 }

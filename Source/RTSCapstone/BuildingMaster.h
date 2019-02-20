@@ -64,7 +64,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * selectedDecal; //Decal to show the building is selected
 
-
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
 

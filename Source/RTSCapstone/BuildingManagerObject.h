@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+
+
 #include "BuildingMaster.h"
 #include "Building_Construction_Yard.h"
 #include "Building_PowerPlant.h"
@@ -11,7 +13,26 @@
 #include "Building_Refinery.h"
 #include "Building_VehicleFactory.h"
 #include "Building_TechCenter.h"
+
+#include "Engine/DataTable.h"
+
 #include "BuildingManagerObject.generated.h"
+
+USTRUCT(BlueprintType)
+struct FBuildingVariables : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 Cost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 BuildTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 PowerConsumption;
+};
 
 /**
  * 
@@ -25,7 +46,7 @@ public:
 	// Sets default values for this actor's properties
 	UBuildingManagerObject();
 
-	void ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
+	void ghostBuilding(uint8 whatBuilding_, FVector spawnLocation);
 
 	void MoveBuilding(FVector location);
 
@@ -34,8 +55,6 @@ public:
 	void SpawnConstructionYard(FVector spawnLocation);
 
 	bool constructBuilding();
-
-	bool trainInfantry(uint8 whatInfantry, ABuilding_Barrecks* whatBuilding);
 
 	float GetResources();
 
@@ -47,8 +66,8 @@ public:
 
 	int32 GetMaxPower();
 
-	void SubtractCost(int32 whatBuilding);
-	void AddCost(int32 whatBuilding);
+	void SubtractCost(int32 whatBuilding_);
+	void AddCost(int32 whatBuilding_);
 
 	void EnableAllDecals();
 	void DisableAllDecals();
@@ -58,6 +77,8 @@ public:
 	bool IsTechCentreBuilt();
 	bool IsRefineryBuilt();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UDataTable* buildingDataTable;
 
 private:
 	UPROPERTY()
@@ -67,12 +88,14 @@ private:
 	UPROPERTY()
 		UMaterial* regularMaterial;
 
-	int32 currentPower, maxPower, resources;
+	int32 currentPower, maxPower, resources, whatBuilding; //What building is currently being built?
 
 	UPROPERTY()
 		TArray<int32> buildingCosts;
 	UPROPERTY()
 		TArray<int32> buildingConstructionTimes;
+	UPROPERTY()
+		TArray<int32> buildingPowerConsumption;
 
 	UPROPERTY()
 		TArray <ABuilding_PowerPlant*> powerPlantArray;
