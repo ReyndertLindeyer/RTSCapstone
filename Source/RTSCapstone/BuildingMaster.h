@@ -11,7 +11,24 @@
 #include "Components/DecalComponent.h"
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
+
+#include "Engine/DataTable.h"
+
 #include "BuildingMaster.generated.h"
+
+
+USTRUCT(BlueprintType)
+struct FUnitVariables : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 Cost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 BuildTime;
+};
 
 UCLASS()
 class RTSCAPSTONE_API ABuildingMaster : public AActor
@@ -24,7 +41,6 @@ public:
 
 	uint32 GetPowerUsage();
 	uint32 GetCost();
-	uint32 GetBuildTime();
 
 	void EnableBuildDecal();
 	void DisableBuildDecal();

@@ -86,6 +86,9 @@ public:
 		void BuildUnit(int32 unitType);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
+		void CancelUnit(int32 unitType);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
 
 

@@ -67,7 +67,9 @@ public:
 	int32 GetMaxPower();
 
 	void SubtractCost(int32 whatBuilding_);
+	void SubtractResourceAmount(int32 amount);
 	void AddCost(int32 whatBuilding_);
+	void AddResourceAmount(int32 amount);
 
 	void EnableAllDecals();
 	void DisableAllDecals();

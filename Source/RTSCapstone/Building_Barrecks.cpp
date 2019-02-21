@@ -52,12 +52,42 @@ void ABuilding_Barrecks::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABuilding_Barrecks::AddToUnitQueue(int unitType)
+int32 ABuilding_Barrecks::AddToUnitQueue(int unitType)
 {
 	if (constructed) {
 		PrimaryActorTick.bCanEverTick = true;
 		unitQueue.Add(unitType);
+		if (unitType == 1) {
+			return rifleInfantryCost;
+		}
+		else if (unitType == 2) {
+			return rocketInfantryCost;
+		}
+		else {
+			return engineerCost;
+		}
 	}
+	return 0;
+}
+
+int32 ABuilding_Barrecks::RemoveFromUnitQueue()
+{
+	if (constructed) {
+		countToCompleteUnit = 0;
+		if (unitQueue[0] == 1) {
+			unitQueue.RemoveAt(0);
+			return rifleInfantryCost;
+		}
+		else if (unitQueue[0] == 2) {
+			unitQueue.RemoveAt(0);
+			return rocketInfantryCost;
+		}
+		else {
+			unitQueue.RemoveAt(0);
+			return engineerCost;
+		}
+	}
+	return 0;
 }
 
 void ABuilding_Barrecks::SpawnUnit(int unitType)
@@ -69,19 +99,6 @@ void ABuilding_Barrecks::SpawnUnit(int unitType)
 
 void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
-}
-
-uint8 ABuilding_Barrecks::GetUnitCost(uint8 whatUnit)
-{
-	if (whatUnit == 1) {
-		return rifleInfantryCost;
-	}
-	else if (whatUnit == 2) {
-		return rocketInfantryCost;
-	}
-	else{
-		return engineerCost;
-	}
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)

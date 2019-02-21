@@ -21,10 +21,10 @@ public:
 
 	ABuilding_Barrecks();
 
-	void AddToUnitQueue(int unitType);
+	int32 AddToUnitQueue(int unitType);
+	int32 RemoveFromUnitQueue();
 	void SpawnUnit(int unitType);
 	void SetWaypoint(FVector inVec);
-	uint8 GetUnitCost(uint8 whatUnit);
 
 protected:
 	virtual void BeginPlay() override;

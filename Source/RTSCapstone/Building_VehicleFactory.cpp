@@ -59,12 +59,64 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 }
 
 
-void ABuilding_VehicleFactory::AddToUnitQueue(int unitType)
+int32 ABuilding_VehicleFactory::AddToUnitQueue(int unitType)
 {
 	if (constructed) {
 		PrimaryActorTick.bCanEverTick = true;
 		unitQueue.Add(unitType);
+		if (unitType == 1) {
+			return harvesterCost;
+		}
+		else if (unitType == 2) {
+			return humveeCost;
+		}
+		else if (unitType == 3) {
+			return tankCost;
+		}
+		else if (unitType == 4) {
+			return artilleryTankCost;
+		}
+		else if (unitType == 5) {
+			return heavyTankCost;
+		}
+		else {
+			return outpostCost;
+		}
 	}
+	return 0;
+}
+
+int32 ABuilding_VehicleFactory::RemoveFromUnitQueue()
+{
+	if (constructed) {
+		countToCompleteUnit = 0;
+		if (unitQueue[0] == 1) {
+			unitQueue.RemoveAt(0);
+			return harvesterCost;
+		}
+		else if (unitQueue[0] == 2) {
+			unitQueue.RemoveAt(0);
+			return humveeCost;
+		}
+		else if (unitQueue[0] == 3) {
+			unitQueue.RemoveAt(0);
+			return tankCost;
+		}
+		else if (unitQueue[0] == 4) {
+			unitQueue.RemoveAt(0);
+			return artilleryTankCost;
+		}
+		else if (unitQueue[0] == 5) {
+			unitQueue.RemoveAt(0);
+			return heavyTankCost;
+		}
+		else {
+			unitQueue.RemoveAt(0);
+			return outpostCost;
+		}
+	}
+
+	return 0;
 }
 
 void ABuilding_VehicleFactory::SpawnUnit(int unitType)
@@ -76,28 +128,6 @@ void ABuilding_VehicleFactory::SpawnUnit(int unitType)
 
 void ABuilding_VehicleFactory::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
-}
-
-uint8 ABuilding_VehicleFactory::GetUnitCost(uint8 whatUnit)
-{
-	if (whatUnit == 1) {
-		return harvesterCost;
-	}
-	else if (whatUnit == 2) {
-		return humveeCost;
-	}
-	else if (whatUnit == 3) {
-		return tankCost;
-	}
-	else if (whatUnit == 4) {
-		return artilleryTankCost;
-	}
-	else if (whatUnit == 5) {
-		return heavyTankCost;
-	}
-	else {
-		return outpostCost;
-	}
 }
 
 void ABuilding_VehicleFactory::Tick(float DeltaTime)

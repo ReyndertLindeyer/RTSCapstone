@@ -169,9 +169,19 @@ void UBuildingManagerObject::SubtractCost(int32 whatBuilding_)
 	resources -= buildingCosts[whatBuilding_ - 1];
 }
 
+void UBuildingManagerObject::SubtractResourceAmount(int32 amount)
+{
+	resources -= amount;
+}
+
 void UBuildingManagerObject::AddCost(int32 whatBuilding_)
 {
 	resources += buildingCosts[whatBuilding_ - 1];
+}
+
+void UBuildingManagerObject::AddResourceAmount(int32 amount)
+{
+	resources += amount;
 }
 
 void UBuildingManagerObject::EnableAllDecals()

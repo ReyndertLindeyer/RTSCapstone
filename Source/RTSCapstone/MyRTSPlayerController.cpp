@@ -216,11 +216,23 @@ void AMyRTSPlayerController::BuildUnit(int32 unitType)
 	///As this should only be called when a unit producing structure is selected the code will be simpler
 	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
 		//They are building something from a barrack
-		Cast<ABuilding_Barrecks>(SelectedStructure)->AddToUnitQueue(unitType);
+		buildingManagerObject->SubtractResourceAmount(Cast<ABuilding_Barrecks>(SelectedStructure)->AddToUnitQueue(unitType));
 	}
 	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
 		//They are building something from a Vehicle Factory
-		Cast<ABuilding_VehicleFactory>(SelectedStructure)->AddToUnitQueue(unitType);
+		buildingManagerObject->SubtractResourceAmount(Cast<ABuilding_VehicleFactory>(SelectedStructure)->AddToUnitQueue(unitType));
+	}
+}
+
+void AMyRTSPlayerController::CancelUnit(int32 unitType)
+{
+	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+		//They are building something from a barrack
+		buildingManagerObject->AddResourceAmount(Cast<ABuilding_Barrecks>(SelectedStructure)->RemoveFromUnitQueue());
+	}
+	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+		//They are building something from a Vehicle Factory
+		buildingManagerObject->AddResourceAmount(Cast<ABuilding_VehicleFactory>(SelectedStructure)->RemoveFromUnitQueue());
 	}
 }
 
