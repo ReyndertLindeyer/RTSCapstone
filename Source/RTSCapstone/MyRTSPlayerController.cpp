@@ -224,7 +224,7 @@ void AMyRTSPlayerController::BuildUnit(int32 unitType)
 	}
 }
 
-void AMyRTSPlayerController::CancelUnit(int32 unitType)
+void AMyRTSPlayerController::CancelUnit()
 {
 	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
 		//They are building something from a barrack
@@ -234,6 +234,46 @@ void AMyRTSPlayerController::CancelUnit(int32 unitType)
 		//They are building something from a Vehicle Factory
 		buildingManagerObject->AddResourceAmount(Cast<ABuilding_VehicleFactory>(SelectedStructure)->RemoveFromUnitQueue());
 	}
+}
+
+float AMyRTSPlayerController::GetUnitConstructionTime()
+{
+	if (SelectedStructure) {
+		if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+			return Cast<ABuilding_Barrecks>(SelectedStructure)->StartingTime();
+		}
+		else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+			return Cast<ABuilding_VehicleFactory>(SelectedStructure)->StartingTime();
+		}
+	}
+	return 0;
+}
+
+float AMyRTSPlayerController::GetUnitConstructionTimeLeft()
+{
+		if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+			return Cast<ABuilding_Barrecks>(SelectedStructure)->TimeRemaining();
+		}
+		else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+			return Cast<ABuilding_VehicleFactory>(SelectedStructure)->TimeRemaining();
+		}
+	return 0;
+}
+
+int32 AMyRTSPlayerController::GetUnitNumber()
+{
+		if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+			return Cast<ABuilding_Barrecks>(SelectedStructure)->GetUnitAtStartOfQueue();
+		}
+		else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+			return Cast<ABuilding_VehicleFactory>(SelectedStructure)->GetUnitAtStartOfQueue();
+		}
+	return 0;
+}
+
+TArray<int32> AMyRTSPlayerController::UnitQueue()
+{
+	return TArray<int32>();
 }
 
 void AMyRTSPlayerController::ResetIsBuilt()
@@ -296,8 +336,6 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				{
 					SelectedStructure = Cast<ABuildingMaster>(hit.Actor);
 					SelectedStructure->SetSelection(true);
-
-					UE_LOG(LogTemp, Warning, TEXT("Selected structure"));
 
 					
 					if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
@@ -411,4 +449,19 @@ void AMyRTSPlayerController::OnRightMouseReleased() {
 	
 	/// Renamed to unlockCamera and moved to OnMiddleMousePressed in this class
 	// rightClicked = !rightClicked;
+
+	//Check to see if there is a selected structure, if there is check to see if it is a unit producing structure, if it is then set the location as the structure's waypoint
+	if (SelectedStructure) {
+		if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+			FHitResult hit;
+			GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+			Cast<ABuilding_Barrecks>(SelectedStructure)->SetWaypoint(hit.Location);
+
+		}
+		else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+			FHitResult hit;
+			GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+			Cast<ABuilding_VehicleFactory>(SelectedStructure)->SetWaypoint(hit.Location);
+		}
+	}
 }

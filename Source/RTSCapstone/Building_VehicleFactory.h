@@ -21,9 +21,12 @@ public:
 
 	ABuilding_VehicleFactory();
 
-	int32 AddToUnitQueue(int unitType);
+	int32 AddToUnitQueue(int32 unitType);
 	int32 RemoveFromUnitQueue();
-	void SpawnUnit(int unitType);
+	int32 GetUnitAtStartOfQueue();
+	float StartingTime(); //How long the unit takes to complete
+	float TimeRemaining(); //How long until the unit is completed
+	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
 
 protected:

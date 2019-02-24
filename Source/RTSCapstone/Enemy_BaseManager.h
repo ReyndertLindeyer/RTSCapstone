@@ -30,11 +30,22 @@ protected:
 	UPROPERTY()
 		TArray <ABuilding_Enemy_Spawner*> buildingsArray;
 
+	UPROPERTY()
+		TArray <float> counterArray;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
 		int32 baseRadius;
+
+	UPROPERTY(EditAnywhere)
+		bool isStartingArea; //If this is next to the starting area then the level creator should tick it to true
+
+	void ActivateManager(); //Activate all of the buildings that the manager controls
+
+	UPROPERTY(EditAnywhere)
+		TArray <AEnemy_BaseManager*> adjacentManagerArray; //To be filled by level creator so that the ActivateManager classes of the adjacent areas can be called
 
 };

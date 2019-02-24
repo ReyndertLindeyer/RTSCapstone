@@ -20,24 +20,42 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_VehicleFactory::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
-	//Setting up specific values
-	harvesterBuildTime = 10;
-	harvesterCost = 300;
+	//Setting up the variables from the datatable
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTable(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
+	unitConstructionDataTable = tempDataTable.Get();
 
-	humveeTime = 4;
-	humveeCost = 100;
+	static const FString ContextString(TEXT("Unit Variable Context"));
 
-	tankTime = 8;
-	tankCost = 200;
 
-	artilleryTankBuildTime = 8;
-	artilleryTankCost = 300;
+	//Rifle Infantry Variables
+	FUnitVariables* UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Harvester")), ContextString, false);
+	harvesterCost = UnitVariables->Cost;
+	harvesterBuildTime = UnitVariables->BuildTime;
 
-	heavyTankTime = 10;
-	heavyTankCost = 500;
-	
-	outpostTime = 5;
-	outpostCost = 200;
+	//Rifle Infantry Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Humvee")), ContextString, false);
+	humveeCost = UnitVariables->Cost;
+	humveeTime = UnitVariables->BuildTime;
+
+	//Rifle Infantry Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("LightTank")), ContextString, false);
+	tankCost = UnitVariables->Cost;
+	tankTime = UnitVariables->BuildTime;
+
+	//Rifle Infantry Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("ArtillaryTank")), ContextString, false);
+	artilleryTankCost = UnitVariables->Cost;
+	artilleryTankBuildTime = UnitVariables->BuildTime;
+
+	//Rifle Infantry Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("HeavyTank")), ContextString, false);
+	heavyTankCost = UnitVariables->Cost;
+	heavyTankTime = UnitVariables->BuildTime;
+
+	//Rifle Infantry Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("OutpostCreator")), ContextString, false);
+	outpostCost = UnitVariables->Cost;
+	outpostTime = UnitVariables->BuildTime;
 
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
 
@@ -59,7 +77,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 }
 
 
-int32 ABuilding_VehicleFactory::AddToUnitQueue(int unitType)
+int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)
 {
 	if (constructed) {
 		PrimaryActorTick.bCanEverTick = true;
@@ -83,6 +101,13 @@ int32 ABuilding_VehicleFactory::AddToUnitQueue(int unitType)
 			return outpostCost;
 		}
 	}
+	return 0;
+}
+
+int32 ABuilding_VehicleFactory::GetUnitAtStartOfQueue()
+{
+	if (unitQueue[0])
+		return unitQueue[0];
 	return 0;
 }
 
@@ -119,10 +144,38 @@ int32 ABuilding_VehicleFactory::RemoveFromUnitQueue()
 	return 0;
 }
 
-void ABuilding_VehicleFactory::SpawnUnit(int unitType)
+float ABuilding_VehicleFactory::StartingTime()
+{
+	if (unitQueue[0] == 1) {
+		return harvesterBuildTime;
+	}
+	else if (unitQueue[0] == 2) {
+		return humveeTime;
+	}
+	else if (unitQueue[0] == 3) {
+		return tankTime;
+	}
+	else if (unitQueue[0] == 4) {
+		return artilleryTankBuildTime;
+	}
+	else if (unitQueue[0] == 5) {
+		return heavyTankTime;
+	}
+	else {
+		return outpostTime;
+	}
+}
+
+float ABuilding_VehicleFactory::TimeRemaining()
+{
+	return countToCompleteUnit;
+}
+
+void ABuilding_VehicleFactory::SpawnUnit()
 {
 	//Spawn the unit and give it its information
-	constructingUnit = false;
+	constructingUnit = false; 
+	unitQueue[0];
 	unitQueue.RemoveAt(0);
 }
 
@@ -160,7 +213,7 @@ void ABuilding_VehicleFactory::Tick(float DeltaTime)
 	}
 
 	if (constructingUnit && countToCompleteUnit < 0.0f) {
-		SpawnUnit(unitQueue[0]);
+		SpawnUnit();
 	}
 
 	if (!constructingUnit && unitQueue.Num() == 0) {

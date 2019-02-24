@@ -21,10 +21,12 @@ public:
 
 	void SpawnUnit();
 
-	void SetupBulding(FVector inVec, UStaticMesh* inMesh, int32 type);
+	void SetupBulding(FVector inVec);
 
 	UPROPERTY(EditAnywhere)
 		int32 buildingType;
+
+	virtual void BeginPlay() override;
 
 private:
 	FVector waypoint; 

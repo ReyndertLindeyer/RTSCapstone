@@ -89,6 +89,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * decal; //Decal to show the buildings construction radius
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UDataTable* unitConstructionDataTable;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

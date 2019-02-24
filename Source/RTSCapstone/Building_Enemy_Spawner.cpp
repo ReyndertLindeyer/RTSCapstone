@@ -17,6 +17,32 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 	buildingType = 0;
 }
 
+
+void ABuilding_Enemy_Spawner::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (buildingType == 1) {
+		///Spawn small melee unit
+		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	}
+	else if (buildingType == 2) {
+		///Spawn small ranged unit
+		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	}
+	else if (buildingType == 3) {
+		///Spawn large melee unit
+		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	}
+	else if (buildingType == 4) {
+		///Spawn large ranged unit
+		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	}
+	else {
+		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	}
+}
+
 void ABuilding_Enemy_Spawner::SpawnUnit()
 {
 	if (buildingType == 1) {
@@ -33,9 +59,7 @@ void ABuilding_Enemy_Spawner::SpawnUnit()
 	}
 }
 
-void ABuilding_Enemy_Spawner::SetupBulding(FVector inVec, UStaticMesh * inMesh, int32 type)
+void ABuilding_Enemy_Spawner::SetupBulding(FVector inVec)
 {
 	waypoint = inVec;
-	buildingMesh->SetStaticMesh(inMesh);
-	buildingType = type;
 }

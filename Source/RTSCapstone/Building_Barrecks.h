@@ -21,9 +21,12 @@ public:
 
 	ABuilding_Barrecks();
 
-	int32 AddToUnitQueue(int unitType);
+	int32 AddToUnitQueue(int32 unitType);
 	int32 RemoveFromUnitQueue();
-	void SpawnUnit(int unitType);
+	int32 GetUnitAtStartOfQueue();
+	float StartingTime(); //How long the unit takes to complete
+	float TimeRemaining(); //How long until the unit is completed
+	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
 
 protected:
@@ -37,5 +40,5 @@ protected:
 
 	float countToCompleteUnit;
 
-	uint8 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, engineerBuildTime, engineerCost;
+	uint32 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, engineerBuildTime, engineerCost;
 };

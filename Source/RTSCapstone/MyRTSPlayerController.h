@@ -86,7 +86,19 @@ public:
 		void BuildUnit(int32 unitType);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void CancelUnit(int32 unitType);
+		void CancelUnit();
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		float GetUnitConstructionTime();
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		float GetUnitConstructionTimeLeft();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		int32 GetUnitNumber(); //Get what unit is being built
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		TArray <int32> UnitQueue();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
