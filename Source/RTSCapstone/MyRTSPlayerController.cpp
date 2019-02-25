@@ -363,8 +363,8 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					/// Debugging
 					for (int i = 0; i < SelectedCharacters.Num(); i++)
 					{
-						II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
-						UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+						//II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+						//UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 					}
 					/// End Debug
 				}

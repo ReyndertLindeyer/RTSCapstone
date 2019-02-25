@@ -12,6 +12,7 @@ AEnemy_BaseManager::AEnemy_BaseManager()
 
 	baseRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	baseRadiusSphere->SetSphereRadius(baseRadius);
+	baseRadiusSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	baseRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy_BaseManager::BeginOverlap);
 	baseRadiusSphere->SetupAttachment(RootComponent);
 
@@ -49,6 +50,7 @@ void AEnemy_BaseManager::BeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
 		if (Cast<ABuilding_Enemy_Spawner>(OtherActor))
 		{
+			Cast<ABuilding_Enemy_Spawner>(OtherActor)->SetupBulding(launchPoint->GetActorLocation());
 			buildingsArray.Add(Cast<ABuilding_Enemy_Spawner>(OtherActor));
 			counterArray.Add(FMath::RandRange(10.0f, 15.0f));
 		}

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Building_Enemy_Spawner.h"
+#include "Enemy_AttackLaunchPoint.h"
 #include "Components/SphereComponent.h"
 #include "Enemy_BaseManager.generated.h"
 
@@ -47,5 +48,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TArray <AEnemy_BaseManager*> adjacentManagerArray; //To be filled by level creator so that the ActivateManager classes of the adjacent areas can be called
+
+	UPROPERTY(EditAnywhere)
+		AEnemy_AttackLaunchPoint* launchPoint; //The area that the waves of enemies are going to be launched from
 
 };

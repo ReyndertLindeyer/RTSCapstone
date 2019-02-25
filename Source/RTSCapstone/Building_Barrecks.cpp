@@ -85,8 +85,9 @@ int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)
 
 int32 ABuilding_Barrecks::RemoveFromUnitQueue()
 {
-	if (constructed) {
+	if (constructed && unitQueue.Num() > 0) {
 		countToCompleteUnit = 0;
+		constructingUnit = !constructingUnit;
 		if (unitQueue[0] == 1) {
 			unitQueue.RemoveAt(0);
 			return rifleInfantryCost;

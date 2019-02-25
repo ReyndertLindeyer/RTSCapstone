@@ -106,8 +106,8 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 
 bool UBuildingManagerObject::constructBuilding()
 {
-	if ((int32)buildingToBuild->GetCost() < resources && buildingToBuild->constructAtLocation()) {
-		currentPower -= buildingPowerConsumption[whatBuilding];
+	if (buildingToBuild->constructAtLocation()) {
+			currentPower -= buildingPowerConsumption[whatBuilding];
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
 		}

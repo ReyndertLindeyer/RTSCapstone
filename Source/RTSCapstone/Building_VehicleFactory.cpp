@@ -113,7 +113,8 @@ int32 ABuilding_VehicleFactory::GetUnitAtStartOfQueue()
 
 int32 ABuilding_VehicleFactory::RemoveFromUnitQueue()
 {
-	if (constructed) {
+	if (constructed && unitQueue.Num() > 0) {
+		constructingUnit = !constructingUnit;
 		countToCompleteUnit = 0;
 		if (unitQueue[0] == 1) {
 			unitQueue.RemoveAt(0);
