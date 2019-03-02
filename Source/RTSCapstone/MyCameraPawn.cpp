@@ -64,6 +64,9 @@ void AMyCameraPawn::Tick(float DeltaTime)
 			updateScreenTime = 1.0;
 		}
 		updateScreenTime -= DeltaTime;
+		if (rtsPC->updateScreen && updateScreenTime > 0.0) {
+			rtsPC->UpdateScreenSize();
+		}
 	}
 
 	//Get whether the right click is held down or not
