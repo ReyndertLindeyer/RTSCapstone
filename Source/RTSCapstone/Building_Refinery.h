@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-#include "Unit_Harvester_Character.h"
-#include "Unit_HarvesterAIController.h"
+
+
 #include "Building_Refinery.generated.h"
 
 /**

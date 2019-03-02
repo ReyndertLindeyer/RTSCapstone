@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Building_Barrecks.h"
-#include "RifleInfantry.h"
 
 ABuilding_Barrecks::ABuilding_Barrecks() {
 	//Setting up general values
@@ -20,13 +19,27 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
-	//Setting up specific values
-	rifleBuildTime = 10;
-	rifleInfantryCost = 20;
-	rocketBuildTime = 10;
-	rocketInfantryCost = 40;
-	engineerBuildTime = 40;
-	engineerCost = 80;
+	//Setting up the variables from the datatable
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTable(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
+	unitConstructionDataTable = tempDataTable.Get();
+
+	static const FString ContextString(TEXT("Unit Variable Context"));
+
+
+	//Rifle Infantry Variables
+	FUnitVariables* UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("RifleInfantry")), ContextString, false);
+	rifleInfantryCost = UnitVariables->Cost;
+	rifleBuildTime = UnitVariables->BuildTime;
+
+	//Rocket Infantry Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("RocketInfantry")), ContextString, false);
+	rocketInfantryCost = UnitVariables->Cost;
+	rocketBuildTime = UnitVariables->BuildTime;
+
+	//Engineer Variables
+	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Engineer")), ContextString, false);
+	engineerBuildTime = UnitVariables->Cost;
+	engineerBuildTime = UnitVariables->BuildTime;
 
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
 
@@ -52,36 +65,79 @@ void ABuilding_Barrecks::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABuilding_Barrecks::AddToUnitQueue(int unitType)
+int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)
 {
 	if (constructed) {
-		PrimaryActorTick.bCanEverTick = true;
 		unitQueue.Add(unitType);
+		if (unitType == 1) {
+			return rifleInfantryCost;
+		}
+		else if (unitType == 2) {
+			return rocketInfantryCost;
+		}
+		else if (unitType == 3) {
+			return engineerCost;
+		}
+	}
+	return 0;
+}
+
+int32 ABuilding_Barrecks::RemoveFromUnitQueue()
+{
+	if (constructed && unitQueue.Num() > 0) {
+		countToCompleteUnit = 0;
+		constructingUnit = !constructingUnit;
+		if (unitQueue[0] == 1) {
+			unitQueue.RemoveAt(0);
+			return rifleInfantryCost;
+		}
+		else if (unitQueue[0] == 2) {
+			unitQueue.RemoveAt(0);
+			return rocketInfantryCost;
+		}
+		else {
+			unitQueue.RemoveAt(0);
+			return engineerCost;
+		}
+	}
+	return 0;
+}
+
+int32 ABuilding_Barrecks::GetUnitAtStartOfQueue()
+{
+	if(unitQueue.Num() > 0)
+		return unitQueue[0];
+	return 0;
+}
+
+float ABuilding_Barrecks::StartingTime()
+{
+	if (unitQueue[0] == 1) {
+		return rifleBuildTime;
+	}
+	else if (unitQueue[0] == 2) {
+		return rocketBuildTime;
+	}
+	else {
+		return engineerBuildTime;
 	}
 }
 
-void ABuilding_Barrecks::SpawnUnit(int unitType)
+float ABuilding_Barrecks::TimeRemaining()
+{
+	return countToCompleteUnit;
+}
+
+void ABuilding_Barrecks::SpawnUnit()
 {
 	//Spawn the unit and give it its information
 	constructingUnit = false;
+	unitQueue[0];
 	unitQueue.RemoveAt(0);
 }
 
 void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
-}
-
-uint8 ABuilding_Barrecks::GetUnitCost(uint8 whatUnit)
-{
-	if (whatUnit == 1) {
-		return rifleInfantryCost;
-	}
-	else if (whatUnit == 2) {
-		return rocketInfantryCost;
-	}
-	else{
-		return engineerCost;
-	}
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)
@@ -105,7 +161,7 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 	}
 
 	if (constructingUnit && countToCompleteUnit < 0.0f) {
-		SpawnUnit(unitQueue[0]);
+		SpawnUnit();
 	}
 
 	if (!constructingUnit && unitQueue.Num() == 0) {

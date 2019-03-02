@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+
+
 #include "BuildingMaster.h"
 #include "Building_Construction_Yard.h"
 #include "Building_PowerPlant.h"
@@ -11,7 +13,26 @@
 #include "Building_Refinery.h"
 #include "Building_VehicleFactory.h"
 #include "Building_TechCenter.h"
+
+#include "Engine/DataTable.h"
+
 #include "BuildingManagerObject.generated.h"
+
+USTRUCT(BlueprintType)
+struct FBuildingVariables : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 Cost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 BuildTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 PowerConsumption;
+};
 
 /**
  * 
@@ -25,28 +46,30 @@ public:
 	// Sets default values for this actor's properties
 	UBuildingManagerObject();
 
-	ABuildingMaster* ghostBuilding(uint8 whatBuilding, FVector spawnLocation);
+	void ghostBuilding(uint8 whatBuilding_, FVector spawnLocation);
 
-	ABuildingMaster* getBuilding(int32 indexOfBuilding);
+	void MoveBuilding(FVector location);
+
+	ABuildingMaster* GetBuildingToBuild();
 
 	void SpawnConstructionYard(FVector spawnLocation);
 
-	bool constructBuilding(ABuildingMaster* toBuild);
-
-	bool trainInfantry(uint8 whatInfantry, ABuilding_Barrecks* whatBuilding);
+	bool constructBuilding();
 
 	float GetResources();
 
-	int32 GetBuildingCost(uint8 whatBuilding);
+	TArray<int32> GetBuildingCost();
 
-	int32 GetConstructionTime(uint8 whatBuilding);
+	TArray<int32> GetConstructionTime();
 
 	int32 GetCurrentPower();
 
 	int32 GetMaxPower();
 
-	void SubtractCost(int32 whatBuilding);
-	void AddCost(int32 whatBuilding);
+	void SubtractCost(int32 whatBuilding_);
+	void SubtractResourceAmount(int32 amount);
+	void AddCost(int32 whatBuilding_);
+	void AddResourceAmount(int32 amount);
 
 	void EnableAllDecals();
 	void DisableAllDecals();
@@ -56,16 +79,41 @@ public:
 	bool IsTechCentreBuilt();
 	bool IsRefineryBuilt();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UDataTable* buildingDataTable;
 
 private:
-	int32 currentPower, maxPower, resources, powerPlantCost, refineryCost, barracksCost, powerPlantConstructionTime, refineryConstructionTime, barracksConstructionTime;
+	UPROPERTY()
+		UMaterial* canBuildIndicator;
+	UPROPERTY()
+		UMaterial* cantBuildIndicator;
+	UPROPERTY()
+		UMaterial* regularMaterial;
 
-	TArray <ABuilding_PowerPlant*> powerPlantArray;
-	TArray <ABuilding_Barrecks*> barrecksArray;
-	TArray <ABuilding_Refinery*> refineryArray;
-	TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
-	TArray <ABuilding_TechCenter*> techCenterArray;
-	ABuilding_Construction_Yard* constructionYard;
+	int32 currentPower, maxPower, resources, whatBuilding; //What building is currently being built?
 
-	TArray <ABuildingMaster*> masterArray;
+	UPROPERTY()
+		TArray<int32> buildingCosts;
+	UPROPERTY()
+		TArray<int32> buildingConstructionTimes;
+	UPROPERTY()
+		TArray<int32> buildingPowerConsumption;
+
+	UPROPERTY()
+		TArray <ABuilding_PowerPlant*> powerPlantArray;
+	UPROPERTY()
+		TArray <ABuilding_Barrecks*> barrecksArray;
+	UPROPERTY()
+		TArray <ABuilding_Refinery*> refineryArray;
+	UPROPERTY()
+		TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
+	UPROPERTY()
+		TArray <ABuilding_TechCenter*> techCenterArray;
+	UPROPERTY()
+		ABuilding_Construction_Yard* constructionYard;
+	UPROPERTY()
+		TArray <ABuildingMaster*> masterArray;
+
+	UPROPERTY()
+		ABuildingMaster* buildingToBuild;
 };

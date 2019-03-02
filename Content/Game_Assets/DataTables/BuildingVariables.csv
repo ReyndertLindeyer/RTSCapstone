@@ -1,0 +1,6 @@
+Name,Cost,BuildTime,PowerConsumption
+PowerPlant,800,1,-20
+Refinery,2000,1,6
+Barracks,500,1,5
+WarFactory,2000,1,7
+TechCenter,4000,1,15

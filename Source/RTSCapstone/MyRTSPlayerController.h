@@ -4,15 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "MasterUnit.h"
-#include "RifleInfantry.h"
 #include "BuildingMaster.h"
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
-#include "Building_Refinery.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
 #include "ProFow.h"
+
+// Interfaces
+#include "I_Entity.h"
+
+
+
+
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
 
@@ -35,33 +39,24 @@ public:
 
 	//Pointer to the HUD
 	AMyRTSHUD* HUDPtr;
-
-	UPROPERTY(EditAnywhere)
-		ABuildingMaster* buildingToBuild;
 	
 	UPROPERTY()
 		bool unlockCamera;
+	
+	UPROPERTY()
+		bool updateScreen;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int32 GetResources();
-	
-	UFUNCTION(BlueprintPure, Category = "UI")
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		TArray<int32> GetBuildingCost();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		TArray<int32> GetBuildingConstructionTime();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
 		bool ConstructBuilding(int32 whatBuilding);
-
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingCost(int32 whatBuilding);
-
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetBuildingConstructionTime(int32 whatBuilding);
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildPowerPlant();
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildRefinery();
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildBarracks();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void SubtractCost(int32 whatBuilding);
@@ -85,13 +80,34 @@ public:
 		bool HasFactorySelected();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		void BuildUnit(int32 buildingType, int32 unitType);
+		bool HasBuiltRefinery(); //Has the player built a refinery, if so they will be able to construct advanced buildings
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasBuiltTechCenter(); //Has the player built a Tech Center, if so they will be able to construct advanced Units
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildUnit(int32 unitType);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void CancelUnit();
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		float GetUnitConstructionTime();
+
+	UFUNCTION(BlueprintPure, Category = "UI")
+		float GetUnitConstructionTimeLeft();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		int32 GetUnitNumber(); //Get what unit is being built
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		TArray <int32> UnitQueue();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
 
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetTime(int32 whatBuilding);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void UpdateScreenSize();
 
 
 protected:
@@ -117,10 +133,10 @@ protected:
 		void OnMiddleMouseReleased();
 
 	UPROPERTY()
-		TArray<ACharacter*> SelectedCharacters;
+		TArray<ACharacter*> SelectedCharacters = TArray<ACharacter*>();
 
 	UPROPERTY()
-		AActor* SelectedStructure;
+		ABuildingMaster* SelectedStructure;
 		/// TScriptInterface<II_Structure> SelectedStructure;  -- Leave this here for future reference
 
 	
@@ -129,13 +145,17 @@ protected:
 	/// TArray <AMasterUnit*> selectedUnits; -- Removed and replaced with SelectedCharacters 
 	/// TArray <ABuildingMaster*> selectedBuildings; -- Removed and replaced with SelectedStructure
 
-	//ABuildingManager* buildingManager;
-
 	UPROPERTY()
 		UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding, buildingConstructed; 
+	bool constructingBuilding, buildingConstructed, selectedBarracks, selectedFactory; 
 	
 	UPROPERTY()
 		AProFow *m_fow;
+
+	///////////////////////////////////
+	// DEBUG FUNCTIONS
+	///////////////////////////////////
+	UFUNCTION()
+		void DEBUG_DamageSelected();
 };

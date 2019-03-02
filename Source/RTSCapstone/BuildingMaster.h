@@ -11,7 +11,24 @@
 #include "Components/DecalComponent.h"
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
+
+#include "Engine/DataTable.h"
+
 #include "BuildingMaster.generated.h"
+
+
+USTRUCT(BlueprintType)
+struct FUnitVariables : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 Cost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 BuildTime;
+};
 
 UCLASS()
 class RTSCAPSTONE_API ABuildingMaster : public AActor
@@ -24,16 +41,20 @@ public:
 
 	uint32 GetPowerUsage();
 	uint32 GetCost();
+
 	void EnableBuildDecal();
 	void DisableBuildDecal();
 
 	int32 GetHeight();
 	float GetSightRadius();
 
-	void SelectBuilding();
-	void DeselectBuilding();
+	void SetSelection(bool selectionType);
+
+	bool GetIsOverlapping();
+	bool GetIsInRadius();
 
 	bool IsSelected();
+
 	bool IsDead();
 
 	void Suicide();
@@ -45,10 +66,6 @@ protected:
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
 	AMyRTSAIController* rtsAI;
-
-	UMaterial* canBuildIndicator;
-	UMaterial* cantBuildIndicator;
-	UMaterial* regularMaterial;
 
 	float sightRadius, buildRadius;
 
@@ -63,18 +80,23 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * selectedDecal; //Decal to show the building is selected
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
 
 	UPROPERTY(EditAnywhere)
 		USphereComponent* buildRadiusSphere;
-	
+
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * decal; //Decal to show the buildings construction radius
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UDataTable* unitConstructionDataTable;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UStaticMeshComponent* GetBuildingMesh();
 		
 	bool constructAtLocation();
 	bool overlapping, isInRadius;

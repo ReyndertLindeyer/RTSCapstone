@@ -28,7 +28,7 @@ protected:
 	FVector2D CameraInput;
 	FVector velocity;
 	int zoom;
-	float qOrE;
+	float qOrE, updateScreenTime;
 	bool unlocked;
 
 	//Input functions
@@ -63,5 +63,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+		void UpdateScreenSize();
 
 };

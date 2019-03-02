@@ -21,10 +21,13 @@ public:
 
 	ABuilding_VehicleFactory();
 
-	void AddToUnitQueue(int unitType);
-	void SpawnUnit(int unitType);
+	int32 AddToUnitQueue(int32 unitType);
+	int32 RemoveFromUnitQueue();
+	int32 GetUnitAtStartOfQueue();
+	float StartingTime(); //How long the unit takes to complete
+	float TimeRemaining(); //How long until the unit is completed
+	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
-	uint8 GetUnitCost(uint8 whatUnit);
 
 protected:
 	virtual void Tick(float DeltaTime) override;
