@@ -4,6 +4,7 @@
 #include "Components/InputComponent.h"
 #include "MyRTSAIController.h"
 #include "Blueprint/UserWidget.h"
+#include "MyCameraPawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 AMyRTSPlayerController::AMyRTSPlayerController() {
@@ -13,6 +14,8 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	unlockCamera = false;
 	constructingBuilding = false;
 	buildingConstructed = false;
+
+	updateScreen = false;
 
 	selectedBarracks = false;
 	selectedFactory = false;
@@ -279,6 +282,11 @@ TArray<int32> AMyRTSPlayerController::UnitQueue()
 void AMyRTSPlayerController::ResetIsBuilt()
 {
 	buildingConstructed = false;
+}
+
+void AMyRTSPlayerController::UpdateScreenSize()
+{
+	updateScreen = !updateScreen;
 }
 
 //Left mouse down to denote the start of the selection box

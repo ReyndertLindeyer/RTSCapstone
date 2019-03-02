@@ -42,6 +42,9 @@ public:
 	
 	UPROPERTY()
 		bool unlockCamera;
+	
+	UPROPERTY()
+		bool updateScreen;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
 		int32 GetResources();
@@ -102,6 +105,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void UpdateScreenSize();
 
 
 protected:

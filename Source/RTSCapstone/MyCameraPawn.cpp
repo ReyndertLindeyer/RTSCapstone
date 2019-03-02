@@ -11,6 +11,7 @@ AMyCameraPawn::AMyCameraPawn()
 	PrimaryActorTick.bCanEverTick = true;
 
 	cameraSensitivity = 2.0f;
+	updateScreenTime = 0;
 	cameraQESpeed = 4;
 	unlocked = false;
 
@@ -56,6 +57,14 @@ void AMyCameraPawn::BeginPlay()
 void AMyCameraPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (rtsPC->updateScreen || updateScreenTime > 0.0) {
+		UpdateScreenSize();
+		if (rtsPC->updateScreen) {
+			updateScreenTime = 1.0;
+		}
+		updateScreenTime -= DeltaTime;
+	}
 
 	//Get whether the right click is held down or not
 	unlocked= rtsPC->unlockCamera;
@@ -116,6 +125,10 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	qOrE = 0;
 	MovementInput.ZeroVector;
 	CameraInput.ZeroVector;
+}
+
+void AMyCameraPawn::UpdateScreenSize() {
+	rtsPC->GetViewportSize(screenSizeX, screenSizeY);
 }
 
 // Called to bind functionality to input
