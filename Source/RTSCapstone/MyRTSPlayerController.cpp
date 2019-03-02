@@ -7,6 +7,9 @@
 #include "MyCameraPawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
+
+
 AMyRTSPlayerController::AMyRTSPlayerController() {
 	bShowMouseCursor = true;
 	//DefaultMouseCursor = EMouseCursor::Custom; -- Potential way to implement our own cursor?
@@ -357,8 +360,8 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					
 
 					/// Debugging
-					//II_Entity* entity = Cast<II_Entity>(SelectedStructure);
-					//UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					II_Entity* entity = Cast<II_Entity>(SelectedStructure);
+					UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 					/// End Debug
 
 				}
@@ -371,8 +374,8 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					/// Debugging
 					for (int i = 0; i < SelectedCharacters.Num(); i++)
 					{
-						//II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
-						//UE_LOG(LogTemp, Warning, TEXT("%f / %f  (%f%)"), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+						II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+						UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 					}
 					/// End Debug
 				}
@@ -430,7 +433,7 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 			FVector MoveLocation = hit.Location + FVector(i/2 * 100, i % 2 * 100, 0);
 
 			//Code to make the units move
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(SelectedCharacters[i]->GetController(), MoveLocation);
+			Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
 		}
 	}
 

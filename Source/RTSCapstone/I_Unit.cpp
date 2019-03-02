@@ -4,20 +4,25 @@
 
 // Add default functionality here for any II_Unit functions that are not pure virtual.
 
-/// Disabled for now.  Keep for reference
-//void II_Unit::SetDestination(FVector destination)
-//{
-//	// Do Nothing
-//}
+void II_Unit::SetDestination(AController* controller, FVector destination)
+{
+	targetMoveDestination = destination;
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(controller, destination);
+}
+
+void II_Unit::MoveOrder(AController* controller, FVector destination)
+{
+	SetDestination(controller, destination);
+	unitState = UNIT_STATE::MOVING;
+}
+
 
 void II_Unit::SetSelection(bool state)
 {
 	// Do Nothing
 }
 
-/// Disabled for now.  Keep for reference
-//AController* II_Unit::GetUnitController()
-//{
-//	// Do Nothing
-//	return nullptr;
-//}
+void II_Unit::AttackOrder(II_Entity* target)
+{
+	// Do nothing
+}

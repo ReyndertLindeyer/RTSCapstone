@@ -26,7 +26,7 @@ public:
 	/// Once we implement ownership, we'll be adding an additional argument to this function.
 	void InitializeEntity(FString name, float maxHealth);
 
-	void DealDamage(float amount);
+	int DealDamage(float amount);
 
 	FString GetName();
 	float GetCurrentHealth();

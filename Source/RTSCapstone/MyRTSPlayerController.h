@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "MasterUnit.h"
-#include "RifleInfantry.h"
 #include "BuildingMaster.h"
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
-#include "Building_Refinery.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
 #include "ProFow.h"
 
 // Interfaces
 #include "I_Entity.h"
+
+
+
 
 #include "Runtime/CoreUObject/Public/UObject/UObjectGlobals.h"
 #include "MyRTSPlayerController.generated.h"
@@ -133,7 +133,7 @@ protected:
 		void OnMiddleMouseReleased();
 
 	UPROPERTY()
-		TArray<ACharacter*> SelectedCharacters;
+		TArray<ACharacter*> SelectedCharacters = TArray<ACharacter*>();
 
 	UPROPERTY()
 		ABuildingMaster* SelectedStructure;

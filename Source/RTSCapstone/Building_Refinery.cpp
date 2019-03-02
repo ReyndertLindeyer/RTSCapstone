@@ -51,8 +51,8 @@ void ABuilding_Refinery::Tick(float DeltaTime)
 				//Spawn a harvester
 				//Harvester will know when it reaches the refinery and will unload its resources at that time
 
-				AUnit_Harvester_Character* temp = GetWorld()->SpawnActor<AUnit_Harvester_Character>(AUnit_Harvester_Character::StaticClass(), FVector(this->GetActorLocation() + FVector(30.0f, 10.0f, 0.0f)), FRotator(0.0f, 0.0f, 0.0f));
-				temp->SetActorScale3D(FVector(0.5, 0.5, 0.5));
+				//AUnit_Harvester_Character* temp = GetWorld()->SpawnActor<AUnit_Harvester_Character>(AUnit_Harvester_Character::StaticClass(), FVector(this->GetActorLocation() + FVector(30.0f, 10.0f, 0.0f)), FRotator(0.0f, 0.0f, 0.0f));
+				//temp->SetActorScale3D(FVector(0.5, 0.5, 0.5));
 
 				canSpawnHarvester = false;
 			}

@@ -226,6 +226,7 @@ void AUNIT_AvBT::AttackOrder(II_Entity* target)
 
 void AUNIT_AvBT::DestroyEntity()
 {
+
 	Destroy(this);
 }
 

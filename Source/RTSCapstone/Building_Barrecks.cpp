@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Building_Barrecks.h"
-#include "RifleInfantry.h"
 
 ABuilding_Barrecks::ABuilding_Barrecks() {
 	//Setting up general values
