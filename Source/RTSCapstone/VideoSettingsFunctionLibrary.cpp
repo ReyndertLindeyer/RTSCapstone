@@ -168,7 +168,6 @@ bool UVideoSettingsFunctionLibrary::SaveVideoModeAndQuality()
 
 	Settings->ConfirmVideoMode();
 	Settings->ApplyNonResolutionSettings();
-	//Settings->ApplySettings(true);
 	Settings->SaveSettings();
 	return true;
 }
