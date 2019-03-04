@@ -44,7 +44,38 @@ UBuildingManagerObject::UBuildingManagerObject()
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);;
+
+	//Orbital Cannon Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("OrbitalCannon")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Gun Turret Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Cannon Turret Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("CannonTurret")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Artillery Turret Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
+	//Tesla Turret Variables
+	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("TeslaTurret")), ContextString, false);
+	buildingCosts.Add(buildingVariables->Cost);
+	buildingConstructionTimes.Add(buildingVariables->BuildTime);
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+
 
 	canBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("GreenBuildingGhost"));
 	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
@@ -75,6 +106,26 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 		}
 		else if (whatBuilding_ == 5) {
 			buildingToBuild = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuilding_ == 6) {
+			//Replace with Orbital Cannon
+			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuilding_ == 7) {
+			//Replace with Gun Turret
+			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuilding_ == 8) {
+			//Replace with Cannon Turret
+			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuilding_ == 9) {
+			//Replace with Artillery Turret
+			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuilding_ == 10) {
+			//Replace with Tesla Turret
+			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		whatBuilding = whatBuilding_ - 1;
 		EnableAllDecals();
@@ -112,18 +163,10 @@ bool UBuildingManagerObject::constructBuilding(II_Player* player)
 			maxPower -= buildingPowerConsumption[whatBuilding];
 		}
 
-		if(buildingToBuild->IsA(ABuilding_PowerPlant::StaticClass())) {
-			powerPlantArray.Add((ABuilding_PowerPlant*)buildingToBuild);
-		}
 		else if (buildingToBuild->IsA(ABuilding_Refinery::StaticClass())) {
 			refineryArray.Add((ABuilding_Refinery*)buildingToBuild);
 		}
-		else if (buildingToBuild->IsA(ABuilding_Barrecks::StaticClass())) {
-			barrecksArray.Add((ABuilding_Barrecks*)buildingToBuild);
-		}
-		else if (buildingToBuild->IsA(ABuilding_VehicleFactory::StaticClass())) {
-			vehicleFactoryArray.Add((ABuilding_VehicleFactory*)buildingToBuild);
-		}
+
 		else if (buildingToBuild->IsA(ABuilding_TechCenter::StaticClass())) {
 			techCenterArray.Add((ABuilding_TechCenter*)buildingToBuild);
 		}

@@ -24,6 +24,10 @@ void AMyRTSHUD::DrawHUD() {
 	if (building != nullptr) {
 		DrawBuildingHealthBars(building);
 	}
+
+	if (selectedUnits.Num() > 0) {
+		DrawUnitHealthBars(selectedUnits);
+	}
 	
 	if (bStartSelecting) {
 		
@@ -125,64 +129,66 @@ FVector2D AMyRTSHUD::GetMousePos2D() {
 	return FVector2D(posX, posY);
 }
 
-void AMyRTSHUD::DrawUnitHealthBars(TArray<II_Unit*> SelectedUnits)
+void AMyRTSHUD::DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits)
 {
-	/*
-	if (existingBuildings[i]->IsSelected()) {
-			// Select the center point of the bar as the character's location
-			FVector center = existingBuildings[i]->GetActorLocation();
-			// Offsets of the bar
-			FVector extent = FVector(60.f, 34.f, 50.75f);
+	if (SelectedUnits.Num() > 0) {
+		for (int i = 0; i < SelectedUnits.Num(); i++) {
+			if (Cast<II_Entity>(SelectedUnits[i])->GetHealthPercentage() > 0) {
+				// Select the center point of the bar as the character's location
+				FVector center = SelectedUnits[i]->GetActorLocation();
+				// Offsets of the bar
+				FVector extent = FVector(60.f, 34.f, 50.75f);
 
-			// Project function of Canvas translates a world position to the screen position
-			FVector2D center2D = FVector2D(Canvas->Project(FVector(center.X, center.Y, center.Z + extent.Z)));
+				// Project function of Canvas translates a world position to the screen position
+				FVector2D center2D = FVector2D(Canvas->Project(FVector(center.X, center.Y, center.Z + extent.Z)));
 
-			float actorExtent = 50.f;
-			float healthPercentage = 0.5f;
-			float yOffset = 10.f;
+				float actorExtent = 50.f;
+				float healthPercentage = 0.5f;
+				float yOffset = 10.f;
 
-			healthPercentage = existingBuildings[i]->GetHealth() / existingBuildings[i]->GetMaxHealth();
-			actorExtent = existingBuildings[i]->GetHeight();
+				healthPercentage = Cast<II_Entity>(SelectedUnits[i])->GetHealthPercentage();
+				//actorExtent = 20;;
 
-			FVector pos1 = Canvas->Project(FVector(center.X, center.Y - actorExtent * 2, center.Z + extent.Z));
-			FVector pos2 = Canvas->Project(FVector(center.X, center.Y + actorExtent * 2, center.Z + extent.Z));
+				FVector pos1 = Canvas->Project(FVector(center.X, center.Y - actorExtent * 2, center.Z + extent.Z));
+				FVector pos2 = Canvas->Project(FVector(center.X, center.Y + actorExtent * 2, center.Z + extent.Z));
 
-			float barWidth = (pos2 - pos1).Size2D() * 0.2;
-			float barHeight = barWidth * 0.2f;
+				float barWidth = (pos2 - pos1).Size2D() * 0.2;
+				float barHeight = barWidth * 0.2f;
 
-			// Draw a background color first
-			/// Background tile ///
-			barWidth += 2.f;
-			barHeight += 2.f;
+				// Draw a background color first
+				/// Background tile ///
+				barWidth += 2.f;
+				barHeight += 2.f;
 
-			float x = center2D.X - barWidth * 0.5f;
-			float y = center2D.Y;
+				float x = center2D.X - barWidth * 0.5f;
+				float y = center2D.Y;
 
-			FCanvasTileItem tileItem(FVector2D(x, y), FVector2D(barWidth, barHeight), FLinearColor(0.0f, 0.0f, 0.0f, 0.5f));
-			tileItem.BlendMode = SE_BLEND_Translucent;
-			Canvas->DrawItem(tileItem);
-			/// Background tile ///
+				FCanvasTileItem tileItem(FVector2D(x, y), FVector2D(barWidth, barHeight), FLinearColor(0.0f, 0.0f, 0.0f, 0.5f));
+				tileItem.BlendMode = SE_BLEND_Translucent;
+				Canvas->DrawItem(tileItem);
+				/// Background tile ///
 
-			// Draw the health indicator
-			/// Health tile ///
-			barWidth -= 2.f;
-			barHeight -= 2.f;
+				// Draw the health indicator
+				/// Health tile ///
+				barWidth -= 2.f;
+				barHeight -= 2.f;
 
-			x = center2D.X - barWidth * 0.5f;
-			y = center2D.Y + 1.f;
+				x = center2D.X - barWidth * 0.5f;
+				y = center2D.Y + 1.f;
 
-			tileItem.Position = FVector2D(x, y);
-			if (healthPercentage > 0.61)
-				tileItem.SetColor(FLinearColor::Green);
-			else if (healthPercentage > 0.3 && healthPercentage < 0.6)
-				tileItem.SetColor(FLinearColor::Yellow);
-			else
-				tileItem.SetColor(FLinearColor::Red);
+				tileItem.Position = FVector2D(x, y);
+				if (healthPercentage > 0.61)
+					tileItem.SetColor(FLinearColor::Green);
+				else if (healthPercentage > 0.3 && healthPercentage < 0.6)
+					tileItem.SetColor(FLinearColor::Yellow);
+				else
+					tileItem.SetColor(FLinearColor::Red);
 
-			tileItem.Size = FVector2D(barWidth * healthPercentage, barHeight);
-			Canvas->DrawItem(tileItem);
+				tileItem.Size = FVector2D(barWidth * healthPercentage, barHeight);
+				Canvas->DrawItem(tileItem);
+			}
 		}
-*/
+	}
 }
 
 void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
@@ -245,4 +251,14 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 void AMyRTSHUD::SetSelectedBuilding(ABuildingMaster * SelectedBuilding)
 {
 	building = SelectedBuilding;
+}
+
+void AMyRTSHUD::SetSelectedUnits(TArray<ACharacter*> selectedUnits_)
+{
+	selectedUnits = selectedUnits_;
+}
+
+void AMyRTSHUD::ClearSelectedUnits()
+{
+	selectedUnits.Empty();
 }

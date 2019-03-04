@@ -102,13 +102,7 @@ private:
 		TArray<int32> buildingPowerConsumption;
 
 	UPROPERTY()
-		TArray <ABuilding_PowerPlant*> powerPlantArray;
-	UPROPERTY()
-		TArray <ABuilding_Barrecks*> barrecksArray;
-	UPROPERTY()
 		TArray <ABuilding_Refinery*> refineryArray;
-	UPROPERTY()
-		TArray <ABuilding_VehicleFactory*> vehicleFactoryArray;
 	UPROPERTY()
 		TArray <ABuilding_TechCenter*> techCenterArray;
 	UPROPERTY()

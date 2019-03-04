@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "GameFramework/Character.h"
 
 // Interfaces
 #include "I_Unit.h"
@@ -57,11 +58,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 		class UUserWidget* CurrentWidget;
 
-	void DrawUnitHealthBars(TArray<II_Unit*> SelectedUnits);
+	void DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits);
 	void DrawBuildingHealthBars(ABuildingMaster* SelectedBuilding);
 
 	void SetSelectedBuilding(ABuildingMaster* SelectedBuilding);
 
+	void SetSelectedUnits(TArray<ACharacter*> selectedUnits_);
+	void ClearSelectedUnits();
+
 private:
 	ABuildingMaster* building;
+	TArray<ACharacter*> selectedUnits;
 };
