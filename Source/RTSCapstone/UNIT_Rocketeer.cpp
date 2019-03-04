@@ -37,7 +37,7 @@ void AUNIT_Rocketeer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity("Rocketeer", startingHealth);
+	InitializeEntity(nullptr, "Rocketeer", startingHealth);
 
 }
 

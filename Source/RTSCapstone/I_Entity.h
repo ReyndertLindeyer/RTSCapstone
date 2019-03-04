@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+
+#include "I_Player.h"
+
 #include "I_Entity.generated.h"
 
 // This class does not need to be modified.
@@ -13,9 +16,6 @@ class UI_Entity : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class RTSCAPSTONE_API II_Entity
 {
 	GENERATED_BODY()
@@ -24,7 +24,7 @@ class RTSCAPSTONE_API II_Entity
 public:
 
 	/// Once we implement ownership, we'll be adding an additional argument to this function.
-	void InitializeEntity(FString name, float maxHealth);
+	void InitializeEntity(II_Player* owner_, FString name, float maxHealth);
 
 	int DealDamage(float amount);
 
@@ -35,9 +35,12 @@ public:
 	
 	virtual void DestroyEntity();
 
+	II_Player* GetEntityOwner();
+
 
 private:
 	bool isInitialized = false;
 	FString name;
 	float currentHealth, maxHealth = 100.0f;
+	II_Player* owner;
 };

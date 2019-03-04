@@ -31,3 +31,8 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
 	decal->ComponentTags.Add(FName("BuildArea"));
 }
+
+void ABuilding_TechCenter::InitializeStructure(II_Player* player)
+{
+	InitializeEntity(player, "Technology Centre", 1500.0f);
+}

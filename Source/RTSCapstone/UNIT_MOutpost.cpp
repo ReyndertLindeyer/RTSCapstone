@@ -37,7 +37,7 @@ void AUNIT_MOutpost::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity("Surveyer", startingHealth);
+	InitializeEntity(nullptr, "Surveyer", startingHealth);
 }
 
 // Called every frame

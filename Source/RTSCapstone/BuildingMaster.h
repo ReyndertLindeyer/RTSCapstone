@@ -14,6 +14,10 @@
 
 #include "Engine/DataTable.h"
 
+// INTERFACE
+#include "I_Entity.h"
+#include "I_Player.h"
+
 #include "BuildingMaster.generated.h"
 
 
@@ -31,7 +35,7 @@ public:
 };
 
 UCLASS()
-class RTSCAPSTONE_API ABuildingMaster : public AActor
+class RTSCAPSTONE_API ABuildingMaster : public AActor, public II_Entity
 {
 	GENERATED_BODY()
 	
@@ -59,10 +63,17 @@ public:
 
 	void Suicide();
 
+	// Entity Interface
+	virtual void DestroyEntity() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
+	// Called in the constructAtLocation() method.
+	// Functionality needs to be implemented on each building
+	virtual void InitializeStructure(II_Player* player);
+
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
 	AMyRTSAIController* rtsAI;
@@ -98,7 +109,7 @@ public:
 
 	UStaticMeshComponent* GetBuildingMesh();
 		
-	bool constructAtLocation();
+	bool constructAtLocation(II_Player* player);
 	bool overlapping, isInRadius;
 
 	UFUNCTION(BlueprintPure, Category = "UI")
@@ -116,4 +127,6 @@ public:
 		virtual void BeginRadiusOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 	UFUNCTION()
 		virtual void OnRadiusOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 };

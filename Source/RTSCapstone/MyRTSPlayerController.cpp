@@ -24,6 +24,9 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	selectedFactory = false;
 
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
+
+	// Player Interface
+	InitializePlayer(FString("Player 1"));
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -46,6 +49,8 @@ void AMyRTSPlayerController::BeginPlay()
 	
 	/// Disabled for debugging
 	//m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
+
+	
 }
 
 void AMyRTSPlayerController::Tick(float DeltaTime)
@@ -361,7 +366,16 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 
 					/// Debugging
 					II_Entity* entity = Cast<II_Entity>(SelectedStructure);
-					UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					if (entity->GetEntityOwner() != nullptr)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("%s (%s) : %f / %f  (%f%)"), *entity->GetName(), *entity->GetEntityOwner()->GetPlayerName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					}
+
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("%s (none) : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+					}
+	
 					/// End Debug
 
 				}
@@ -375,7 +389,15 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					for (int i = 0; i < SelectedCharacters.Num(); i++)
 					{
 						II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
-						UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+						if (entity->GetEntityOwner() != nullptr)
+						{
+							UE_LOG(LogTemp, Warning, TEXT("%s (%s) : %f / %f  (%f%)"), *entity->GetName(), *entity->GetEntityOwner()->GetPlayerName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+						}
+
+						else
+						{
+							UE_LOG(LogTemp, Warning, TEXT("%s (none) : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+						}
 					}
 					/// End Debug
 				}
@@ -389,7 +411,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 	}
 	
 	if (constructingBuilding) {
-		if (buildingManagerObject->constructBuilding()) {
+		if (buildingManagerObject->constructBuilding(GetPlayerReference())) {
 			///HUDPtr->AddBuilding(buildingToBuild);
 			///m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
 			constructingBuilding = false;

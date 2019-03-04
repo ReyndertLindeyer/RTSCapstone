@@ -37,7 +37,7 @@ void AUNIT_Engineer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity("Engineer", startingHealth);
+	InitializeEntity(nullptr, "Engineer", startingHealth);
 }
 
 // Called every frame

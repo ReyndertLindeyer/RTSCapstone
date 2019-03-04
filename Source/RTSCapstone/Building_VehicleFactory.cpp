@@ -221,3 +221,8 @@ void ABuilding_VehicleFactory::Tick(float DeltaTime)
 		PrimaryActorTick.bCanEverTick = false;
 	}
 }
+
+void ABuilding_VehicleFactory::InitializeStructure(II_Player* player)
+{
+	InitializeEntity(player, "Vehicle Factory", 2000.0f);
+}

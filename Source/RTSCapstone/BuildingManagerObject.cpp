@@ -104,9 +104,9 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 
 }
 
-bool UBuildingManagerObject::constructBuilding()
+bool UBuildingManagerObject::constructBuilding(II_Player* player)
 {
-	if (buildingToBuild->constructAtLocation()) {
+	if (buildingToBuild->constructAtLocation(player)) {
 			currentPower -= buildingPowerConsumption[whatBuilding];
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];

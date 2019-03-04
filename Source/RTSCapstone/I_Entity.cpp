@@ -4,13 +4,14 @@
 
 // Add default functionality here for any II_Entity functions that are not pure virtual.
 
-void II_Entity::InitializeEntity(FString name_, float maxHealth_)
+void II_Entity::InitializeEntity(II_Player* owner_, FString name_, float maxHealth_)
 {
 	if (!isInitialized)
 	{
 		name = name_;
 		maxHealth = maxHealth_;
 		currentHealth = maxHealth;
+		owner = owner_;
 
 		isInitialized = true;
 	}
@@ -67,4 +68,9 @@ float II_Entity::GetHealthPercentage()
 void II_Entity::DestroyEntity()
 {
 	// Do Nothing
+}
+
+II_Player* II_Entity::GetEntityOwner()
+{
+	return owner;
 }

@@ -59,3 +59,8 @@ void ABuilding_Refinery::Tick(float DeltaTime)
 		}
 	}
 }
+
+void ABuilding_Refinery::InitializeStructure(II_Player* player)
+{
+	InitializeEntity(player, "Refinery", 2000.0f);
+}

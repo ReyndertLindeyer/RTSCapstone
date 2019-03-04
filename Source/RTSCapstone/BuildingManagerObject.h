@@ -16,6 +16,8 @@
 
 #include "Engine/DataTable.h"
 
+#include "I_Player.h"
+
 #include "BuildingManagerObject.generated.h"
 
 USTRUCT(BlueprintType)
@@ -54,7 +56,7 @@ public:
 
 	void SpawnConstructionYard(FVector spawnLocation);
 
-	bool constructBuilding();
+	bool constructBuilding(II_Player* player);
 
 	float GetResources();
 

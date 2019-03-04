@@ -36,6 +36,13 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 void ABuilding_PowerPlant::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
+}
+
+void ABuilding_PowerPlant::InitializeStructure(II_Player* player)
+{
+	InitializeEntity(player, "PowerPlant", 800.0f);
 }
 
 void ABuilding_PowerPlant::Upgrade()

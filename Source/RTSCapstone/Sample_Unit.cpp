@@ -23,7 +23,7 @@ void ASample_Unit::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitializeEntity("Sample_Unit", 100.0f);
+	InitializeEntity(nullptr, "Sample_Unit", 100.0f);
 	
 }
 

@@ -13,6 +13,7 @@
 
 // Interfaces
 #include "I_Entity.h"
+#include "I_Player.h"
 
 
 
@@ -24,7 +25,7 @@
  * 
  */
 UCLASS()
-class RTSCAPSTONE_API AMyRTSPlayerController : public APlayerController
+class RTSCAPSTONE_API AMyRTSPlayerController : public APlayerController, public II_Player
 {
 	GENERATED_BODY()
 	

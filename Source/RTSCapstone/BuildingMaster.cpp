@@ -124,7 +124,6 @@ void ABuildingMaster::BeginPlay()
 	else
 		selectedDecal->DecalSize = FVector(2, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X + 20, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X + 20);
 
-
 }
 
 // Called every frame
@@ -145,7 +144,7 @@ UStaticMeshComponent * ABuildingMaster::GetBuildingMesh()
 	return buildingMesh;
 }
 
-bool ABuildingMaster::constructAtLocation()
+bool ABuildingMaster::constructAtLocation(II_Player* player)
 {
 	if (!overlapping && isInRadius) {
 		buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 40.0f));
@@ -154,9 +153,16 @@ bool ABuildingMaster::constructAtLocation()
 
 		buildRadiusSphere->SetSphereRadius(buildRadius);
 
+		InitializeStructure(player);
+
 		return true;
 	}
 	return false;
+}
+
+void ABuildingMaster::InitializeStructure(II_Player* player)
+{
+	// Do Nothing
 }
 
 int ABuildingMaster::GetHealth()
@@ -225,4 +231,9 @@ void ABuildingMaster::OnRadiusOverlapEnd(UPrimitiveComponent * OverlappedComp, A
 			}
 		}
 	}
+}
+
+void ABuildingMaster::DestroyEntity() 
+{
+	//Destroy(this);
 }

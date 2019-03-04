@@ -37,7 +37,7 @@ void AUNIT_Rifleman::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitializeEntity("Rifleman", startingHealth);
+	InitializeEntity(nullptr, "Rifleman", startingHealth);
 	
 }
 

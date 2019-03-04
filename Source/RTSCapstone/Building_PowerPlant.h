@@ -17,4 +17,6 @@ public:
 	ABuilding_PowerPlant();
 	virtual void BeginPlay() override;
 	void Upgrade();
+
+	virtual void InitializeStructure(II_Player* player) override;
 };

@@ -37,7 +37,7 @@ void AUNIT_MArtillery::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity("Mobile Artillery", startingHealth);
+	InitializeEntity(nullptr, "Mobile Artillery", startingHealth);
 }
 
 // Called every frame

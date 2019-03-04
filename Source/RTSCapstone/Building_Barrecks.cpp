@@ -168,3 +168,9 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 		PrimaryActorTick.bCanEverTick = false;
 	}
 }
+
+void ABuilding_Barrecks::InitializeStructure(II_Player* player)
+{
+	InitializeEntity(player, "Barracks", 700.0f);
+	
+}

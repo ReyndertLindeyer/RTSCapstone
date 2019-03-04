@@ -37,7 +37,7 @@ void AUNIT_AvBT::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity("Advanded Battle Tank", startingHealth);
+	InitializeEntity(nullptr, "Advanded Battle Tank", startingHealth);
 }
 
 // Called every frame

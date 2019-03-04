@@ -29,6 +29,8 @@ public:
 	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
 
+	virtual void InitializeStructure(II_Player* player) override;
+
 protected:
 	virtual void BeginPlay() override;
 
