@@ -24,6 +24,9 @@ void AMyRTSHUD::DrawHUD() {
 	if (building != nullptr) {
 		DrawBuildingHealthBars(building);
 	}
+	if (selectedUnits.Num() > 0) {
+		DrawUnitHealthBars(selectedUnits);
+	}
 	
 	if (bStartSelecting) {
 		
@@ -125,12 +128,12 @@ FVector2D AMyRTSHUD::GetMousePos2D() {
 	return FVector2D(posX, posY);
 }
 
-void AMyRTSHUD::DrawUnitHealthBars(TArray<II_Unit*> SelectedUnits)
+void AMyRTSHUD::DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits)
 {
-	/*
-	if (existingBuildings[i]->IsSelected()) {
+	if (SelectedUnits.Num() > 0) {
+		for (int i = 0; i < SelectedUnits.Num(); i++) {
 			// Select the center point of the bar as the character's location
-			FVector center = existingBuildings[i]->GetActorLocation();
+			FVector center = SelectedUnits[i]->GetActorLocation();
 			// Offsets of the bar
 			FVector extent = FVector(60.f, 34.f, 50.75f);
 
@@ -141,8 +144,8 @@ void AMyRTSHUD::DrawUnitHealthBars(TArray<II_Unit*> SelectedUnits)
 			float healthPercentage = 0.5f;
 			float yOffset = 10.f;
 
-			healthPercentage = existingBuildings[i]->GetHealth() / existingBuildings[i]->GetMaxHealth();
-			actorExtent = existingBuildings[i]->GetHeight();
+			healthPercentage = Cast<II_Entity>(SelectedUnits[i])->GetHealthPercentage();
+			//actorExtent = 20;
 
 			FVector pos1 = Canvas->Project(FVector(center.X, center.Y - actorExtent * 2, center.Z + extent.Z));
 			FVector pos2 = Canvas->Project(FVector(center.X, center.Y + actorExtent * 2, center.Z + extent.Z));
@@ -182,7 +185,7 @@ void AMyRTSHUD::DrawUnitHealthBars(TArray<II_Unit*> SelectedUnits)
 			tileItem.Size = FVector2D(barWidth * healthPercentage, barHeight);
 			Canvas->DrawItem(tileItem);
 		}
-*/
+	}
 }
 
 void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
@@ -245,4 +248,14 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 void AMyRTSHUD::SetSelectedBuilding(ABuildingMaster * SelectedBuilding)
 {
 	building = SelectedBuilding;
+}
+
+void AMyRTSHUD::SetSelectedUnits(TArray<ACharacter*> selectedUnits_)
+{
+	selectedUnits = selectedUnits_;
+}
+
+void AMyRTSHUD::ClearSelectedUnits()
+{
+	selectedUnits.Empty();
 }

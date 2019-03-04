@@ -327,6 +327,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			if (!HUDPtr->isShift) 
 			{
 				SelectedCharacters.Empty();
+				HUDPtr->ClearSelectedUnits();
 			}
 		}
 	}
@@ -375,7 +376,6 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					{
 						UE_LOG(LogTemp, Warning, TEXT("%s (none) : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 					}
-	
 					/// End Debug
 
 				}
@@ -384,6 +384,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				else 
 				{
 					SelectedCharacters = HUDPtr->FoundCharacters;
+					 HUDPtr->SetSelectedUnits(SelectedCharacters);
 
 					/// Debugging
 					for (int i = 0; i < SelectedCharacters.Num(); i++)
