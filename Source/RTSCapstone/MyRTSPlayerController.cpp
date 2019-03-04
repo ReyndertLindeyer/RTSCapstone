@@ -366,6 +366,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 
 					/// Debugging
 					II_Entity* entity = Cast<II_Entity>(SelectedStructure);
+<<<<<<< HEAD
 					if (entity->GetEntityOwner() != nullptr)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("%s (%s) : %f / %f  (%f%)"), *entity->GetName(), *entity->GetEntityOwner()->GetPlayerName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
@@ -375,6 +376,9 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					{
 						UE_LOG(LogTemp, Warning, TEXT("%s (none) : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 					}
+=======
+					UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
+>>>>>>> parent of a46256e... Added building functionality and selected unit health bars
 					/// End Debug
 
 				}
