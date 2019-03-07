@@ -27,6 +27,14 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'"));
+	shootingComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	shootingComp->SetupAttachment(RootComponent);
+	shootingComp->bAutoActivate = false;
+	shootingComp->SetRelativeScale3D(FVector(3.0f, 1.0f, 1.5f));
+	shootingComp->SetTemplate(PS.Object);
+
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -37,7 +45,7 @@ void AUNIT_Rifleman::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitializeEntity(nullptr, "Rifleman", startingHealth);
+	//InitializeEntity(nullptr, "Rifleman", startingHealth);
 	
 }
 
@@ -54,7 +62,6 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	ignoreActors.Add(this);
 
 	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
 
 	switch (unitState)
 	{
@@ -151,9 +158,10 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	// ATTACK STATE
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
-		if (targetEntity == nullptr)
+		if (targetEntity == nullptr) {
 			unitState = UNIT_STATE::IDLE;
-
+			shootingComp->DeactivateSystem();
+		}
 		else
 		{
 			FVector targetLocation = Cast<AActor>(targetEntity)->GetActorLocation();
@@ -172,6 +180,7 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 
 				if (currentTimer >= attackRate)
 				{
+					shootingComp->ActivateSystem(true);
 					currentTimer = 0.0f;
 					AttackOrder(targetEntity);
 				}

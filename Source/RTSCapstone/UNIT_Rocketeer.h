@@ -6,6 +6,7 @@
 
 // Components
 #include "Components/SphereComponent.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
 // Interface
 #include "I_Unit.h"
@@ -13,6 +14,7 @@
 
 // Meshes
 #include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 
 #include "GameFramework/Character.h"
 #include "UNIT_Rocketeer.generated.h"
@@ -49,6 +51,9 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	UPROPERTY()
+		UParticleSystemComponent* shootingComp;
 
 public:
 	TArray<AActor*> entitiesInRange;

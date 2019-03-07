@@ -43,6 +43,13 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
 
+	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
+	waypointMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Waypoint.Waypoint")).Get());
+	waypointMesh->SetRelativeLocation(wayPoint);
+	waypointMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	waypointMesh->SetSimulatePhysics(false);
+	waypointMesh->SetupAttachment(RootComponent);
+	
 	countToCompleteUnit = 0.0f;
 
 	constructingUnit = false;
@@ -63,6 +70,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 void ABuilding_Barrecks::BeginPlay()
 {
 	Super::BeginPlay();
+	waypointMesh->SetHiddenInGame(true);
 }
 
 int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)
@@ -130,14 +138,29 @@ float ABuilding_Barrecks::TimeRemaining()
 
 void ABuilding_Barrecks::SpawnUnit()
 {
+	ACharacter* holder;
+	UWorld* const World = this->GetWorld();
 	//Spawn the unit and give it its information
 	constructingUnit = false;
-	unitQueue[0];
+	if (unitQueue[0] == 1) {
+		holder = World->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rifleman", 200.0f);
+	}
+	else if (unitQueue[0] == 2) {
+		holder = World->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rocketeer", 200.0f);
+	}
+	else {
+		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
+	}
+	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 
 void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
+	waypointMesh->SetWorldLocation(inVec);
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)
@@ -166,6 +189,13 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 
 	if (!constructingUnit && unitQueue.Num() == 0) {
 		PrimaryActorTick.bCanEverTick = false;
+	}
+
+	if (IsSelected() && waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(false);
+	}
+	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(true);
 	}
 }
 

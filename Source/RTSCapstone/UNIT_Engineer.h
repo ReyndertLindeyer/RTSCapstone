@@ -13,6 +13,7 @@
 
 // Meshes
 #include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 
 #include "GameFramework/Character.h"
 #include "UNIT_Engineer.generated.h"

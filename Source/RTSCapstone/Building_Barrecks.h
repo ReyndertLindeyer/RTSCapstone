@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
+#include "Engine/StaticMesh.h"
+#include "UNIT_Rifleman.h"
+#include "UNIT_Rocketeer.h"
+#include "UNIT_Engineer.h"
 #include "Building_Barrecks.generated.h"
 
 /**
@@ -43,4 +47,7 @@ protected:
 	float countToCompleteUnit;
 
 	uint32 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, engineerBuildTime, engineerCost;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* waypointMesh;
 };
