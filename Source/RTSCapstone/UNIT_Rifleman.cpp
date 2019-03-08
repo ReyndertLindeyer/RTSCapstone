@@ -177,6 +177,8 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 			{
 				SetDestination(GetController(), GetActorLocation());
 
+				RootComponent->SetRelativeRotation((targetLocation - RootComponent->GetComponentLocation()).Rotation());
+
 				if (currentTimer >= attackRate)
 				{
 					shootingComp->ActivateSystem(true);

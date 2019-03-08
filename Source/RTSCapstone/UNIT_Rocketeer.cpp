@@ -30,8 +30,8 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'"));
 	shootingComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
 	shootingComp->SetupAttachment(RootComponent);
+	shootingComp->SetRelativeLocation(FVector(1.0, 0.0, 3.0));
 	shootingComp->bAutoActivate = false;
-	shootingComp->SetRelativeScale3D(FVector(3.0f, 1.0f, 1.5f));
 	shootingComp->SetTemplate(PS.Object);
 
 	currentTimer = 0.0f;
@@ -176,6 +176,8 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 			else
 			{
 				SetDestination(GetController(), GetActorLocation());
+
+				RootComponent->SetRelativeRotation((targetLocation - RootComponent->GetComponentLocation()).Rotation());
 
 				if (currentTimer >= attackRate)
 				{
