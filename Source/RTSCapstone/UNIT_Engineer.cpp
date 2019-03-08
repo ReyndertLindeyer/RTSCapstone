@@ -37,6 +37,7 @@ void AUNIT_Engineer::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnDefaultController();
 	InitializeEntity(nullptr, "Engineer", startingHealth);
 }
 

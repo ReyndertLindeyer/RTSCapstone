@@ -32,12 +32,20 @@ public:
 	FString GetPlayerName();
 
 	void AddUnit(AActor* unitReference);
+	TArray<AActor*> GetUnits();
+
 	void AddBuilding(AActor* buildingReference);
+	TArray<AActor*> GetBuildings();
+
+	void AddResources(int amount);
+	int GetResources();
 
 private:
 	// Variables
-	TArray<AActor*> UnitList();
-	TArray<AActor*> BuildingList();
+	TArray<AActor*> UnitList;
+	TArray<AActor*> BuildingList;
+
+
 
 	FString PlayerName;
 	

@@ -15,10 +15,12 @@ AResourceNode::AResourceNode()
 	mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	RootComponent = mesh;
 	//mesh->SetupAttachment(RootComponent);
+	mesh->SetCollisionProfileName(FName("OverlapAll"));
 	mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mesh->SetSimulatePhysics(false);
 
 	needsRespawning = false;
+	isOccupied = false;
 }
 
 void AResourceNode::setup(UINT32 resourceYield, bool canRespawn)
@@ -27,14 +29,25 @@ void AResourceNode::setup(UINT32 resourceYield, bool canRespawn)
 	respawnable = canRespawn;
 }
 
-void AResourceNode::Harvest(float amountHarvested)
+float AResourceNode::Harvest()
 {
-	yield -= amountHarvested;
+	if (yield - 10 >= 0)
+	{
+		yield -= 10.0f;
+		return 10.0f;
+	}
+
+	else
+	{
+		float amt = yield;
+		yield = 0;
+		return amt;
+	}
 }
 
-int AResourceNode::RemainingResources()
+float AResourceNode::RemainingResources()
 {
-	return (int)yield;
+	return yield;
 }
 
 // Called every frame
@@ -42,12 +55,13 @@ void AResourceNode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (yield <= 0 && respawnable) {
-		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 20.0f));
-		respawnTime = FMath::RandRange(30.0f, 60.0f);
-		needsRespawning = true;
+		Destroy(this);
+		//SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 20.0f));
+		//respawnTime = FMath::RandRange(30.0f, 60.0f);
+		//needsRespawning = true;
 	}
 	if (yield <= 0 && !respawnable) {
-		Destroy();
+		Destroy(this);
 	}
 	if (respawnTime >= 0.0f && needsRespawning) {
 		yield = FMath::RandRange(100, 120);

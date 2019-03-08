@@ -37,6 +37,7 @@ void AUNIT_MOutpost::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnDefaultController();
 	InitializeEntity(nullptr, "Surveyer", startingHealth);
 }
 

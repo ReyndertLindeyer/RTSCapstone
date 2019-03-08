@@ -37,6 +37,7 @@ void AUNIT_MBT::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SpawnDefaultController();
 	InitializeEntity(nullptr, "Main Battle Tank", startingHealth);
 
 }

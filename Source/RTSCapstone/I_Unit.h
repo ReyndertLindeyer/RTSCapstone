@@ -24,7 +24,8 @@ enum class UNIT_STATE {
 	IDLE		UMETA(DisplayName = "Idle"),
 	MOVING		UMETA(DisplayName = "Moving"),
 	SEEKING		UMETA(DisplayName = "Seeking"),
-	ATTACKING	UMETA(DisplayName = "Attacking")
+	ATTACKING	UMETA(DisplayName = "Attacking"),
+	INTERACTING UMETA(DisplayName = "Interacting")
 };
 
 

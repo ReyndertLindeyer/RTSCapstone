@@ -175,6 +175,8 @@ bool UBuildingManagerObject::constructBuilding(II_Player* player)
 
 		masterArray.Add(buildingToBuild);
 
+		player->AddBuilding(Cast<AActor>(buildingToBuild));
+
 		buildingToBuild = nullptr;
 
 		DisableAllDecals();

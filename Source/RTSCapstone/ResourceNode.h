@@ -19,15 +19,17 @@ public:
 
 	void setup(UINT32 resourceYield, bool canRespawn); //Set the yield of the resource node
 
-	void Harvest(float amountHarvested);
+	float Harvest();
 
-	int RemainingResources();
+	float RemainingResources();
+
+	bool isOccupied;
 
 private:
 
 	bool respawnable;
 
-	UINT32 yield;
+	float yield;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

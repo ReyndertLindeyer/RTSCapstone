@@ -133,7 +133,7 @@ void ABuildingMaster::Tick(float DeltaTime)
 
 	if (isPlaced) {
 		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 33.0f), DeltaTime, spawnTime));
-		if (buildingMesh->GetComponentLocation().Z >= 33.0f) {
+		if (buildingMesh->GetComponentLocation().Z >= 30.0f) {
 			PrimaryActorTick.bCanEverTick = false;
 		}
 	}

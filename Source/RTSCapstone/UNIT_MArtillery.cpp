@@ -37,6 +37,7 @@ void AUNIT_MArtillery::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SpawnDefaultController();
 	InitializeEntity(nullptr, "Mobile Artillery", startingHealth);
 }
 
