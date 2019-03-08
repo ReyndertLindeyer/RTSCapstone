@@ -160,7 +160,6 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	{
 		if (targetEntity == nullptr) {
 			unitState = UNIT_STATE::IDLE;
-			shootingComp->DeactivateSystem();
 		}
 		else
 		{

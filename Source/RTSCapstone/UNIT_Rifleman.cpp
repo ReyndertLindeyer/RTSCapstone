@@ -160,7 +160,6 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	{
 		if (targetEntity == nullptr) {
 			unitState = UNIT_STATE::IDLE;
-			shootingComp->DeactivateSystem();
 		}
 		else
 		{
