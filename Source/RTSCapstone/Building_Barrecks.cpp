@@ -13,6 +13,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	buildRadius = 500;
 	isBuilding = true;
 	isPlaced = false;
+	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
@@ -163,6 +164,11 @@ void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 	waypointMesh->SetWorldLocation(inVec);
 }
 
+void ABuilding_Barrecks::SetHasPower(bool inBool)
+{
+	hasPower = inBool;
+}
+
 void ABuilding_Barrecks::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -180,7 +186,11 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 	}
 
 	if (constructingUnit) {
-		countToCompleteUnit -= DeltaTime;
+		//If the structure has enough power then construct normally, if not then construct at half progress
+		if(hasPower)
+			countToCompleteUnit -= DeltaTime;
+		else
+			countToCompleteUnit -= DeltaTime/2;
 	}
 
 	if (constructingUnit && countToCompleteUnit < 0.0f) {

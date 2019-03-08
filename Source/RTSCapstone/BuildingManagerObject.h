@@ -86,13 +86,14 @@ public:
 
 private:
 	UPROPERTY()
-		UMaterial* canBuildIndicator;
+		UMaterialInterface* canBuildIndicator;
 	UPROPERTY()
-		UMaterial* cantBuildIndicator;
+		UMaterialInterface* cantBuildIndicator;
 	UPROPERTY()
-		UMaterial* regularMaterial;
+		UMaterialInterface* regularMaterial;
 
 	int32 currentPower, maxPower, resources, whatBuilding; //What building is currently being built?
+	bool power; //Bool for if the player has run out of power, if they have then the manager will check to see if the next building that's being built can provide enough power to boost everything back up
 
 	UPROPERTY()
 		TArray<int32> buildingCosts;

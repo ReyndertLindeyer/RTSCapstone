@@ -14,6 +14,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	buildRadius = 500;
 	isBuilding = true;
 	isPlaced = false;
+	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_VehicleFactory::BeginOverlap);
@@ -57,7 +58,14 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	outpostCost = UnitVariables->Cost;
 	outpostTime = UnitVariables->BuildTime;
 
-	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
+	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the building
+
+	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
+	waypointMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Waypoint.Waypoint")).Get());
+	waypointMesh->SetRelativeLocation(wayPoint);
+	waypointMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	waypointMesh->SetSimulatePhysics(false);
+	waypointMesh->SetupAttachment(RootComponent);
 
 	countToCompleteUnit = 0.0f;
 
@@ -182,6 +190,12 @@ void ABuilding_VehicleFactory::SpawnUnit()
 
 void ABuilding_VehicleFactory::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
+	waypointMesh->SetWorldLocation(inVec);
+}
+
+void ABuilding_VehicleFactory::SetHasPower(bool inBool)
+{
+	hasPower = inBool;
 }
 
 void ABuilding_VehicleFactory::Tick(float DeltaTime)
@@ -210,7 +224,11 @@ void ABuilding_VehicleFactory::Tick(float DeltaTime)
 	}
 
 	if (constructingUnit) {
-		countToCompleteUnit -= DeltaTime;
+		//If the structure has enough power then construct normally, if not then construct at half progress
+		if (hasPower)
+			countToCompleteUnit -= DeltaTime;
+		else
+			countToCompleteUnit -= DeltaTime / 2;
 	}
 
 	if (constructingUnit && countToCompleteUnit < 0.0f) {
@@ -219,6 +237,13 @@ void ABuilding_VehicleFactory::Tick(float DeltaTime)
 
 	if (!constructingUnit && unitQueue.Num() == 0) {
 		PrimaryActorTick.bCanEverTick = false;
+	}
+
+	if (IsSelected() && waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(false);
+	}
+	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(true);
 	}
 }
 
