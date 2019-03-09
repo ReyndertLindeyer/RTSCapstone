@@ -13,6 +13,7 @@
 #include "Building_Refinery.h"
 #include "Building_VehicleFactory.h"
 #include "Building_TechCenter.h"
+#include "Building_Turret.h"
 
 #include "Engine/DataTable.h"
 #include "Engine/World.h"

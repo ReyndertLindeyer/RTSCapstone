@@ -103,7 +103,17 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 
 			// If there isn't a target, set a target.
 			else
-				targetEntity = Cast<II_Entity>(entitiesInRange[0]);
+			{
+				/// Check if entities are hostile
+				for (int i = 0; i < entitiesInRange.Num(); i++)
+				{
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					{
+						targetEntity = Cast<II_Entity>(entitiesInRange[0]);
+					}
+				}
+
+			}
 
 		}
 	}

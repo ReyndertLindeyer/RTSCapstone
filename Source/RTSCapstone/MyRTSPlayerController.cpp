@@ -448,18 +448,40 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 	}
 
 	if (SelectedCharacters.Num() > 0.0f) {
+		
+		
+		
 		//Cycle through all units
 		for (int32 i = 0; i < SelectedCharacters.Num(); i++) {
-			UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
-			//Find location that the player right clicked on and store it
-			FHitResult hit;
-			GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+			
+			/// Disable Commands for Units that are not your own
+			if (Cast<II_Entity>(SelectedCharacters[i])->GetEntityOwner() == this)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
+				//Find location that the player right clicked on and store it
+				FHitResult hit;
+				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
-			//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
-			FVector MoveLocation = hit.Location + FVector(i/2 * 100, i % 2 * 100, 0);
+				//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
+				FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
 
-			//Code to make the units move
-			Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+				//Code to make the units move
+				Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+			}
+
+			/// Keep this here for if we need to command enemy units (DEBUG)
+			//UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
+			////Find location that the player right clicked on and store it
+			//FHitResult hit;
+			//GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+
+			////Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
+			//FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+
+			////Code to make the units move
+			//Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+
+			
 		}
 	}
 

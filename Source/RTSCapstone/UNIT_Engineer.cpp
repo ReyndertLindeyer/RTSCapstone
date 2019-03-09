@@ -37,7 +37,7 @@ void AUNIT_Engineer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//InitializeEntity(nullptr, "Engineer", startingHealth);
+	InitializeEntity(nullptr, "Engineer", startingHealth);
 	SpawnDefaultController();
 }
 
@@ -215,5 +215,5 @@ void AUNIT_Engineer::AttackOrder(II_Entity* target)
 
 void AUNIT_Engineer::DestroyEntity()
 {
-	Destroy(this);
+	Destroy();
 }

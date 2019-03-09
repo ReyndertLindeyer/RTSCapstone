@@ -113,7 +113,7 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 		}
 		else if (whatBuilding_ == 7) {
 			//Replace with Gun Turret
-			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			buildingToBuild = World->SpawnActor<ABuilding_Turret>(ABuilding_Turret::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding_ == 8) {
 			//Replace with Cannon Turret
