@@ -84,6 +84,12 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
+void ABuilding_VehicleFactory::BeginPlay()
+{
+	Super::BeginPlay();
+	waypointMesh->SetHiddenInGame(true);
+	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
+}
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)
 {

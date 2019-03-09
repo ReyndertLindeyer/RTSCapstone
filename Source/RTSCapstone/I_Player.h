@@ -37,8 +37,9 @@ public:
 	void AddBuilding(AActor* buildingReference);
 	TArray<AActor*> GetBuildings();
 
-	void AddResources(int amount);
-	int GetResources();
+	//Adds the amount given
+	void ChangeResources(int amount); 
+	int GetResourceAmount();
 
 private:
 	// Variables

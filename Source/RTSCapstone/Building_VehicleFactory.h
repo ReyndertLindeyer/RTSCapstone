@@ -34,6 +34,8 @@ public:
 	virtual void InitializeStructure(II_Player* player) override;
 
 protected:
+	virtual void BeginPlay() override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	bool constructingUnit, hasPower; //Variables for if the building is constructing any units, and if the building has enough power

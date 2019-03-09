@@ -59,8 +59,6 @@ public:
 
 	bool constructBuilding(II_Player* player);
 
-	float GetResources();
-
 	TArray<int32> GetBuildingCost();
 
 	TArray<int32> GetConstructionTime();
@@ -70,9 +68,7 @@ public:
 	int32 GetMaxPower();
 
 	void SubtractCost(int32 whatBuilding_);
-	void SubtractResourceAmount(int32 amount);
 	void AddCost(int32 whatBuilding_);
-	void AddResourceAmount(int32 amount);
 
 	void EnableAllDecals();
 	void DisableAllDecals();
@@ -85,6 +81,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class UDataTable* buildingDataTable;
 
+	void SetPlayer(II_Player* inPlayer);
+
 private:
 	UPROPERTY()
 		UMaterialInterface* canBuildIndicator;
@@ -95,6 +93,8 @@ private:
 
 	int32 currentPower, maxPower, resources, whatBuilding; //What building is currently being built?
 	bool power; //Bool for if the player has run out of power, if they have then the manager will check to see if the next building that's being built can provide enough power to boost everything back up
+
+	II_Player* thePlayer;
 
 	UPROPERTY()
 		TArray<int32> buildingCosts;

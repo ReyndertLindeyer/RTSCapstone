@@ -36,10 +36,14 @@ void AMyRTSPlayerController::BeginPlay()
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
 
+	buildingManagerObject->SetPlayer(GetPlayerReference());
+
 	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
+
+	ChangeResources(50000);
 	
 	/// Disabled for debugging
 	buildingManagerObject->SpawnConstructionYard(hit.Location);
@@ -150,7 +154,7 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 
 int32 AMyRTSPlayerController::GetResources()
 {
-	return (int32)buildingManagerObject->GetResources();
+	return GetResourceAmount();
 }
 
 bool AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
@@ -227,11 +231,11 @@ void AMyRTSPlayerController::BuildUnit(int32 unitType)
 	///As this should only be called when a unit producing structure is selected the code will be simpler
 	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
 		//They are building something from a barrack
-		buildingManagerObject->SubtractResourceAmount(Cast<ABuilding_Barrecks>(SelectedStructure)->AddToUnitQueue(unitType));
+		ChangeResources(-Cast<ABuilding_Barrecks>(SelectedStructure)->AddToUnitQueue(unitType));
 	}
 	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
 		//They are building something from a Vehicle Factory
-		buildingManagerObject->SubtractResourceAmount(Cast<ABuilding_VehicleFactory>(SelectedStructure)->AddToUnitQueue(unitType));
+		ChangeResources(-Cast<ABuilding_VehicleFactory>(SelectedStructure)->AddToUnitQueue(unitType));
 	}
 }
 
@@ -239,11 +243,11 @@ void AMyRTSPlayerController::CancelUnit()
 {
 	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
 		//They are building something from a barrack
-		buildingManagerObject->AddResourceAmount(Cast<ABuilding_Barrecks>(SelectedStructure)->RemoveFromUnitQueue());
+		ChangeResources(Cast<ABuilding_Barrecks>(SelectedStructure)->RemoveFromUnitQueue());
 	}
 	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
 		//They are building something from a Vehicle Factory
-		buildingManagerObject->AddResourceAmount(Cast<ABuilding_VehicleFactory>(SelectedStructure)->RemoveFromUnitQueue());
+		ChangeResources(Cast<ABuilding_VehicleFactory>(SelectedStructure)->RemoveFromUnitQueue());
 	}
 }
 

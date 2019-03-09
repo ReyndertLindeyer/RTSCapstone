@@ -44,12 +44,12 @@ FString II_Player::GetPlayerName()
 	return PlayerName;
 }
 
-void II_Player::AddResources(int amount)
+void II_Player::ChangeResources(int amount)
 {
 	Resources += amount;
 }
 
-int II_Player::GetResources()
+int II_Player::GetResourceAmount()
 {
 	return Resources;
 }

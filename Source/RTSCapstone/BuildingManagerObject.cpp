@@ -7,7 +7,6 @@ UBuildingManagerObject::UBuildingManagerObject()
 {
 	currentPower = 20;
 	maxPower = currentPower;
-	resources = 5000; 
 	power = true;
 
 	whatBuilding = 0;
@@ -213,10 +212,6 @@ bool UBuildingManagerObject::constructBuilding(II_Player* player)
 	return false;
 }
 
-float UBuildingManagerObject::GetResources() {
-	return (float)resources;
-}
-
 TArray<int32> UBuildingManagerObject::GetBuildingCost() 
 {
 	return buildingCosts;
@@ -239,22 +234,12 @@ int32 UBuildingManagerObject::GetMaxPower()
 
 void UBuildingManagerObject::SubtractCost(int32 whatBuilding_)
 {
-	resources -= buildingCosts[whatBuilding_ - 1];
-}
-
-void UBuildingManagerObject::SubtractResourceAmount(int32 amount)
-{
-	resources -= amount;
+	thePlayer->ChangeResources(-buildingCosts[whatBuilding_ - 1]);
 }
 
 void UBuildingManagerObject::AddCost(int32 whatBuilding_)
 {
-	resources += buildingCosts[whatBuilding_ - 1];
-}
-
-void UBuildingManagerObject::AddResourceAmount(int32 amount)
-{
-	resources += amount;
+	thePlayer->ChangeResources(buildingCosts[whatBuilding_ - 1]);
 }
 
 void UBuildingManagerObject::EnableAllDecals()
@@ -302,4 +287,9 @@ bool UBuildingManagerObject::IsRefineryBuilt()
 		return true;
 	}
 	return false;
+}
+
+void UBuildingManagerObject::SetPlayer(II_Player* inPlayer)
+{
+	thePlayer = inPlayer;
 }
