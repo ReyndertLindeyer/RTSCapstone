@@ -27,6 +27,13 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'"));
+	shootingComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	shootingComp->SetupAttachment(RootComponent);
+	shootingComp->SetRelativeLocation(FVector(1.0, 0.0, 3.0));
+	shootingComp->bAutoActivate = false;
+	shootingComp->SetTemplate(PS.Object);
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -37,7 +44,8 @@ void AUNIT_Rocketeer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity(nullptr, "Rocketeer", startingHealth);
+	//InitializeEntity(nullptr, "Rocketeer", startingHealth);
+	SpawnDefaultController();
 
 }
 
@@ -151,9 +159,9 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	// ATTACK STATE
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
-		if (targetEntity == nullptr)
+		if (targetEntity == nullptr) {
 			unitState = UNIT_STATE::IDLE;
-
+		}
 		else
 		{
 			FVector targetLocation = Cast<AActor>(targetEntity)->GetActorLocation();
@@ -170,8 +178,11 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 			{
 				SetDestination(GetController(), GetActorLocation());
 
+				RootComponent->SetRelativeRotation((targetLocation - RootComponent->GetComponentLocation()).Rotation());
+
 				if (currentTimer >= attackRate)
 				{
+					shootingComp->ActivateSystem(true);
 					currentTimer = 0.0f;
 					AttackOrder(targetEntity);
 				}

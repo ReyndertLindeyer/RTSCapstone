@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
+#include "Engine/StaticMesh.h"
+#include "UNIT_Rifleman.h"
+#include "UNIT_Rocketeer.h"
+#include "UNIT_Engineer.h"
 #include "Building_Barrecks.generated.h"
 
 /**
@@ -28,6 +32,7 @@ public:
 	float TimeRemaining(); //How long until the unit is completed
 	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
+	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 
 	virtual void InitializeStructure(II_Player* player) override;
 
@@ -36,11 +41,14 @@ protected:
 
 	virtual void Tick(float DeltaTime) override;
 
-	bool constructingUnit;
+	bool constructingUnit, hasPower; //Variables for if the building is constructing any units, and if the building has enough power
 
 	TArray <uint8> unitQueue;
 
 	float countToCompleteUnit;
 
 	uint32 rifleBuildTime, rifleInfantryCost, rocketBuildTime, rocketInfantryCost, engineerBuildTime, engineerCost;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* waypointMesh;
 };

@@ -36,9 +36,9 @@ AUNIT_Engineer::AUNIT_Engineer()
 void AUNIT_Engineer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//InitializeEntity(nullptr, "Engineer", startingHealth);
 	SpawnDefaultController();
-	InitializeEntity(nullptr, "Engineer", startingHealth);
 }
 
 // Called every frame

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
+#include "Engine/StaticMesh.h"
 #include "Building_VehicleFactory.generated.h"
 
 /**
@@ -28,17 +29,21 @@ public:
 	float TimeRemaining(); //How long until the unit is completed
 	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
+	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 
 	virtual void InitializeStructure(II_Player* player) override;
 
 protected:
 	virtual void Tick(float DeltaTime) override;
 
-	bool constructingUnit;
+	bool constructingUnit, hasPower; //Variables for if the building is constructing any units, and if the building has enough power
 
 	TArray <uint8> unitQueue;
 
 	float countToCompleteUnit;
 
 	int32 harvesterBuildTime, harvesterCost, humveeTime, humveeCost, tankTime, tankCost, artilleryTankBuildTime, artilleryTankCost, heavyTankTime, heavyTankCost, outpostTime, outpostCost;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* waypointMesh;
 };

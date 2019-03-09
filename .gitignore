@@ -77,6 +77,9 @@ DerivedDataCache/*
 Content/StarterContent/*
 
 #Robo Progress Bar Content
+Content/VFX_Toolkit_V1/*
+
+#Particle Toolkit Content
 Content/RoboBars/*
 
 #Particles Content

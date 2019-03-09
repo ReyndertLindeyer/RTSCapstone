@@ -8,6 +8,7 @@ UBuildingManagerObject::UBuildingManagerObject()
 	currentPower = 20;
 	maxPower = currentPower;
 	resources = 5000; 
+	power = true;
 
 	whatBuilding = 0;
 
@@ -77,14 +78,14 @@ UBuildingManagerObject::UBuildingManagerObject()
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
 
 
-	canBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("GreenBuildingGhost"));
-	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
+	canBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("GreenBuildingGhost"));
+	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
 
-	cantBuildIndicator = CreateDefaultSubobject<UMaterial>(TEXT("cantBuildIndicator"));
-	cantBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/RedBuildingGhost")).Get();
+	cantBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("cantBuildIndicator"));
+	cantBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/RedBuildingGhost")).Get();
 
-	regularMaterial = CreateDefaultSubobject<UMaterial>(TEXT("regularMaterial"));
-	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterial>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
+	regularMaterial = CreateDefaultSubobject<UMaterialInterface>(TEXT("regularMaterial"));
+	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
 }
 
 void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLocation)
@@ -158,7 +159,7 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 bool UBuildingManagerObject::constructBuilding(II_Player* player)
 {
 	if (buildingToBuild->constructAtLocation(player)) {
-			currentPower -= buildingPowerConsumption[whatBuilding];
+		currentPower -= buildingPowerConsumption[whatBuilding];
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
 		}
@@ -178,6 +179,33 @@ bool UBuildingManagerObject::constructBuilding(II_Player* player)
 		player->AddBuilding(Cast<AActor>(buildingToBuild));
 
 		buildingToBuild = nullptr;
+
+		if (currentPower < 0) {
+			power = false;
+			for (int i = 0; i < masterArray.Num(); i++) {
+				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
+					//They are building something from a barrack
+					Cast<ABuilding_Barrecks>(masterArray[i])->SetHasPower(false);
+				}
+				else if (Cast<ABuilding_VehicleFactory>(masterArray[i])) {
+					//They are building something from a Vehicle Factory
+					Cast<ABuilding_VehicleFactory>(masterArray[i])->SetHasPower(false);
+				}
+			}
+		}
+		else if (currentPower > 0 && !power) {
+			power = true;
+			for (int i = 0; i < masterArray.Num(); i++) {
+				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
+					//They are building something from a barrack
+					Cast<ABuilding_Barrecks>(masterArray[i])->SetHasPower(true);
+				}
+				else if (Cast<ABuilding_VehicleFactory>(masterArray[i])) {
+					//They are building something from a Vehicle Factory
+					Cast<ABuilding_VehicleFactory>(masterArray[i])->SetHasPower(true);
+				}
+			}
+		}
 
 		DisableAllDecals();
 		return true;
