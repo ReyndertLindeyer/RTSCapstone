@@ -4,6 +4,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "Projectile.h"
 
 // Sets default values
 AUNIT_Rocketeer::AUNIT_Rocketeer()
@@ -102,7 +103,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 
 		if (entitiesInRange.Num() > 0)
 		{
-			/// Check if entities are hostile
+			
 
 			// If there is a target, seek it.
 			if (targetEntity != nullptr)
@@ -110,7 +111,17 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 
 			// If there isn't a target, set a target.
 			else
-				targetEntity = Cast<II_Entity>(entitiesInRange[0]);
+			{
+				/// Check if entities are hostile
+				for (int i = 0; i < entitiesInRange.Num(); i++)
+				{
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					{
+						targetEntity = Cast<II_Entity>(entitiesInRange[0]);
+					}
+				}
+
+			}
 
 		}
 	}
@@ -160,6 +171,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
 		if (targetEntity == nullptr) {
+			UE_LOG(LogTemp, Warning, TEXT("ENTITY MISSING"));
 			unitState = UNIT_STATE::IDLE;
 		}
 		else
@@ -184,7 +196,13 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 				{
 					shootingComp->ActivateSystem(true);
 					currentTimer = 0.0f;
-					AttackOrder(targetEntity);
+
+					UE_LOG(LogTemp, Warning, TEXT("%f target health"), targetEntity->GetCurrentHealth());
+
+
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, 25.0f, 500.0f, 0.0f);
+					projectile->SetActorEnableCollision(false);
 				}
 			}
 		}
