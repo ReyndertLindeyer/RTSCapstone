@@ -45,6 +45,7 @@ void AUNIT_Rocketeer::BeginPlay()
 	Super::BeginPlay();
 	
 	//InitializeEntity(nullptr, "Rocketeer", startingHealth);
+	SpawnDefaultController();
 
 }
 

@@ -9,8 +9,8 @@ ABuildingMaster::ABuildingMaster()
 	PrimaryActorTick.bCanEverTick = true;
 
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
-	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	RootComponent = buildingMesh;
+	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason

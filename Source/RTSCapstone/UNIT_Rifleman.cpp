@@ -46,6 +46,7 @@ void AUNIT_Rifleman::BeginPlay()
 	Super::BeginPlay();
 
 	//InitializeEntity(nullptr, "Rifleman", startingHealth);
+	SpawnDefaultController();
 	
 }
 

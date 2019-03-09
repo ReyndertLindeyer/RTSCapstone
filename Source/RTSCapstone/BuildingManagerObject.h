@@ -15,6 +15,7 @@
 #include "Building_TechCenter.h"
 
 #include "Engine/DataTable.h"
+#include "Engine/World.h"
 
 #include "I_Player.h"
 
