@@ -49,7 +49,6 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	waypointMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	waypointMesh->SetSimulatePhysics(false);
 	waypointMesh->SetupAttachment(RootComponent);
-	waypointMesh->SetRelativeLocation(wayPoint);
 	
 	countToCompleteUnit = 0.0f;
 
@@ -73,6 +72,7 @@ void ABuilding_Barrecks::BeginPlay()
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
+	waypointMesh->SetRelativeLocation(wayPoint);
 }
 
 int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)

@@ -35,6 +35,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int32 PowerConsumption;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 MaxHealth;
 };
 
 /**
@@ -57,7 +60,7 @@ public:
 
 	void SpawnConstructionYard(FVector spawnLocation);
 
-	bool constructBuilding(II_Player* player);
+	bool constructBuilding();
 
 	TArray<int32> GetBuildingCost();
 
@@ -96,12 +99,16 @@ private:
 
 	II_Player* thePlayer;
 
+	TArray<FName> namesArray;
+
 	UPROPERTY()
 		TArray<int32> buildingCosts;
 	UPROPERTY()
 		TArray<int32> buildingConstructionTimes;
 	UPROPERTY()
 		TArray<int32> buildingPowerConsumption;
+	UPROPERTY()
+		TArray<int32> buildingMaxHealth;
 
 	UPROPERTY()
 		TArray <ABuilding_Refinery*> refineryArray;

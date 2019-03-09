@@ -16,65 +16,77 @@ UBuildingManagerObject::UBuildingManagerObject()
 
 	static const FString ContextString(TEXT("Building Variable Context"));
 
+	namesArray = buildingDataTable->GetRowNames();
+
 	//Power Plant Variables
 	FBuildingVariables* buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("PowerPlant")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Refinery Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Barracks Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("Barracks")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//War Factory Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Tech Center Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
-	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);;
+	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Orbital Cannon Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("OrbitalCannon")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Gun Turret Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Cannon Turret Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("CannonTurret")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Artillery Turret Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 	//Tesla Turret Variables
 	buildingVariables = buildingDataTable->FindRow<FBuildingVariables>(FName(TEXT("TeslaTurret")), ContextString, false);
 	buildingCosts.Add(buildingVariables->Cost);
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
+	buildingMaxHealth.Add(buildingVariables->MaxHealth);
 
 
 	canBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("GreenBuildingGhost"));
@@ -151,13 +163,14 @@ ABuildingMaster * UBuildingManagerObject::GetBuildingToBuild()
 void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 {
 	constructionYard = (GetWorld()->SpawnActor<ABuilding_Construction_Yard>(ABuilding_Construction_Yard::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f)));
+	constructionYard->InitializeEntity(thePlayer, "ConstructionYard", 20000);
 	masterArray.Add(constructionYard);
 
 }
 
-bool UBuildingManagerObject::constructBuilding(II_Player* player)
+bool UBuildingManagerObject::constructBuilding()
 {
-	if (buildingToBuild->constructAtLocation(player)) {
+	if (buildingToBuild->constructAtLocation(thePlayer)) {
 		currentPower -= buildingPowerConsumption[whatBuilding];
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
@@ -175,7 +188,9 @@ bool UBuildingManagerObject::constructBuilding(II_Player* player)
 
 		masterArray.Add(buildingToBuild);
 
-		player->AddBuilding(Cast<AActor>(buildingToBuild));
+		thePlayer->AddBuilding(Cast<AActor>(buildingToBuild));
+
+		buildingToBuild->InitializeEntity(thePlayer, namesArray[whatBuilding].ToString(), buildingMaxHealth[whatBuilding]);
 
 		buildingToBuild = nullptr;
 

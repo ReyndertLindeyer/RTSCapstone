@@ -62,7 +62,6 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 
 	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
 	waypointMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Waypoint.Waypoint")).Get());
-	waypointMesh->SetRelativeLocation(wayPoint);
 	waypointMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	waypointMesh->SetSimulatePhysics(false);
 	waypointMesh->SetupAttachment(RootComponent);
@@ -89,6 +88,7 @@ void ABuilding_VehicleFactory::BeginPlay()
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
+	waypointMesh->SetRelativeLocation(wayPoint);
 }
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)

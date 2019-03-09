@@ -415,7 +415,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 	}
 	
 	if (constructingBuilding) {
-		if (buildingManagerObject->constructBuilding(GetPlayerReference())) {
+		if (buildingManagerObject->constructBuilding()) {
 			///HUDPtr->AddBuilding(buildingToBuild);
 			///m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
 			constructingBuilding = false;
