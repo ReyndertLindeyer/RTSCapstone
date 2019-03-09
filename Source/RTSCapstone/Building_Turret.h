@@ -6,6 +6,7 @@
 #include "BuildingMaster.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 
 #include "Building_Turret.generated.h"
 
@@ -18,10 +19,15 @@ class RTSCAPSTONE_API ABuilding_Turret : public ABuildingMaster
 	GENERATED_BODY()
 	
 public:
+	ABuilding_Turret();
 
 	virtual void Tick(float DeltaTime) override;
 
-	uint8 range;
+	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 
 	virtual void InitializeStructure(II_Player* player) override;
+
+private:
+	uint32 range;
+	bool hasPower;
 };
