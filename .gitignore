@@ -79,5 +79,9 @@ Content/StarterContent/*
 #Robo Progress Bar Content
 Content/RoboBars/*
 
+#Particles Content
+Content/VFX_Toolkit_V1/*
+
 #Models
 Content/Game_Assets/Models/*
+ParticleToolkitVol1.png
