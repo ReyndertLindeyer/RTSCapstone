@@ -41,6 +41,10 @@ public:
 	void ChangeResources(int amount); 
 	int GetResourceAmount();
 
+	//Adds the amount given
+	void ChangePower(int amount);
+	int GetPower();
+
 private:
 	// Variables
 	TArray<AActor*> UnitList;
@@ -50,6 +54,6 @@ private:
 
 	FString PlayerName;
 	
-	int Resources;
+	int Resources, power;
 
 };

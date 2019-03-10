@@ -54,6 +54,16 @@ int II_Player::GetResourceAmount()
 	return Resources;
 }
 
+void II_Player::ChangePower(int amount)
+{
+	power += amount;
+}
+
+int II_Player::GetPower()
+{
+	return power;
+}
+
 
 
 

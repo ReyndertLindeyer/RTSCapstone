@@ -63,11 +63,11 @@ public:
 
 	bool constructBuilding();
 
+	void DeleteBuilding();
+
 	TArray<int32> GetBuildingCost();
 
 	TArray<int32> GetConstructionTime();
-
-	int32 GetCurrentPower();
 
 	int32 GetMaxPower();
 
@@ -95,7 +95,7 @@ private:
 	UPROPERTY()
 		UMaterialInterface* regularMaterial;
 
-	int32 currentPower, maxPower, resources, whatBuilding; //What building is currently being built?
+	int32 maxPower, resources, whatBuilding; //What building is currently being built?
 	bool power; //Bool for if the player has run out of power, if they have then the manager will check to see if the next building that's being built can provide enough power to boost everything back up
 
 	II_Player* thePlayer;

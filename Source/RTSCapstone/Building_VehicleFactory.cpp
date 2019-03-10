@@ -6,11 +6,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 
 	//Setting up general values
 	team = 1;
-	maxHealth = 500;
-	currentHealth = maxHealth;
-	powerUsage = 10;
 	spawnTime = 2;
-	cost = 100;
 	buildRadius = 500;
 	isBuilding = true;
 	isPlaced = false;
@@ -73,13 +69,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
-	buildRadiusSphere->SetSphereRadius(10);
-	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_VehicleFactory::BeginRadiusOverlap);
-	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_VehicleFactory::OnRadiusOverlapEnd);
-	buildRadiusSphere->SetupAttachment(RootComponent);
-
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
 	decal->ComponentTags.Add(FName("BuildArea"));
 }
 

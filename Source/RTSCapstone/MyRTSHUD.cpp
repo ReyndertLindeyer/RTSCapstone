@@ -205,7 +205,7 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 		float healthPercentage = 0.5f;
 		float yOffset = 10.f;
 
-		healthPercentage = SelectedBuilding->GetHealth() / SelectedBuilding->GetMaxHealth();
+		healthPercentage = SelectedBuilding->GetHealthPercentage();
 		actorExtent = SelectedBuilding->GetHeight();
 
 		FVector pos1 = Canvas->Project(FVector(center.X, center.Y - actorExtent * 2, center.Z + extent.Z));

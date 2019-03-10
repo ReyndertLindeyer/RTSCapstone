@@ -7,11 +7,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	PrimaryActorTick.bCanEverTick = true;
 	//Setting up general values
 	team = 1;
-	maxHealth = 500;
-	currentHealth = maxHealth;
-	powerUsage = 20;
 	spawnTime = 2;
-	cost = 100;
 	buildRadius = 500;
 	isBuilding = true;
 	canSpawnHarvester = true;
@@ -25,13 +21,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
-	buildRadiusSphere->SetSphereRadius(10);
-	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Refinery::BeginRadiusOverlap);
-	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Refinery::OnRadiusOverlapEnd);
-	buildRadiusSphere->SetupAttachment(RootComponent);
-
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
 	decal->ComponentTags.Add(FName("BuildArea"));
 
 

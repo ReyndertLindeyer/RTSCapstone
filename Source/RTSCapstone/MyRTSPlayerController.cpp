@@ -193,7 +193,7 @@ void AMyRTSPlayerController::AddCost(int32 whatBuilding)
 
 int32 AMyRTSPlayerController::GetCurrentPower()
 {
-	return buildingManagerObject->GetCurrentPower();
+	return GetPower();
 }
 
 int32 AMyRTSPlayerController::GetMaxPower()
@@ -441,7 +441,7 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 	}*/
 
 	if (constructingBuilding) {
-		///buildingToBuild->Destroy();
+		buildingManagerObject->DeleteBuilding();
 		constructingBuilding = false;
 		buildingConstructed = false;
 		buildingManagerObject->DisableAllDecals();

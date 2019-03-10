@@ -4,11 +4,7 @@
 #include "ConstructorHelpers.h"
 
 ABuilding_Turret::ABuilding_Turret() {
-	maxHealth = 500;
-	currentHealth = maxHealth;
-	powerUsage = 10;
 	spawnTime = 2;
-	cost = 100;
 	isBuilding = true;
 	isPlaced = false;
 	hasPower = true;

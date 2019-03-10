@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-#include "Engine/StaticMesh.h"
 #include "UNIT_Rifleman.h"
 #include "UNIT_Rocketeer.h"
 #include "UNIT_Engineer.h"

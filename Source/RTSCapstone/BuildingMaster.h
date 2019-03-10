@@ -18,6 +18,8 @@
 #include "I_Entity.h"
 #include "I_Player.h"
 
+#include "Engine/StaticMesh.h"
+
 #include "BuildingMaster.generated.h"
 
 
@@ -42,9 +44,6 @@ class RTSCAPSTONE_API ABuildingMaster : public AActor, public II_Entity
 public:	
 	// Sets default values for this actor's properties
 	ABuildingMaster();
-
-	uint32 GetPowerUsage();
-	uint32 GetCost();
 
 	void EnableBuildDecal();
 	void DisableBuildDecal();
@@ -76,15 +75,14 @@ protected:
 
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
-	AMyRTSAIController* rtsAI;
+	//Whether or not the building's radius should be on
+	bool buildRadiusActive;
 
 	float sightRadius, buildRadius;
 
-	uint32 powerUsage, cost;
+	uint32 numOfBuildingCollisions; //Number of buildings or units that the building is colliding with during placement
 
-	uint32 numOfBuildingCollisions, numOfRadiusCollisions; //Number of buildings or units that the building is colliding with during placement
-
-	uint32 team, maxHealth, currentHealth, spawnTime;
+	uint32 team, spawnTime;
 
 	bool constructed, isPlaced; //Is the building constructed, and has it been placed in the world
 	
@@ -93,9 +91,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
-
-	UPROPERTY(EditAnywhere)
-		USphereComponent* buildRadiusSphere;
 
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * decal; //Decal to show the buildings construction radius
@@ -112,21 +107,8 @@ public:
 	bool constructAtLocation(II_Player* player);
 	bool overlapping, isInRadius;
 
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetHealth();
-	UFUNCTION(BlueprintPure, Category = "UI")
-		int GetMaxHealth();
-
 	UFUNCTION()
 		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
-		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
-
-
-	UFUNCTION()
-		virtual void BeginRadiusOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
-	UFUNCTION()
-		virtual void OnRadiusOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	
+		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);	
 };

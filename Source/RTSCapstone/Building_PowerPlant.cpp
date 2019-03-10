@@ -6,11 +6,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	PrimaryActorTick.bCanEverTick = true;
 	//Setting up general values
 	team = 1;
-	maxHealth = 500;
-	currentHealth = maxHealth;
-	powerUsage = -50;
 	spawnTime = 2;
-	cost = 100;
 	buildRadius = 500;
 	isBuilding = true;
 
@@ -21,15 +17,6 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);
-	
-	buildRadiusSphere->SetSphereRadius(10);
-	buildRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_PowerPlant::BeginRadiusOverlap);
-	buildRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &ABuilding_PowerPlant::OnRadiusOverlapEnd);
-	buildRadiusSphere->SetupAttachment(RootComponent);
-
-	buildingMesh->ComponentTags.Add(FName("Building"));
-	buildRadiusSphere->ComponentTags.Add(FName("buildRadius"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 
 }
 
@@ -56,5 +43,4 @@ void ABuilding_PowerPlant::Upgrade()
 	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	buildingMesh->SetSimulatePhysics(false);
 	*/
-	powerUsage = -100;
 }

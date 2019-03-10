@@ -5,8 +5,6 @@
 // Sets default values
 UBuildingManagerObject::UBuildingManagerObject()
 {
-	currentPower = 20;
-	maxPower = currentPower;
 	power = true;
 
 	whatBuilding = 0;
@@ -166,12 +164,15 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 	constructionYard->InitializeEntity(thePlayer, "ConstructionYard", 20000);
 	masterArray.Add(constructionYard);
 
+	thePlayer->ChangePower(20);
+	maxPower = thePlayer->GetPower();
+
 }
 
 bool UBuildingManagerObject::constructBuilding()
 {
 	if (buildingToBuild->constructAtLocation(thePlayer)) {
-		currentPower -= buildingPowerConsumption[whatBuilding];
+		thePlayer->ChangePower(-buildingPowerConsumption[whatBuilding]);
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
 		}
@@ -194,7 +195,7 @@ bool UBuildingManagerObject::constructBuilding()
 
 		buildingToBuild = nullptr;
 
-		if (currentPower < 0) {
+		if (thePlayer->GetPower() < 0) {
 			power = false;
 			for (int i = 0; i < masterArray.Num(); i++) {
 				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
@@ -207,7 +208,7 @@ bool UBuildingManagerObject::constructBuilding()
 				}
 			}
 		}
-		else if (currentPower > 0 && !power) {
+		else if (thePlayer->GetPower() >= 0 && !power) {
 			power = true;
 			for (int i = 0; i < masterArray.Num(); i++) {
 				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
@@ -227,6 +228,12 @@ bool UBuildingManagerObject::constructBuilding()
 	return false;
 }
 
+void UBuildingManagerObject::DeleteBuilding()
+{
+	buildingToBuild->Destroy();
+	buildingToBuild = nullptr;
+}
+
 TArray<int32> UBuildingManagerObject::GetBuildingCost() 
 {
 	return buildingCosts;
@@ -235,11 +242,6 @@ TArray<int32> UBuildingManagerObject::GetBuildingCost()
 TArray<int32> UBuildingManagerObject::GetConstructionTime()
 {
 	return buildingConstructionTimes;
-}
-
-int32 UBuildingManagerObject::GetCurrentPower()
-{
-	return currentPower;
 }
 
 int32 UBuildingManagerObject::GetMaxPower()
