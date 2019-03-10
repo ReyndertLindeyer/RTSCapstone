@@ -28,12 +28,7 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'"));
-	shootingComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
-	shootingComp->SetupAttachment(RootComponent);
-	shootingComp->SetRelativeLocation(FVector(1.0, 0.0, 3.0));
-	shootingComp->bAutoActivate = false;
-	shootingComp->SetTemplate(PS.Object);
+	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -194,14 +189,12 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 
 				if (currentTimer >= attackRate)
 				{
-					shootingComp->ActivateSystem(true);
 					currentTimer = 0.0f;
 
 					UE_LOG(LogTemp, Warning, TEXT("%f target health"), targetEntity->GetCurrentHealth());
 
-
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, 25.0f, 500.0f, 0.0f);
+					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, 25.0f, 500.0f, 0.0f, PS);
 					projectile->SetActorEnableCollision(false);
 				}
 			}

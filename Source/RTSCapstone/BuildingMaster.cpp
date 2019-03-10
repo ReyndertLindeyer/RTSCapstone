@@ -121,8 +121,8 @@ void ABuildingMaster::Tick(float DeltaTime)
 	isInRadius = false;
 
 	if (isPlaced) {
-		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z), DeltaTime, spawnTime));
-		if (buildingMesh->GetComponentLocation().Z >= buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z - 1) {
+		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20), DeltaTime, spawnTime));
+		if (buildingMesh->GetComponentLocation().Z >= buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20) {
 			PrimaryActorTick.bCanEverTick = false;
 		}
 	}

@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/StaticMesh.h"
+
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
 #include "I_Entity.h"
 
@@ -25,7 +28,7 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
-	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance);
+	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, UParticleSystem* particleSystem);
 
 protected:
 	// Called when the game starts or when spawned
@@ -39,6 +42,9 @@ protected:
 	FVector targetPosition;
 	float travelTime;
 	float travelDistance;
+
+	UPROPERTY()
+		UParticleSystemComponent* particleComp;
 
 
 public:	

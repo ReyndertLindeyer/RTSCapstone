@@ -20,6 +20,11 @@ AProjectile::AProjectile()
 	staticMesh->SetRelativeScale3D(FVector(0.25f));
 
 	RootComponent = staticMesh;
+
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetupAttachment(RootComponent);
+	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
+	particleComp->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -68,12 +73,14 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
-void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, float damage, float speed, float distance)
+void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, float damage, float speed, float distance, UParticleSystem* particleSystem)
 {
 	projectileType = type;
 	targetPosition = target;
 	travelTime = speed;
 	travelDistance = distance;
 	projectileDamage = damage;
+	particleComp->SetTemplate(particleSystem);
+	particleComp->ActivateSystem(true);
 }
 

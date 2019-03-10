@@ -6,7 +6,7 @@
 
 void II_Entity::InitializeEntity(II_Player* owner_, FString name_, float maxHealth_)
 {
-	//if (!isInitialized)
+	if (!isInitialized)
 	{
 		name = name_;
 		maxHealth = maxHealth_;
