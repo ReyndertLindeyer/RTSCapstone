@@ -4,7 +4,6 @@
 
 #include "KIsmet/KismetSystemLibrary.h"
 
-#include "Building_Refinery.h"
 
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"

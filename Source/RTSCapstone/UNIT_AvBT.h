@@ -6,6 +6,7 @@
 
 // Components
 #include "Components/SphereComponent.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
 // Interface
 #include "I_Unit.h"
@@ -45,6 +46,14 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	//Particle System Cannon
+	UParticleSystem* PSC;
+	//Particle System Missile
+	UParticleSystem* PSM;
+
+	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
+	UParticleSystem* reactionPS;
 
 public:
 	TArray<AActor*> entitiesInRange;

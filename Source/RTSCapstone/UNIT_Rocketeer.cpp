@@ -4,7 +4,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
-#include "Projectile.h"
 
 // Sets default values
 AUNIT_Rocketeer::AUNIT_Rocketeer()
@@ -29,6 +28,7 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -194,7 +194,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 					UE_LOG(LogTemp, Warning, TEXT("%f target health"), targetEntity->GetCurrentHealth());
 
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, 25.0f, 500.0f, 0.0f, PS);
+					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, 25.0f, 500.0f, 0.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 				}
 			}

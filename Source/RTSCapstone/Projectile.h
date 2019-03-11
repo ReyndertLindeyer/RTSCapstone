@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/StaticMesh.h"
+#include "Components/SphereComponent.h"
+
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
@@ -28,7 +31,10 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
-	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, UParticleSystem* particleSystem);
+	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB);
+
+	bool reachedTarget;
+	float countdown;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,6 +52,11 @@ protected:
 	UPROPERTY()
 		UParticleSystemComponent* particleComp;
 
+	UPROPERTY(EditAnywhere)
+		USphereComponent* root;
+
+	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
+	UParticleSystem* reactionPS;
 
 public:	
 	// Called every frame

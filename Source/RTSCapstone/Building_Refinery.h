@@ -28,7 +28,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 
-	virtual void InitializeStructure(II_Player* player) override;
+	void InitializeRefinery();
 
 	bool isOccupied;
 

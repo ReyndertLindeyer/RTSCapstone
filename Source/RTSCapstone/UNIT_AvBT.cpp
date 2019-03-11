@@ -27,6 +27,10 @@ AUNIT_AvBT::AUNIT_AvBT()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -185,14 +189,20 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 				{
 					if (!secondShot)
 					{
-						AttackOrder(targetEntity);
+
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, 5.0f, 5000.0f, 0.0f, PSC, reactionPS);
+						projectile->SetActorEnableCollision(false);
 						currentTimer = cannonTimer - 0.1f;
 						secondShot = true;
 					}
 
 					else 
 					{
-						AttackOrder(targetEntity);
+
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, 5.0f, 5000.0f, 0.0f, PSC, reactionPS);
+						projectile->SetActorEnableCollision(false);
 						secondShot = false;
 						currentTimer = 0.0f;
 					}

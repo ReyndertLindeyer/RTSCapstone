@@ -27,6 +27,9 @@ AUNIT_MBT::AUNIT_MBT()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -184,7 +187,10 @@ void AUNIT_MBT::Tick(float DeltaTime)
 				if (currentTimer >= attackRate)
 				{
 					currentTimer = 0.0f;
-					AttackOrder(targetEntity);
+
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, 5.0f, 5000.0f, 0.0f, PS, reactionPS);
+					projectile->SetActorEnableCollision(false);
 				}
 			}
 		}

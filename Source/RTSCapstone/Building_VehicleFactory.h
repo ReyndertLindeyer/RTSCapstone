@@ -5,6 +5,13 @@
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
 #include "Engine/StaticMesh.h"
+
+//All of the units
+#include "UNIT_AvBT.h"
+#include "UNIT_MBT.h"
+#include "UNIT_MArtillery.h"
+#include "UNIT_Harvester.h"
+
 #include "Building_VehicleFactory.generated.h"
 
 /**

@@ -27,13 +27,8 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'"));
-	shootingComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
-	shootingComp->SetupAttachment(RootComponent);
-	shootingComp->bAutoActivate = false;
-	shootingComp->SetRelativeScale3D(FVector(3.0f, 1.0f, 1.5f));
-	shootingComp->SetTemplate(PS.Object);
-
+	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -192,9 +187,11 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 
 				if (currentTimer >= attackRate)
 				{
-					shootingComp->ActivateSystem(true);
 					currentTimer = 0.0f;
-					AttackOrder(targetEntity);
+
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, 5.0f, 5000.0f, 0.0f, PS, reactionPS);
+					projectile->SetActorEnableCollision(false);
 				}
 			}
 		}

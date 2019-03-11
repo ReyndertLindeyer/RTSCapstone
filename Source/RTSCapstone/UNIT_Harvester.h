@@ -15,6 +15,7 @@
 
 // Meshes
 #include "Components/StaticMeshComponent.h"
+#include "Building_Refinery.h"
 
 #include "UNIT_Harvester.generated.h"
 

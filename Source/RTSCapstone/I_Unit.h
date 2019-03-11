@@ -8,6 +8,8 @@
 #include "AIController.h"
 #include "I_Entity.h"
 
+#include "Projectile.h"
+
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 #include "I_Unit.generated.h"

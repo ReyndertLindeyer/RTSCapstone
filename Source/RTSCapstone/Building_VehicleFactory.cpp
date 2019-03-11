@@ -3,7 +3,6 @@
 #include "Building_VehicleFactory.h"
 
 ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
-
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
@@ -24,32 +23,32 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	static const FString ContextString(TEXT("Unit Variable Context"));
 
 
-	//Rifle Infantry Variables
+	//Harvester Variables
 	FUnitVariables* UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Harvester")), ContextString, false);
 	harvesterCost = UnitVariables->Cost;
 	harvesterBuildTime = UnitVariables->BuildTime;
 
-	//Rifle Infantry Variables
+	//Humvee Variables
 	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Humvee")), ContextString, false);
 	humveeCost = UnitVariables->Cost;
 	humveeTime = UnitVariables->BuildTime;
 
-	//Rifle Infantry Variables
+	//Light Tank Variables
 	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("LightTank")), ContextString, false);
 	tankCost = UnitVariables->Cost;
 	tankTime = UnitVariables->BuildTime;
 
-	//Rifle Infantry Variables
+	//Artillary Tank Variables
 	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("ArtillaryTank")), ContextString, false);
 	artilleryTankCost = UnitVariables->Cost;
 	artilleryTankBuildTime = UnitVariables->BuildTime;
 
-	//Rifle Infantry Variables
+	//Heavy Tank Variables
 	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("HeavyTank")), ContextString, false);
 	heavyTankCost = UnitVariables->Cost;
 	heavyTankTime = UnitVariables->BuildTime;
 
-	//Rifle Infantry Variables
+	//Outpost Creator Variables
 	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("OutpostCreator")), ContextString, false);
 	outpostCost = UnitVariables->Cost;
 	outpostTime = UnitVariables->BuildTime;
@@ -110,7 +109,7 @@ int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)
 
 int32 ABuilding_VehicleFactory::GetUnitAtStartOfQueue()
 {
-	if (unitQueue[0])
+	if (unitQueue.Num() > 0)
 		return unitQueue[0];
 	return 0;
 }
@@ -179,8 +178,36 @@ float ABuilding_VehicleFactory::TimeRemaining()
 void ABuilding_VehicleFactory::SpawnUnit()
 {
 	//Spawn the unit and give it its information
-	constructingUnit = false; 
-	unitQueue[0];
+	constructingUnit = false;
+	UWorld* const World = this->GetWorld();
+	ACharacter* holder;
+	//Spawn the unit and give it its information
+	constructingUnit = false;
+	if (unitQueue[0] == 1) {
+		holder = World->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Harvester", 200.0f);
+	}
+	else if (unitQueue[0] == 2) {
+		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Humvee", 200.0f);
+	}
+	else  if (unitQueue[0] == 3) {
+		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Tank", 200.0f);
+	}
+	else if (unitQueue[0] == 4) {
+	holder = World->SpawnActor<AUNIT_MArtillery>(AUNIT_MArtillery::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Artillery", 200.0f);
+	}
+	else if (unitQueue[0] == 5) {
+	holder = World->SpawnActor<AUNIT_AvBT>(AUNIT_AvBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "HeavyTank", 200.0f);
+	}
+	else {
+	holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Outpost", 200.0f);
+	}
+	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 
@@ -245,5 +272,5 @@ void ABuilding_VehicleFactory::Tick(float DeltaTime)
 
 void ABuilding_VehicleFactory::InitializeStructure(II_Player* player)
 {
-	InitializeEntity(player, "Vehicle Factory", 2000.0f);
+	//InitializeEntity(player, "Vehicle Factory", 2000.0f);
 }

@@ -179,6 +179,7 @@ bool UBuildingManagerObject::constructBuilding()
 
 		else if (buildingToBuild->IsA(ABuilding_Refinery::StaticClass())) {
 			refineryArray.Add((ABuilding_Refinery*)buildingToBuild);
+			Cast<ABuilding_Refinery>(buildingToBuild)->InitializeRefinery();
 		}
 
 		else if (buildingToBuild->IsA(ABuilding_TechCenter::StaticClass())) {
@@ -303,7 +304,8 @@ bool UBuildingManagerObject::IsRefineryBuilt()
 	if (refineryArray.Num() > 0) {
 		return true;
 	}
-	return false;
+	//return false; Disabled for testing
+	return true;
 }
 
 void UBuildingManagerObject::SetPlayer(II_Player* inPlayer)

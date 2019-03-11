@@ -12,7 +12,8 @@ ABuildingMaster::ABuildingMaster()
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
-	buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	buildingMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
@@ -39,6 +40,7 @@ ABuildingMaster::ABuildingMaster()
 	buildRadiusActive = false;
 	team = 1;
 	spawnTime = 1.0f;
+	buildRadius = 0.0f;
 	sightRadius = 300;
 	numOfBuildingCollisions = 0;
 
@@ -141,7 +143,8 @@ void ABuildingMaster::Tick(float DeltaTime)
 
 		for (int i = 0; i < outActors.Num(); i++) {
 			if (Cast<ABuildingMaster>(outActors[i])) {
-				Cast<ABuildingMaster>(outActors[i])->isInRadius = true;
+				if(!Cast<ABuildingMaster>(outActors[i])->GetIsInRadius())
+					Cast<ABuildingMaster>(outActors[i])->isInRadius = true;
 			}
 		}
 	}
@@ -159,7 +162,8 @@ bool ABuildingMaster::constructAtLocation(II_Player* player)
 		constructed = true;
 		isPlaced = true;
 
-		buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		buildingMesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 
 		return true;
 	}
@@ -177,9 +181,9 @@ void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
 		if (!constructed)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
 			if (!overlapping) {
 				overlapping = true;
+				UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
 			}
 			numOfBuildingCollisions++;
 		}

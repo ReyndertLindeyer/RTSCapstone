@@ -61,7 +61,7 @@ void ABuilding_Barrecks::BeginPlay()
 {
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
-	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 400.0f, 0.0f); //Updates Waypoint
+	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
 	waypointMesh->SetRelativeLocation(wayPoint);
 }
 
@@ -130,19 +130,20 @@ float ABuilding_Barrecks::TimeRemaining()
 
 void ABuilding_Barrecks::SpawnUnit()
 {
+	UWorld* const World = this->GetWorld();
 	ACharacter* holder;
 	//Spawn the unit and give it its information
 	constructingUnit = false;
 	if (unitQueue[0] == 1) {
-		holder = this->GetWorld()->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rifleman", 200.0f);
 	}
 	else if (unitQueue[0] == 2) {
-		holder = this->GetWorld()->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rocketeer", 200.0f);
 	}
 	else {
-		holder = this->GetWorld()->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
 	}
 	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
@@ -201,6 +202,6 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 
 void ABuilding_Barrecks::InitializeStructure(II_Player* player)
 {
-	InitializeEntity(player, "Barracks", 700.0f);
+	//InitializeEntity(player, "Barracks", 700.0f);
 	
 }

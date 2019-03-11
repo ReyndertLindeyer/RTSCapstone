@@ -52,8 +52,10 @@ private:
 	float currentTimer;
 	float targetTimer = 3.0f;
 
-	UPROPERTY()
-		UParticleSystemComponent* shootingComp;
+	UParticleSystem* PS;
+
+	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
+	UParticleSystem* reactionPS;
 
 public:
 	TArray<AActor*> entitiesInRange;

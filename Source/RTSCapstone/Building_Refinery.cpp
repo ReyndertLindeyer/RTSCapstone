@@ -60,10 +60,8 @@ void ABuilding_Refinery::Tick(float DeltaTime)
 	}
 }
 
-void ABuilding_Refinery::InitializeStructure(II_Player* player)
+void ABuilding_Refinery::InitializeRefinery()
 {
-	InitializeEntity(player, "Refinery", 2000.0f);
-
 	FActorSpawnParameters SpawnInfo;
 	//AActor* MyActor = GWorld->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), harvestPt->GetRelativeTransform(), FRotator::ZeroRotator, SpawnInfo);
 	AActor* spawnedHarvy = GetWorld()->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), harvestPt->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
