@@ -118,24 +118,23 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 			buildingToBuild = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding_ == 6) {
-			//Replace with Orbital Cannon
-			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			buildingToBuild = World->SpawnActor<ABuilding_Superweapon>(ABuilding_Superweapon::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding_ == 7) {
 			//Replace with Gun Turret
-			buildingToBuild = World->SpawnActor<ABuilding_Turret>(ABuilding_Turret::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			buildingToBuild = World->SpawnActor<ABuilding_Turret_Gattling>(ABuilding_Turret_Gattling::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding_ == 8) {
 			//Replace with Cannon Turret
-			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			buildingToBuild = World->SpawnActor<ABuilding_Turret_Cannon>(ABuilding_Turret_Cannon::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding_ == 9) {
 			//Replace with Artillery Turret
-			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			buildingToBuild = World->SpawnActor<ABuilding_Turret_Artillery>(ABuilding_Turret_Artillery::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		else if (whatBuilding_ == 10) {
 			//Replace with Tesla Turret
-			buildingToBuild = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+			buildingToBuild = World->SpawnActor<ABuilding_Turret_Tesla>(ABuilding_Turret_Tesla::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		}
 		whatBuilding = whatBuilding_ - 1;
 		EnableAllDecals();
@@ -172,6 +171,9 @@ void UBuildingManagerObject::SpawnConstructionYard(FVector spawnLocation)
 bool UBuildingManagerObject::constructBuilding()
 {
 	if (buildingToBuild->constructAtLocation(thePlayer)) {
+
+		buildingToBuild->InitializeEntity(thePlayer, namesArray[whatBuilding].ToString(), buildingMaxHealth[whatBuilding]);
+
 		thePlayer->ChangePower(-buildingPowerConsumption[whatBuilding]);
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
@@ -192,20 +194,32 @@ bool UBuildingManagerObject::constructBuilding()
 
 		thePlayer->AddBuilding(Cast<AActor>(buildingToBuild));
 
-		buildingToBuild->InitializeEntity(thePlayer, namesArray[whatBuilding].ToString(), buildingMaxHealth[whatBuilding]);
-
 		buildingToBuild = nullptr;
 
 		if (thePlayer->GetPower() < 0) {
 			power = false;
 			for (int i = 0; i < masterArray.Num(); i++) {
 				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
-					//They are building something from a barrack
 					Cast<ABuilding_Barrecks>(masterArray[i])->SetHasPower(false);
 				}
 				else if (Cast<ABuilding_VehicleFactory>(masterArray[i])) {
-					//They are building something from a Vehicle Factory
 					Cast<ABuilding_VehicleFactory>(masterArray[i])->SetHasPower(false);
+				}
+				else if (Cast<ABuilding_Superweapon>(masterArray[i])) {
+					Cast<ABuilding_Superweapon>(masterArray[i])->SetHasPower(false);
+				}
+
+				if (Cast<ABuilding_Turret_Gattling>(masterArray[i])) {
+					Cast<ABuilding_Turret_Gattling>(masterArray[i])->SetHasPower(false);
+				}
+				else if (Cast<ABuilding_Turret_Cannon>(masterArray[i])) {
+					Cast<ABuilding_Turret_Cannon>(masterArray[i])->SetHasPower(false);
+				}
+				else if (Cast<ABuilding_Turret_Artillery>(masterArray[i])) {
+					Cast<ABuilding_Turret_Artillery>(masterArray[i])->SetHasPower(false);
+				}
+				else if (Cast<ABuilding_Turret_Tesla>(masterArray[i])) {
+					Cast<ABuilding_Turret_Tesla>(masterArray[i])->SetHasPower(false);
 				}
 			}
 		}
@@ -213,12 +227,26 @@ bool UBuildingManagerObject::constructBuilding()
 			power = true;
 			for (int i = 0; i < masterArray.Num(); i++) {
 				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
-					//They are building something from a barrack
 					Cast<ABuilding_Barrecks>(masterArray[i])->SetHasPower(true);
 				}
 				else if (Cast<ABuilding_VehicleFactory>(masterArray[i])) {
-					//They are building something from a Vehicle Factory
 					Cast<ABuilding_VehicleFactory>(masterArray[i])->SetHasPower(true);
+				}
+				else if (Cast<ABuilding_Superweapon>(masterArray[i])) {
+					Cast<ABuilding_Superweapon>(masterArray[i])->SetHasPower(false);
+				}
+
+				if (Cast<ABuilding_Turret_Gattling>(masterArray[i])) {
+					Cast<ABuilding_Turret_Gattling>(masterArray[i])->SetHasPower(true);
+				}
+				else if (Cast<ABuilding_Turret_Cannon>(masterArray[i])) {
+					Cast<ABuilding_Turret_Cannon>(masterArray[i])->SetHasPower(true);
+				}
+				else if (Cast<ABuilding_Turret_Artillery>(masterArray[i])) {
+					Cast<ABuilding_Turret_Artillery>(masterArray[i])->SetHasPower(true);
+				}
+				else if (Cast<ABuilding_Turret_Tesla>(masterArray[i])) {
+					Cast<ABuilding_Turret_Tesla>(masterArray[i])->SetHasPower(true);
 				}
 			}
 		}

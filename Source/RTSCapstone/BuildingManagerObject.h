@@ -13,7 +13,11 @@
 #include "Building_Refinery.h"
 #include "Building_VehicleFactory.h"
 #include "Building_TechCenter.h"
-#include "Building_Turret.h"
+#include "Building_Superweapon.h"
+#include "Building_Turret_Gattling.h"
+#include "Building_Turret_Cannon.h"
+#include "Building_Turret_Artillery.h"
+#include "Building_Turret_Tesla.h"
 
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
@@ -119,6 +123,8 @@ private:
 		ABuilding_Construction_Yard* constructionYard;
 	UPROPERTY()
 		TArray <ABuildingMaster*> masterArray;
+	UPROPERTY()
+		TArray <ABuildingMaster*> turretArray;
 
 	UPROPERTY()
 		ABuildingMaster* buildingToBuild;

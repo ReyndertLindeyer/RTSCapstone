@@ -13,9 +13,10 @@
 #include "I_Unit.h"
 #include "I_Entity.h"
 
+#include "Building_Refinery.h"
+
 // Meshes
 #include "Components/StaticMeshComponent.h"
-#include "Building_Refinery.h"
 
 #include "UNIT_Harvester.generated.h"
 

@@ -65,6 +65,21 @@ float II_Entity::GetHealthPercentage()
 	return currentHealth / maxHealth;
 }
 
+void II_Entity::SetCurrentHealth(float inNum)
+{
+	currentHealth = inNum;
+}
+
+void II_Entity::SetMaxHealth(float inNum)
+{
+	maxHealth = inNum;
+}
+
+void II_Entity::SetOwner(II_Player * owner_)
+{
+	owner = owner_;
+}
+
 void II_Entity::DestroyEntity()
 {
 	// Do Nothing

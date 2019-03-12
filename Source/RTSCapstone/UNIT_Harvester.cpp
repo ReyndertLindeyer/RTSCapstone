@@ -4,7 +4,6 @@
 
 #include "KIsmet/KismetSystemLibrary.h"
 
-
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 
@@ -237,7 +236,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		if (currentResources >= maxResources)
 		{
 			targetNode = nullptr;
-
+			UE_LOG(LogTemp, Warning, TEXT("Full Resource Load"));
 			if (GetEntityOwner() != nullptr)
 			{
 				if (targetRefinery == nullptr)

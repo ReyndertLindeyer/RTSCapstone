@@ -4,22 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-
-#include "Components/StaticMeshComponent.h"
-#include "Engine/StaticMesh.h"
-
-#include "Building_Turret.generated.h"
+#include "Building_Turret_Artillery.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTSCAPSTONE_API ABuilding_Turret : public ABuildingMaster
+class RTSCAPSTONE_API ABuilding_Turret_Artillery : public ABuildingMaster
 {
 	GENERATED_BODY()
-	
+
 public:
-	ABuilding_Turret();
+	ABuilding_Turret_Artillery();
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -30,4 +26,5 @@ public:
 private:
 	uint32 range;
 	bool hasPower;
+	
 };

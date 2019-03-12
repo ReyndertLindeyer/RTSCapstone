@@ -120,7 +120,7 @@ void ABuildingMaster::BeginPlay()
 void ABuildingMaster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	isInRadius = false;
+	//isInRadius = false;
 
 	if (isPlaced) {
 		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20), DeltaTime, spawnTime));

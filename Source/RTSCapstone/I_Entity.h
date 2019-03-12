@@ -32,6 +32,11 @@ public:
 	float GetCurrentHealth();
 	float GetMaxHealth();
 	float GetHealthPercentage();
+
+	void SetCurrentHealth(float inNum);
+	void SetMaxHealth(float inNum);
+	void SetOwner(II_Player* owner_);
+
 	
 	virtual void DestroyEntity();
 
