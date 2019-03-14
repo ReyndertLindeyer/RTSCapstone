@@ -97,7 +97,7 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 			/// Check if entities are hostile
 
 			// If there is a target, seek it.
-			if (targetEntity != nullptr)
+			if (targetActor != nullptr)
 				unitState = UNIT_STATE::SEEKING;
 
 			// If there isn't a target, set a target.
@@ -127,7 +127,7 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 	// SEEKING STATE
 	if (unitState == UNIT_STATE::SEEKING)
 	{
-		if (targetEntity == nullptr)
+		if (targetActor == nullptr)
 		{
 			unitState = UNIT_STATE::IDLE;
 		}
@@ -155,7 +155,7 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 	// ATTACK STATE
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
-		if (targetEntity == nullptr)
+		if (targetActor == nullptr)
 			unitState = UNIT_STATE::IDLE;
 
 		else
@@ -206,6 +206,7 @@ void AUNIT_MOutpost::SetSelection(bool state)
 	SelectionIndicator->SetVisibility(state);
 }
 
+// Function is Never Called
 void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 {
 	/*if (target->DealDamage(attackDamage) == 1)

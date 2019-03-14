@@ -46,7 +46,7 @@ public:
 	virtual void SetSelection(bool state);
 	virtual void AttackOrder(II_Entity* target);
 	
-	II_Entity* targetEntity;
+	AActor* targetActor;
 	FVector targetMoveDestination;
 
 	UNIT_STATE unitState;

@@ -31,7 +31,7 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
-	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB);
+	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, float blastRadius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB);
 
 	bool reachedTarget;
 	float countdown;
@@ -48,6 +48,8 @@ protected:
 	FVector targetPosition;
 	float travelTime;
 	float travelDistance;
+
+	float blastRadius;
 
 	UPROPERTY()
 		UParticleSystemComponent* particleComp;

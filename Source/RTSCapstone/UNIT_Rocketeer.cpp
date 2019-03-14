@@ -101,7 +101,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 			
 
 			// If there is a target, seek it.
-			if (targetEntity != nullptr)
+			if (targetActor != nullptr)
 				unitState = UNIT_STATE::SEEKING;
 
 			// If there isn't a target, set a target.
@@ -112,7 +112,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 				{
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						targetEntity = Cast<II_Entity>(entitiesInRange[0]);
+						targetActor = entitiesInRange[0];
 					}
 				}
 
@@ -137,14 +137,14 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	// SEEKING STATE
 	if (unitState == UNIT_STATE::SEEKING)
 	{
-		if (targetEntity == nullptr)
+		if (targetActor == nullptr)
 		{
 			unitState = UNIT_STATE::IDLE;
 		}
 
 		else
 		{
-			FVector targetLocation = Cast<AActor>(targetEntity)->GetActorLocation();
+			FVector targetLocation = targetActor->GetActorLocation();
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
@@ -165,13 +165,13 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	// ATTACK STATE
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
-		if (targetEntity == nullptr) {
+		if (targetActor == nullptr) {
 			UE_LOG(LogTemp, Warning, TEXT("ENTITY MISSING"));
 			unitState = UNIT_STATE::IDLE;
 		}
 		else
 		{
-			FVector targetLocation = Cast<AActor>(targetEntity)->GetActorLocation();
+			FVector targetLocation = targetActor->GetActorLocation();
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
@@ -191,11 +191,14 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 				{
 					currentTimer = 0.0f;
 
-					UE_LOG(LogTemp, Warning, TEXT("%f target health"), targetEntity->GetCurrentHealth());
+					UE_LOG(LogTemp, Warning, TEXT("%f target health"), Cast<II_Entity>(targetActor)->GetCurrentHealth());
 
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, 25.0f, 500.0f, 0.0f, PS, reactionPS);
+					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, attackDamage, 500.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
+
+					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
+						targetActor = nullptr;
 				}
 			}
 		}
@@ -224,11 +227,12 @@ void AUNIT_Rocketeer::SetSelection(bool state)
 	SelectionIndicator->SetVisibility(state);
 }
 
+// This Function is no longer called
 void AUNIT_Rocketeer::AttackOrder(II_Entity* target)
 {
 	if (target->DealDamage(attackDamage) == 1)
 	{
-		targetEntity = nullptr;
+		//targetActor = nullptr;
 	}
 }
 

@@ -63,7 +63,7 @@ void AProjectile::Tick(float DeltaTime)
 			TArray<AActor*> ignoreActors;
 			TArray<AActor*> outActors;
 
-			UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 100.0f, objectTypes, nullptr, ignoreActors, outActors);
+			UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), blastRadius, objectTypes, nullptr, ignoreActors, outActors);
 
 			for (int i = 0; i < outActors.Num(); i++)
 			{
@@ -87,7 +87,7 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
-void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, float damage, float speed, float distance, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB)
+void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, float damage, float speed, float distance, float radius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB)
 {
 	projectileType = type;
 	targetPosition = target;
@@ -97,5 +97,6 @@ void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, flo
 	particleComp->SetTemplate(particleSystemA);
 	particleComp->ActivateSystem(true);
 	reactionPS = particleSystemB;
+	blastRadius = radius;
 }
 

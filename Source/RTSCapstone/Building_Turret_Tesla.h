@@ -23,6 +23,29 @@ public:
 
 	virtual void InitializeStructure(II_Player* player) override;
 
+	// AI STUFF
+	AActor* targetActor;
+	AActor* c1TargetActor;
+	AActor* c2TargetActor;
+	
+	TArray<AActor*> entitiesInRange;
+	float currentAttackTimer;
+
+	UPROPERTY(EditAnywhere)
+		float attackDamage = 5.0f;
+	//UPROPERTY(EditAnywhere)
+	//	float startingHealth = 225.0f;
+	UPROPERTY(EditAnywhere)
+		float attackRate = 4.0f;
+	UPROPERTY(EditAnywhere)
+		float detectRange = 500.0f;
+	UPROPERTY(EditAnywhere)
+		float chainRange = 150.0f;
+	
+
+		bool chain1;
+		bool chain2;
+
 private:
 	uint32 range;
 	bool hasPower;

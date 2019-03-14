@@ -22,6 +22,22 @@ public:
 
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 
+	bool isReady;
+	bool isActivated;
+
+	float currentTimer;
+
+	UPROPERTY(EditAnywhere)
+		float chargeTime = 60.0f;
+	UPROPERTY(EditAnywhere)
+		float damage = 1000.0f;
+
+	//The particle system that will be the projectile
+	UParticleSystem* PS;
+
+	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
+	UParticleSystem* reactionPS;
+
 private:
 	bool hasPower;
 };

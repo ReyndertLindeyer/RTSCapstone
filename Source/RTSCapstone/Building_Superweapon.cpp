@@ -2,6 +2,11 @@
 
 #include "Building_Superweapon.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+#include "ConstructorHelpers.h"
+#include "DrawDebugHelpers.h"
+
+#include "Projectile.h"
 
 ABuilding_Superweapon::ABuilding_Superweapon() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -11,7 +16,7 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	buildRadius = 500;
 	isBuilding = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
 	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Superweapon::BeginOverlap);
 	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Superweapon::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
@@ -21,6 +26,13 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 	decal->ComponentTags.Add(FName("BuildArea"));
+
+	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+
+	// Change to true for debugging
+	isReady = true;
+	currentTimer = 0.0f;
 }
 
 void ABuilding_Superweapon::Tick(float DeltaTime)
@@ -28,6 +40,30 @@ void ABuilding_Superweapon::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//UE_LOG(LogTemp, Warning, TEXT("TURRET IS TICKING"));
+
+	if (constructed)
+	{
+
+		// Activate the super weapon
+		if (isReady)
+		{
+			
+		}
+
+		// Count down the timer for the super weapon
+		if (currentTimer > 0)
+		{
+			currentTimer -= DeltaTime;
+		}
+
+		else if (currentTimer <= 0)
+		{
+			isReady = true;
+		}
+	}
+
+
+	
 
 }
 
