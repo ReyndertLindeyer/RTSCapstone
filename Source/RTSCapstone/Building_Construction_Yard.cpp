@@ -7,7 +7,7 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	PrimaryActorTick.bCanEverTick = true;
 	team = 1;
 	spawnTime = 0;
-	buildRadius = 100;
+	buildRadius = 500;
 	isBuilding = false;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Construction_Yard.Placeholder_Construction_Yard")).Get());
@@ -26,7 +26,7 @@ void ABuilding_Construction_Yard::BeginPlay()
 {
 	Super::BeginPlay();
 	constructed = true;
-	isPlaced = true;
+	isBuilding = false;
 }
 
 // Called every frame

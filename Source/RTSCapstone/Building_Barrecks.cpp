@@ -8,12 +8,9 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	spawnTime = 2;
 	buildRadius = 500;
 	isBuilding = true;
-	isPlaced = false;
 	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Barrecks::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Barrecks::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	//Setting up the variables from the datatable

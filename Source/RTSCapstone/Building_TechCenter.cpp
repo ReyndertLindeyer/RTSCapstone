@@ -11,8 +11,6 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	isBuilding = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_TechCenter::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_TechCenter::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
