@@ -17,9 +17,9 @@ AProjectile::AProjectile()
 	RootComponent = root;
 
 	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetupAttachment(RootComponent);
 	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
 	particleComp->bAutoActivate = false;
-	particleComp->SetupAttachment(RootComponent);
 
 	countdown = 6.0f;
 	reachedTarget = false;

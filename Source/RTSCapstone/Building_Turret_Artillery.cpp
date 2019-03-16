@@ -11,12 +11,9 @@
 ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	spawnTime = 2;
 	isBuilding = true;
-	isPlaced = false;
 	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Turret_Artillery::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Turret_Artillery::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);

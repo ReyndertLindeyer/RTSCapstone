@@ -51,7 +51,7 @@ protected:
 
 	float blastRadius;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 		UParticleSystemComponent* particleComp;
 
 	UPROPERTY(EditAnywhere)

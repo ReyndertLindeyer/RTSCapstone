@@ -15,8 +15,9 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	//DefaultMouseCursor = EMouseCursor::Custom; -- Potential way to implement our own cursor?
 
 	unlockCamera = false;
-	constructingBuilding = false;
+	placingBuilding = false;
 	buildingConstructed = false;
+	placingBuilding = false;
 
 	updateScreen = false;
 
@@ -27,6 +28,8 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 
 	// Player Interface
 	InitializePlayer(FString("Player 1"));
+
+	buildingManagerObject->SetPlayer(GetPlayerReference());
 }
 
 void AMyRTSPlayerController::BeginPlay()
@@ -36,8 +39,6 @@ void AMyRTSPlayerController::BeginPlay()
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
 
-	buildingManagerObject->SetPlayer(GetPlayerReference());
-
 	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
@@ -45,7 +46,6 @@ void AMyRTSPlayerController::BeginPlay()
 
 	ChangeResources(50000);
 	
-	/// Disabled for debugging
 	buildingManagerObject->SpawnConstructionYard(hit.Location);
 
 	/// Disabled for debugging
@@ -61,10 +61,17 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (constructingBuilding == true) {
+	if (placingBuilding == true) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, buildingManagerObject->GetBuildingToBuild()->GetActorLocation().Z));
+	}
+
+	if (buildingCountdown > 0) {
+		if(GetPower() > 0)
+			buildingCountdown -= DeltaTime;
+		else
+			buildingCountdown -= DeltaTime / 2;
 	}
 
 	buildingManagerObject->CheckForDestroyedBuildings();
@@ -157,18 +164,24 @@ int32 AMyRTSPlayerController::GetResources()
 	return GetResourceAmount();
 }
 
-bool AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
+bool AMyRTSPlayerController::GhostBuilding(int32 whatBuilding)
 {
-	if (!constructingBuilding) {
+	if (!placingBuilding) {
 		FHitResult hit;
 		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 		
 		buildingManagerObject->ghostBuilding(whatBuilding, hit.Location);
 
-		constructingBuilding = true;
+		placingBuilding = true;
 		return true;
 	}
 	return false;
+}
+
+void AMyRTSPlayerController::ConstructBuilding(int32 whatBuilding)
+{
+	buildingCountdown = buildingManagerObject->GetCertainConstructionTime(whatBuilding);
+	constructingBuilding = true;
 }
 
 TArray<int32> AMyRTSPlayerController::GetBuildingCost()
@@ -291,6 +304,11 @@ TArray<int32> AMyRTSPlayerController::UnitQueue()
 	return TArray<int32>();
 }
 
+float AMyRTSPlayerController::GetConstructionTimeLeft()
+{
+	return buildingCountdown;
+}
+
 void AMyRTSPlayerController::ResetIsBuilt()
 {
 	buildingConstructed = false;
@@ -304,7 +322,7 @@ void AMyRTSPlayerController::UpdateScreenSize()
 //Left mouse down to denote the start of the selection box
 void AMyRTSPlayerController::OnLeftMousePressed() {	
 	
-	if (!constructingBuilding) 
+	if (!placingBuilding) 
 	{
 		// If there is a selected structure, deselect it
 		if (SelectedStructure != nullptr)
@@ -339,7 +357,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 //Left mouse up to denote the end of the selection box
 void AMyRTSPlayerController::OnLeftMouseReleased() {
 	
-	if (!constructingBuilding) 
+	if (!placingBuilding) 
 	{
 		// If there is no selected structure
 		if (SelectedStructure == nullptr)
@@ -414,11 +432,11 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 		
 	}
 	
-	if (constructingBuilding) {
+	if (placingBuilding) {
 		if (buildingManagerObject->constructBuilding()) {
 			///HUDPtr->AddBuilding(buildingToBuild);
 			///m_fow->revealSmoothCircle(FVector2D(buildingToBuild->GetActorLocation().X, buildingToBuild->GetActorLocation().Y), buildingToBuild->GetSightRadius());
-			constructingBuilding = false;
+			placingBuilding = false;
 			buildingConstructed = true;
 		}
 	}
@@ -440,9 +458,9 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 		}
 	}*/
 
-	if (constructingBuilding) {
+	if (placingBuilding) {
 		buildingManagerObject->DeleteBuilding();
-		constructingBuilding = false;
+		placingBuilding = false;
 		buildingConstructed = false;
 		buildingManagerObject->DisableAllDecals();
 	}

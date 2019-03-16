@@ -17,8 +17,6 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	isBuilding = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Superweapon::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Superweapon::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);

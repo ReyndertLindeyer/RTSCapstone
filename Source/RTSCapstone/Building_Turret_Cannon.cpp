@@ -13,12 +13,9 @@
 ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	spawnTime = 2;
 	isBuilding = true;
-	isPlaced = false;
 	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTurret_v1.devTurret_v1")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Turret_Cannon::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Turret_Cannon::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);

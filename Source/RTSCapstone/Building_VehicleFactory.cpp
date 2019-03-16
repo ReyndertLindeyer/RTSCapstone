@@ -8,12 +8,9 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	spawnTime = 2;
 	buildRadius = 500;
 	isBuilding = true;
-	isPlaced = false;
 	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_VehicleFactory::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_VehicleFactory::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	//Setting up the variables from the datatable

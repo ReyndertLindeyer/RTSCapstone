@@ -19,6 +19,8 @@
 #include "Building_Turret_Artillery.h"
 #include "Building_Turret_Tesla.h"
 
+#include "Building_Ghost.h"
+
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
 
@@ -61,7 +63,7 @@ public:
 
 	void MoveBuilding(FVector location);
 
-	ABuildingMaster* GetBuildingToBuild();
+	ABuilding_Ghost* GetBuildingToBuild();
 
 	void SpawnConstructionYard(FVector spawnLocation);
 
@@ -72,6 +74,8 @@ public:
 	TArray<int32> GetBuildingCost();
 
 	TArray<int32> GetConstructionTime();
+
+	int32 GetCertainConstructionTime(int32 whatBuilding);
 
 	int32 GetMaxPower();
 
@@ -127,5 +131,9 @@ private:
 		TArray <ABuildingMaster*> turretArray;
 
 	UPROPERTY()
-		ABuildingMaster* buildingToBuild;
+		ABuilding_Ghost* buildingToBuild;
+
+
+	UPROPERTY()
+		TArray <UStaticMesh*> buildingMeshArray;
 };

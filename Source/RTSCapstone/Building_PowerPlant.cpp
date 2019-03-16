@@ -11,8 +11,6 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	isBuilding = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devPowerplant_v1.devPowerplant_v1")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_PowerPlant::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_PowerPlant::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
