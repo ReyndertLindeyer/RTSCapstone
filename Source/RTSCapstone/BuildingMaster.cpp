@@ -12,8 +12,6 @@ ABuildingMaster::ABuildingMaster()
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
-	//buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	buildingMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
@@ -34,15 +32,11 @@ ABuildingMaster::ABuildingMaster()
 	selectedDecal->SetVisibility(false);
 
 	constructed = false;
-	overlapping = false;
-	isPlaced = false;
-	isInRadius = false;
 	buildRadiusActive = false;
 	team = 1;
 	spawnTime = 1.0f;
 	buildRadius = 0.0f;
 	sightRadius = 300;
-	numOfBuildingCollisions = 0;
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 	decal->ComponentTags.Add(FName("BuildArea"));
@@ -67,6 +61,11 @@ int32 ABuildingMaster::GetHeight()
 	return buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z;
 }
 
+float ABuildingMaster::GetConstructionRadius()
+{
+	return buildRadius;
+}
+
 float ABuildingMaster::GetSightRadius()
 {
 	return sightRadius;
@@ -76,16 +75,6 @@ void ABuildingMaster::SetSelection(bool selectionType)
 {
 	selectedDecal->SetVisibility(selectionType);
 	selected = selectionType;
-}
-
-bool ABuildingMaster::GetIsOverlapping()
-{
-	return overlapping;
-}
-
-bool ABuildingMaster::GetIsInRadius()
-{
-	return isInRadius;
 }
 
 bool ABuildingMaster::IsSelected()
@@ -120,34 +109,12 @@ void ABuildingMaster::BeginPlay()
 void ABuildingMaster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//isInRadius = false;
 
-	if (isPlaced) {
 		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20), DeltaTime, spawnTime));
 		if (buildingMesh->GetComponentLocation().Z >= buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20) {
+			constructed = true;
 			PrimaryActorTick.bCanEverTick = false;
 		}
-	}
-
-	if (buildRadiusActive) {
-		// Detect all AActors within a Radius
-		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-		TArray<AActor*> ignoreActors;
-		TArray<AActor*> outActors;
-
-		ignoreActors.Add(this);
-
-		DrawDebugSphere(GetWorld(), GetActorLocation(), buildRadius * 2, 24, FColor(0, 0, 255));
-
-		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), buildRadius * 2, objectTypes, nullptr, ignoreActors, outActors);
-
-		for (int i = 0; i < outActors.Num(); i++) {
-			if (Cast<ABuildingMaster>(outActors[i])) {
-				if(!Cast<ABuildingMaster>(outActors[i])->GetIsInRadius())
-					Cast<ABuildingMaster>(outActors[i])->isInRadius = true;
-			}
-		}
-	}
 }
 
 UStaticMeshComponent * ABuildingMaster::GetBuildingMesh()
@@ -157,54 +124,15 @@ UStaticMeshComponent * ABuildingMaster::GetBuildingMesh()
 
 bool ABuildingMaster::constructAtLocation(II_Player* player)
 {
-	if (!overlapping && isInRadius) {
+
 		buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z));
-		constructed = true;
-		isPlaced = true;
-
-		//buildingMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		buildingMesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-
-		return true;
-	}
+	
 	return false;
 }
 
 void ABuildingMaster::InitializeStructure(II_Player* player_)
 {
 	// Do Nothing
-}
-
-
-
-void ABuildingMaster::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
-		if (!constructed)
-		{
-			if (!overlapping) {
-				overlapping = true;
-				UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
-			}
-			numOfBuildingCollisions++;
-		}
-	}
-}
-
-void ABuildingMaster::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
-		if (!constructed)
-		{
-			if (numOfBuildingCollisions > 0) {
-				numOfBuildingCollisions--;
-			}
-			if (numOfBuildingCollisions <= 0)
-			{
-				overlapping = false;
-				numOfBuildingCollisions = 0;
-			}
-		}
-	}
 }
 
 void ABuildingMaster::DestroyEntity() 

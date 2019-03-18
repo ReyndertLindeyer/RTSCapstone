@@ -49,12 +49,10 @@ public:
 	void DisableBuildDecal();
 
 	int32 GetHeight();
+	float GetConstructionRadius();
 	float GetSightRadius();
 
 	void SetSelection(bool selectionType);
-
-	bool GetIsOverlapping();
-	bool GetIsInRadius();
 
 	bool IsSelected();
 
@@ -80,11 +78,9 @@ protected:
 
 	float sightRadius, buildRadius;
 
-	uint32 numOfBuildingCollisions; //Number of buildings or units that the building is colliding with during placement
-
 	uint32 team, spawnTime;
 
-	bool constructed, isPlaced; //Is the building constructed, and has it been placed in the world
+	bool constructed; //Is the building constructed, and has it been placed in the world
 	
 	UPROPERTY(EditAnywhere)
 		class UDecalComponent * selectedDecal; //Decal to show the building is selected
@@ -105,10 +101,4 @@ public:
 	UStaticMeshComponent* GetBuildingMesh();
 		
 	bool constructAtLocation(II_Player* player);
-	bool overlapping, isInRadius;
-
-	UFUNCTION()
-		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);	
 };

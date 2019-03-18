@@ -17,7 +17,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	//DefaultMouseCursor = EMouseCursor::Custom; -- Potential way to implement our own cursor?
 
 	unlockCamera = false;
-	
+
 	placingBuilding = false;
 	buildingConstructed = false;
 	placingBuilding = false;
@@ -31,6 +31,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 
 	// Player Interface
 	InitializePlayer(FString("Player 1"));
+
 	buildingManagerObject->SetPlayer(GetPlayerReference());
 }
 
@@ -42,8 +43,6 @@ void AMyRTSPlayerController::BeginPlay()
 
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
-
-	buildingManagerObject->SetPlayer(GetPlayerReference());
 
 	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
@@ -308,6 +307,11 @@ int32 AMyRTSPlayerController::GetUnitNumber()
 TArray<int32> AMyRTSPlayerController::UnitQueue()
 {
 	return TArray<int32>();
+}
+
+float AMyRTSPlayerController::GetConstructionTimeLeft()
+{
+	return buildingCountdown;
 }
 
 void AMyRTSPlayerController::ResetIsBuilt()

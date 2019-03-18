@@ -9,16 +9,21 @@
 ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	spawnTime = 2;
 	isBuilding = true;
-	isPlaced = false;
 	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTesla_v1.devTesla_v1")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Turret_Tesla::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Turret_Tesla::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+
+	particleSystem = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Lightning.P_Lightning'")).Get();
+
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
+	particleComp->SetTemplate(particleSystem);
+	particleComp->bAutoActivate = false;
+	particleComp->SetupAttachment(RootComponent);
 
 	currentAttackTimer = 0.0f;
 
@@ -111,6 +116,9 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 					{
 						
 						// Add Particle start to tesla and partile end to target location
+						particleComp->SetBeamSourcePoint(0, GetActorLocation(), 0);
+						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);
+						particleComp->ActivateSystem(true);
 						
 						// Directly damage the target entity
 						Cast<II_Entity>(c1TargetActor)->DealDamage(attackDamage);
@@ -159,6 +167,9 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 					else if (chain2 && c2TargetActor != nullptr)
 					{
 						// Add Particle start to tesla and partile end to target location
+						particleComp->SetBeamSourcePoint(0, GetActorLocation(), 0);
+						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);
+						particleComp->ActivateSystem(true);
 						
 						// Directly damage the target entity
 						Cast<II_Entity>(c2TargetActor)->DealDamage(attackDamage);
@@ -176,6 +187,9 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 					else
 					{
 						// Add Particle start to tesla and partile end to target location
+						particleComp->SetBeamSourcePoint(0, GetActorLocation(), 0);
+						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);
+						particleComp->ActivateSystem(true);
 						
 						// Directly damage the target entity
 						Cast<II_Entity>(targetActor)->DealDamage(attackDamage);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "Building_Turret_Tesla.generated.h"
 
 /**
@@ -49,5 +50,10 @@ public:
 private:
 	uint32 range;
 	bool hasPower;
+
+
+	UPROPERTY()
+		UParticleSystemComponent* particleComp;
+	UParticleSystem* particleSystem;
 	
 };

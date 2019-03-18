@@ -11,19 +11,16 @@
 ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	spawnTime = 2;
 	isBuilding = true;
-	isPlaced = false;
 	hasPower = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devGattling.devGattling")).Get());
-	buildingMesh->OnComponentBeginOverlap.AddDynamic(this, &ABuilding_Turret_Gattling::BeginOverlap);
-	buildingMesh->OnComponentEndOverlap.AddDynamic(this, &ABuilding_Turret_Gattling::OnOverlapEnd);
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
-	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
-	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BulletHit.P_BulletHit'")).Get();
 
 	currentAttackTimer = 0.0f;
 }
@@ -104,7 +101,7 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 			else
 			{
 				// Rotate towards the target 
-				//RootComponent->SetRelativeRotation((targetActor->GetActorLocation() - RootComponent->GetComponentLocation()).Rotation());
+				RootComponent->SetRelativeRotation((targetActor->GetActorLocation() - RootComponent->GetComponentLocation()).Rotation());
 
 				if (currentAttackTimer >= attackRate)
 				{

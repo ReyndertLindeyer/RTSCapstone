@@ -161,7 +161,6 @@ protected:
 	bool constructingBuilding, placingBuilding, buildingConstructed, selectedBarracks, selectedFactory;
 
 	float buildingCountdown; //Countdown to building completion
-
 	UPROPERTY()
 		AProFow *m_fow;
 
