@@ -37,7 +37,9 @@ void AUNIT_Engineer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitializeEntity(nullptr, "Engineer", startingHealth);
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Engineer", startingHealth);
+
 	SpawnDefaultController();
 }
 
@@ -215,5 +217,20 @@ void AUNIT_Engineer::AttackOrder(II_Entity* target)
 
 void AUNIT_Engineer::DestroyEntity()
 {
-	Destroy();
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ENTITY OWNER FOUND"));
+
+		if (GetEntityOwner()->GetUnits().Contains(this))
+		{
+			GetEntityOwner()->GetUnits().Remove(this);
+		}
+		
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
+	Destroy(this);
 }

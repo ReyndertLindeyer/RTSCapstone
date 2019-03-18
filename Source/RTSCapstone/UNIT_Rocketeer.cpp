@@ -40,7 +40,9 @@ void AUNIT_Rocketeer::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//InitializeEntity(nullptr, "Rocketeer", startingHealth);
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rocketeer", startingHealth);
+
 	SpawnDefaultController();
 
 }
@@ -238,6 +240,16 @@ void AUNIT_Rocketeer::AttackOrder(II_Entity* target)
 
 void AUNIT_Rocketeer::DestroyEntity()
 {
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
 	Destroy(this);
 }
 

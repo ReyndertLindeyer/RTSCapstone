@@ -41,11 +41,13 @@ public:
 	virtual void DestroyEntity();
 
 	II_Player* GetEntityOwner();
-
+	
 
 private:
+
+	II_Player* owner;
 	bool isInitialized = false;
 	FString name;
 	float currentHealth, maxHealth = 100.0f;
-	II_Player* owner;
+	
 };

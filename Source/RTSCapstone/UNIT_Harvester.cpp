@@ -46,9 +46,10 @@ void AUNIT_Harvester::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Harvester", startingHealth);
+	
 	SpawnDefaultController();
-	
-	
 }
 
 // Called every frame
@@ -367,6 +368,16 @@ void AUNIT_Harvester::AttackOrder(II_Entity* target)
 
 void AUNIT_Harvester::DestroyEntity()
 {
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
 	Destroy(this);
 }
 

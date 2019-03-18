@@ -40,8 +40,10 @@ void AUNIT_MArtillery::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Mobile Artillery", startingHealth);
+
 	SpawnDefaultController();
-	InitializeEntity(nullptr, "Mobile Artillery", startingHealth);
 }
 
 // Called every frame

@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "I_Entity.h"
+#include "BuildingMaster.h"
+#include "I_Unit.h"
 
 // Add default functionality here for any II_Entity functions that are not pure virtual.
 
@@ -14,6 +16,29 @@ void II_Entity::InitializeEntity(II_Player* owner_, FString name_, float maxHeal
 		owner = owner_;
 
 		isInitialized = true;
+		
+		if (owner != nullptr)
+		{
+			if (Cast<II_Unit>(this))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Unit Placed in UNIT ARRAY"));
+				owner->AddUnit(Cast<AActor>(this));
+			}
+				
+
+			else if (Cast<ABuildingMaster>(this))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Building Placed in BUILDING ARRAY"));
+				owner->AddBuilding(Cast<AActor>(this));
+			}
+
+			else
+				UE_LOG(LogTemp, Warning, TEXT("WTF?"));
+		}	
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("WTF 2?"));
+		}
 	}
 }
 

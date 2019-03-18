@@ -37,8 +37,10 @@ void AUNIT_MOutpost::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Mobile Outpost", startingHealth);
+
 	SpawnDefaultController();
-	InitializeEntity(nullptr, "Surveyer", startingHealth);
 }
 
 // Called every frame
@@ -217,6 +219,16 @@ void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 
 void AUNIT_MOutpost::DestroyEntity()
 {
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
 	Destroy(this);
 }
 

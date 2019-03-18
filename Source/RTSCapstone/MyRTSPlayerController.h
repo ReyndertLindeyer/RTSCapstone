@@ -57,7 +57,10 @@ public:
 		TArray<int32> GetBuildingConstructionTime();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-		bool ConstructBuilding(int32 whatBuilding);
+		bool GhostBuilding(int32 whatBuilding);
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void ConstructBuilding(int32 whatBuilding);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void SubtractCost(int32 whatBuilding);
@@ -105,11 +108,17 @@ public:
 		TArray <int32> UnitQueue();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
+		float GetConstructionTimeLeft();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
 		void ResetIsBuilt();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void UpdateScreenSize();
 
+
+	UFUNCTION()
+		AActor* GetPlayerActor();
 
 protected:
 
@@ -149,8 +158,10 @@ protected:
 	UPROPERTY()
 		UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding, buildingConstructed, selectedBarracks, selectedFactory; 
-	
+	bool constructingBuilding, placingBuilding, buildingConstructed, selectedBarracks, selectedFactory;
+
+	float buildingCountdown; //Countdown to building completion
+
 	UPROPERTY()
 		AProFow *m_fow;
 
@@ -159,4 +170,6 @@ protected:
 	///////////////////////////////////
 	UFUNCTION()
 		void DEBUG_DamageSelected();
+
+
 };

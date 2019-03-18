@@ -32,6 +32,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;
 
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
 	// FUNCTIONS
 public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection

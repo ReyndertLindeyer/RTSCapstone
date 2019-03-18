@@ -33,6 +33,7 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
+
 }
 
 // Called when the game starts or when spawned
@@ -40,7 +41,9 @@ void AUNIT_Rifleman::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//InitializeEntity(nullptr, "Rifleman", startingHealth);
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rifleman", startingHealth);
+
 	SpawnDefaultController();
 	
 }
@@ -234,6 +237,16 @@ void AUNIT_Rifleman::AttackOrder(II_Entity* target)
 
 void AUNIT_Rifleman::DestroyEntity()
 {
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
 	Destroy(this);
 }
 

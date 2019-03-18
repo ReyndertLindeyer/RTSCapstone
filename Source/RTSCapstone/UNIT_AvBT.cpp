@@ -41,7 +41,10 @@ void AUNIT_AvBT::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	InitializeEntity(nullptr, "Advanded Battle Tank", startingHealth);
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Advanded Battle Tank", startingHealth);
+
+	SpawnDefaultController();
 }
 
 // Called every frame
@@ -251,6 +254,15 @@ void AUNIT_AvBT::AttackOrder(II_Entity* target)
 
 void AUNIT_AvBT::DestroyEntity()
 {
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
 
 	Destroy(this);
 }

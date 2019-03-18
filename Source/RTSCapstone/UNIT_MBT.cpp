@@ -40,8 +40,11 @@ void AUNIT_MBT::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (setPlayerOwner != nullptr)
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Main Battle Tank", startingHealth);
+
 	SpawnDefaultController();
-	InitializeEntity(nullptr, "Main Battle Tank", startingHealth);
+	
 
 }
 
@@ -233,6 +236,16 @@ void AUNIT_MBT::AttackOrder(II_Entity* target)
 
 void AUNIT_MBT::DestroyEntity()
 {
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
 	Destroy(this);
 }
 
