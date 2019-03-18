@@ -19,6 +19,9 @@ class RTSCAPSTONE_API ABuilding_Enemy_Spawner : public ABuildingMaster
 public:
 	ABuilding_Enemy_Spawner();
 
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
+
 	void SpawnUnit();
 
 	void SetupBulding(FVector inVec);

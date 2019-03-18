@@ -21,6 +21,9 @@ public:
 	ABuilding_Refinery();
 
 	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
+
+	UPROPERTY(EditAnywhere)
 		USceneComponent* harvestPt;
 
 	

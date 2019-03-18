@@ -15,7 +15,7 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
-	playerList.SetNum(2, false);
+	playerList.SetNum(3, false);
 }
 
 // Called every frame
@@ -35,24 +35,27 @@ void AGameManager::Tick(float DeltaTime)
 		}
 	}
 
-	for (int i = 0; i < playerList.Num(); i++)
+	// Uncomment for everyone at once
+	/*for (int i = 0; i < playerList.Num(); i++)
 	{
 		if (playerList[i] != nullptr)
 		{	
 			UE_LOG(LogTemp, Warning, TEXT("%i UNITS: %i"), i, Cast<II_Player>(playerList[i])->GetUnits().Num());
 		}
-	}
+	}*/
 
-	//if (playerList[0] != nullptr)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("ENEMY UNITS: %i"), Cast<II_Player>(playerList[0])->GetUnits().Num());
-	//	//UE_LOG(LogTemp, Warning, TEXT("ENEMY STRUCTURES: %i"), Cast<II_Player>(playerList[0])->GetBuildings().Num());
-	//}
-	//
+	// Uncomment for just the player
+	/*if (playerList[0] != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PLAYER UNITS: %i"), Cast<II_Player>(playerList[0])->GetUnits().Num());
+		UE_LOG(LogTemp, Warning, TEXT("PLAYER STRUCTURES: %i"), Cast<II_Player>(playerList[0])->GetBuildings().Num());
+	}*/
+	
+	// Uncomment for just the enemy
 	//if (playerList[1] != nullptr)
 	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("PLAYER UNITS: %i"), Cast<II_Player>(playerList[1])->GetUnits().Num());
-	//	//UE_LOG(LogTemp, Warning, TEXT("PLAYER STRUCTURES: %i"), Cast<II_Player>(playerList[1])->GetBuildings().Num());
+	//	UE_LOG(LogTemp, Warning, TEXT("ENEMY UNITS: %i"), Cast<II_Player>(playerList[1])->GetUnits().Num());
+	//	//UE_LOG(LogTemp, Warning, TEXT("ENEMY STRUCTURES: %i"), Cast<II_Player>(playerList[1])->GetBuildings().Num());
 	//}
 	
 }

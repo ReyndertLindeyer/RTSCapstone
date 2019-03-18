@@ -60,6 +60,10 @@ void ABuilding_Barrecks::BeginPlay()
 	waypointMesh->SetHiddenInGame(true);
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
 	waypointMesh->SetRelativeLocation(wayPoint);
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Barracks", 700.0f);
+
 }
 
 int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)
@@ -195,10 +199,4 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
 		waypointMesh->SetHiddenInGame(true);
 	}
-}
-
-void ABuilding_Barrecks::InitializeStructure(II_Player* player)
-{
-	//InitializeEntity(player, "Barracks", 700.0f);
-	
 }

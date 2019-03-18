@@ -25,9 +25,13 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	currentAttackTimer = 0.0f;
 }
 
-void ABuilding_Turret_Gattling::InitializeStructure(II_Player* player)
+void ABuilding_Turret_Gattling::BeginPlay()
 {
-	InitializeEntity(player, "Turret", 1200.0f);
+	Super::BeginPlay();
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Gattling Turret", 1200.0f);
+
 }
 
 void ABuilding_Turret_Gattling::Tick(float DeltaTime)

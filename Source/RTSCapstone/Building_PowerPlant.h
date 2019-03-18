@@ -15,8 +15,11 @@ class RTSCAPSTONE_API ABuilding_PowerPlant : public ABuildingMaster
 	GENERATED_BODY()
 public:
 	ABuilding_PowerPlant();
+
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
+
 	virtual void BeginPlay() override;
 	void Upgrade();
 
-	virtual void InitializeStructure(II_Player* player) override;
 };

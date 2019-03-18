@@ -61,7 +61,7 @@ public:
 	void Suicide();
 
 	// Entity Interface
-	virtual void DestroyEntity() override;
+	void DestroyEntity() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -69,7 +69,7 @@ protected:
 
 	// Called in the constructAtLocation() method.
 	// Functionality needs to be implemented on each building
-	virtual void InitializeStructure(II_Player* player);
+	void InitializeStructure(II_Player* player, FString name, float health);
 
 	bool selected, isBuilding; //isBuilding means is the building under construction
 

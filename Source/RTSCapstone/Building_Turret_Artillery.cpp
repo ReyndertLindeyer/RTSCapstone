@@ -25,9 +25,13 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	currentAttackTimer = 0.0f;
 }
 
-void ABuilding_Turret_Artillery::InitializeStructure(II_Player* player)
+void ABuilding_Turret_Artillery::BeginPlay()
 {
-	InitializeEntity(player, "Turret", 1200.0f);
+	Super::BeginPlay();
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Artillery Platform", 1200.0f);
+
 }
 
 void ABuilding_Turret_Artillery::Tick(float DeltaTime)

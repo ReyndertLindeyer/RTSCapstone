@@ -16,5 +16,8 @@ class RTSCAPSTONE_API ABuilding_TechCenter : public ABuildingMaster
 public:
 	ABuilding_TechCenter();
 
-	virtual void InitializeStructure(II_Player* player) override;
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
+
+	virtual void BeginPlay() override;
 };

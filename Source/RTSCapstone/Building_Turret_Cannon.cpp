@@ -28,9 +28,13 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	currentAttackTimer = 0.0f;
 }
 
-void ABuilding_Turret_Cannon::InitializeStructure(II_Player* player)
+void ABuilding_Turret_Cannon::BeginPlay()
 {
-	InitializeEntity(player, "Turret", 1200.0f);
+	Super::BeginPlay();
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Cannon Emplacement", 700.0f);
+
 }
 
 void ABuilding_Turret_Cannon::Tick(float DeltaTime)

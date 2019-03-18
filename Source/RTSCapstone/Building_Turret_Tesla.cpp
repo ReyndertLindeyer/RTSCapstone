@@ -31,9 +31,13 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	chain2 = false;
 }
 
-void ABuilding_Turret_Tesla::InitializeStructure(II_Player* player)
+void ABuilding_Turret_Tesla::BeginPlay()
 {
-	InitializeEntity(player, "Turret", 1200.0f);
+	Super::BeginPlay();
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Tesla Tower", 1200.0f);
+
 }
 
 void ABuilding_Turret_Tesla::Tick(float DeltaTime)
@@ -116,8 +120,8 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 					{
 						
 						// Add Particle start to tesla and partile end to target location
-						particleComp->SetBeamSourcePoint(0, GetActorLocation(), 0);
-						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);
+						particleComp->SetBeamSourcePoint(0, targetActor->GetActorLocation(), 0);
+						particleComp->SetBeamTargetPoint(0, c1TargetActor->GetActorLocation(), 0);
 						particleComp->ActivateSystem(true);
 						
 						// Directly damage the target entity
@@ -167,8 +171,8 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 					else if (chain2 && c2TargetActor != nullptr)
 					{
 						// Add Particle start to tesla and partile end to target location
-						particleComp->SetBeamSourcePoint(0, GetActorLocation(), 0);
-						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);
+						particleComp->SetBeamSourcePoint(0, c1TargetActor->GetActorLocation(), 0);
+						particleComp->SetBeamTargetPoint(0, c2TargetActor->GetActorLocation(), 0);
 						particleComp->ActivateSystem(true);
 						
 						// Directly damage the target entity

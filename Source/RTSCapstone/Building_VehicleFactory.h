@@ -29,6 +29,9 @@ public:
 
 	ABuilding_VehicleFactory();
 
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
+
 	int32 AddToUnitQueue(int32 unitType);
 	int32 RemoveFromUnitQueue();
 	int32 GetUnitAtStartOfQueue();
@@ -38,7 +41,6 @@ public:
 	void SetWaypoint(FVector inVec);
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 
-	virtual void InitializeStructure(II_Player* player) override;
 
 protected:
 	virtual void BeginPlay() override;

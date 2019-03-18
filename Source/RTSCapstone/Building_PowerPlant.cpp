@@ -22,13 +22,11 @@ void ABuilding_PowerPlant::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Powerplant", 700.0f);
+
 }
 
-void ABuilding_PowerPlant::InitializeStructure(II_Player* player)
-{
-	InitializeEntity(player, "PowerPlant", 800.0f);
-}
 
 void ABuilding_PowerPlant::Upgrade()
 {

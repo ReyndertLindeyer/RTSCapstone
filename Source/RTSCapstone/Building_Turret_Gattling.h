@@ -21,17 +21,19 @@ class RTSCAPSTONE_API ABuilding_Turret_Gattling : public ABuildingMaster
 public:
 	ABuilding_Turret_Gattling();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
-
-	virtual void InitializeStructure(II_Player* player) override;
 
 	//The particle system that will be the projectile
 	UParticleSystem* PS;
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
 	UParticleSystem* reactionPS;
+
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
 
 	// AI STUFF
 	AActor* targetActor;

@@ -35,6 +35,9 @@ void ABuilding_Refinery::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Refinery", 1200.0f);
+
 }
 
 void ABuilding_Refinery::Tick(float DeltaTime)

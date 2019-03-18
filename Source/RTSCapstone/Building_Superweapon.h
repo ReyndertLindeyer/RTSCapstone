@@ -16,9 +16,11 @@ class RTSCAPSTONE_API ABuilding_Superweapon : public ABuildingMaster
 public:
 	ABuilding_Superweapon();
 
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
 
-	virtual void InitializeStructure(II_Player* player) override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 

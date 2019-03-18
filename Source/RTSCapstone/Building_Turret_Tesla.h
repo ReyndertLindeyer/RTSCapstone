@@ -18,11 +18,13 @@ class RTSCAPSTONE_API ABuilding_Turret_Tesla : public ABuildingMaster
 public:
 	ABuilding_Turret_Tesla();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 
-	virtual void InitializeStructure(II_Player* player) override;
+	UPROPERTY(EditAnywhere)
+		AActor* setPlayerOwner;
 
 	// AI STUFF
 	AActor* targetActor;
@@ -33,7 +35,7 @@ public:
 	float currentAttackTimer;
 
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 5.0f;
+		float attackDamage = 75.0f;
 	//UPROPERTY(EditAnywhere)
 	//	float startingHealth = 225.0f;
 	UPROPERTY(EditAnywhere)

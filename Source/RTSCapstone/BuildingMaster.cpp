@@ -130,12 +130,22 @@ bool ABuildingMaster::constructAtLocation(II_Player* player)
 	return false;
 }
 
-void ABuildingMaster::InitializeStructure(II_Player* player_)
+void ABuildingMaster::InitializeStructure(II_Player* player_, FString name, float health)
 {
-	// Do Nothing
+	InitializeEntity(player_, name, health);
 }
 
 void ABuildingMaster::DestroyEntity() 
 {
-	//Destroy(this);
+	// Remove from Owner's Array
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
+	Destroy(this);
 }

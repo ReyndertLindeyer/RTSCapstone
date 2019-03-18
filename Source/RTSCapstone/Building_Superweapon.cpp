@@ -33,6 +33,15 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	currentTimer = 0.0f;
 }
 
+void ABuilding_Superweapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Superweapon", 1200.0f);
+
+}
+
 void ABuilding_Superweapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -63,11 +72,6 @@ void ABuilding_Superweapon::Tick(float DeltaTime)
 
 	
 
-}
-
-void ABuilding_Superweapon::InitializeStructure(II_Player* player)
-{
-	//InitializeEntity(player, "Technology Centre", 1500.0f);
 }
 
 void ABuilding_Superweapon::SetHasPower(bool inBool)

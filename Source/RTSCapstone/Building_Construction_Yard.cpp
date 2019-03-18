@@ -27,6 +27,9 @@ void ABuilding_Construction_Yard::BeginPlay()
 	Super::BeginPlay();
 	constructed = true;
 	isBuilding = false;
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Construction Yard", 20000.0f);
 }
 
 // Called every frame

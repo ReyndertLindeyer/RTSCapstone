@@ -20,7 +20,11 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
-void ABuilding_TechCenter::InitializeStructure(II_Player* player)
+// Called when the game starts or when spawned
+void ABuilding_TechCenter::BeginPlay()
 {
-	InitializeEntity(player, "Technology Centre", 1500.0f);
+	Super::BeginPlay();
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Technology Centre", 1000.0f);
 }

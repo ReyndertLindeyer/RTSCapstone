@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	AGameManager();
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		TArray<AActor*> playerList;
 
 protected:

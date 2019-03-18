@@ -41,6 +41,9 @@ void ABuilding_Enemy_Spawner::BeginPlay()
 	else {
 		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
 	}
+
+	if (setPlayerOwner != nullptr)
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Spawner", 1200.0f);
 }
 
 void ABuilding_Enemy_Spawner::SpawnUnit()
