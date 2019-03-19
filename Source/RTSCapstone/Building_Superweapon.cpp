@@ -23,7 +23,6 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
@@ -36,9 +35,12 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 void ABuilding_Superweapon::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Superweapon", 1200.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("OrbitalCannon"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("OrbitalCannon")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("OrbitalCannon")), (TEXT("Context")), false)->MaxHealth);
+	}
 
 }
 

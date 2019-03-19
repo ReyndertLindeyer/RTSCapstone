@@ -9,6 +9,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/ObjectMacros.h"
 #include "Components/DecalComponent.h"
+#include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
 
@@ -21,20 +22,6 @@
 #include "Engine/StaticMesh.h"
 
 #include "BuildingMaster.generated.h"
-
-
-USTRUCT(BlueprintType)
-struct FUnitVariables : public FTableRowBase {
-	GENERATED_USTRUCT_BODY()
-
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int32 Cost;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int32 BuildTime;
-};
 
 UCLASS()
 class RTSCAPSTONE_API ABuildingMaster : public AActor, public II_Entity
@@ -80,25 +67,29 @@ protected:
 
 	uint32 team, spawnTime;
 
-	bool constructed; //Is the building constructed, and has it been placed in the world
-	
-	UPROPERTY(EditAnywhere)
-		class UDecalComponent * selectedDecal; //Decal to show the building is selected
-
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* buildingMesh;
 
 	UPROPERTY(EditAnywhere)
+		class UDecalComponent * selectedDecal; //Decal to show the building is selected
+
+	UPROPERTY(EditAnywhere)
 		class UDecalComponent * decal; //Decal to show the buildings construction radius
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UDataTable* unitConstructionDataTable;
+	UMaterialInstanceDynamic* DynamicMaterialInstA;
+	UMaterialInstanceDynamic* DynamicMaterialInstB;
 
-public:	
+	UMaterialInterface* decalMaterial;
+	UMaterialInterface* selectMaterial;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UStaticMeshComponent* GetBuildingMesh();
+
+	UPROPERTY(EditAnywhere)
+		bool constructed; //Is the building constructed, and has it been placed in the world
 		
 	bool constructAtLocation(II_Player* player);
 };

@@ -37,6 +37,13 @@ TArray<AActor*> II_Player::GetBuildings()
 void II_Player::InitializePlayer(FString playerName)
 {
 	PlayerName = playerName;
+
+
+	//Setting up the variables from the datatable
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableA(TEXT("/Game/Game_Assets/DataTables/BuildingVariables.BuildingVariables"));
+	buildingDataTable = tempDataTableA.Get();
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableB(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
+	unitConstructionDataTable = tempDataTableB.Get();
 }
 
 FString II_Player::GetPlayerName()
@@ -62,6 +69,16 @@ void II_Player::ChangePower(int amount)
 int II_Player::GetPower()
 {
 	return power;
+}
+
+UDataTable * II_Player::GetBuildingDataTable()
+{
+	return buildingDataTable;
+}
+
+UDataTable * II_Player::GetUnitConstructionDataTable()
+{
+	return unitConstructionDataTable;
 }
 
 

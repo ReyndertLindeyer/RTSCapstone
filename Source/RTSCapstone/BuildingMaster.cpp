@@ -15,18 +15,22 @@ ABuildingMaster::ABuildingMaster()
 
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
-	decal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get());
-	decal->CreateDynamicMaterialInstance();
+	//decal->SetDecalMaterial (ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get());
+	//decal->CreateDynamicMaterialInstance();
 	decal->RelativeRotation = FRotator(-90, 0, 0);
 	decal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
+	decalMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_RoundBuildingRadius")).Get();
+
 
 	selectedDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("selectionDecal"));
-	selectedDecal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_SelectionCircle")).Get());
-	selectedDecal->CreateDynamicMaterialInstance();
+	//selectedDecal->SetDecalMaterial(ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_SelectionCircle")).Get());
+	//selectedDecal->CreateDynamicMaterialInstance();
 	selectedDecal->RelativeRotation = FRotator(-90, 0, 0);
 	selectedDecal->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	selectedDecal->SetupAttachment(RootComponent);
+
+	selectMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/MAT_Decal_SelectionCircle")).Get();
 
 	decal->SetVisibility(false);
 	selectedDecal->SetVisibility(false);
@@ -39,7 +43,6 @@ ABuildingMaster::ABuildingMaster()
 	sightRadius = 300;
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 void ABuildingMaster::EnableBuildDecal()
@@ -51,7 +54,7 @@ void ABuildingMaster::EnableBuildDecal()
 
 void ABuildingMaster::DisableBuildDecal()
 {
-	decal->SetVisibility(false); 
+	decal->SetVisibility(false);
 	PrimaryActorTick.bCanEverTick = false;
 	buildRadiusActive = false;
 }
@@ -98,6 +101,13 @@ void ABuildingMaster::Suicide()
 void ABuildingMaster::BeginPlay()
 {
 	Super::BeginPlay();
+
+	DynamicMaterialInstA = UMaterialInstanceDynamic::Create(decalMaterial, decal);
+	decal->SetDecalMaterial(DynamicMaterialInstA);
+
+	DynamicMaterialInstB = UMaterialInstanceDynamic::Create(selectMaterial, selectedDecal);
+	selectedDecal->SetDecalMaterial(DynamicMaterialInstB);
+
 	if(buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y > buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X)
 		selectedDecal->DecalSize = FVector(2, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y + 20, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y + 20);
 	else
@@ -109,12 +119,13 @@ void ABuildingMaster::BeginPlay()
 void ABuildingMaster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (constructed == false) {
 		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20), DeltaTime, spawnTime));
 		if (buildingMesh->GetComponentLocation().Z >= buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20) {
 			constructed = true;
 			PrimaryActorTick.bCanEverTick = false;
 		}
+	}
 }
 
 UStaticMeshComponent * ABuildingMaster::GetBuildingMesh()

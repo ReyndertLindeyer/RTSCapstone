@@ -20,7 +20,6 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 
 
 	harvestPt = CreateDefaultSubobject<USceneComponent>(TEXT("Harvest Point"));
@@ -34,10 +33,12 @@ ABuilding_Refinery::ABuilding_Refinery() {
 void ABuilding_Refinery::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Refinery", 1200.0f);
-
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("Refinery"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
+	}
 }
 
 void ABuilding_Refinery::Tick(float DeltaTime)

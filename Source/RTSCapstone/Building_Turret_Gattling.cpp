@@ -28,9 +28,12 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 void ABuilding_Turret_Gattling::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Gattling Turret", 1200.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("GunTurret"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
+	}
 
 }
 

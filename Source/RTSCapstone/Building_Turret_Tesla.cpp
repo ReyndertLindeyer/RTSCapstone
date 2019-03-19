@@ -34,9 +34,12 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 void ABuilding_Turret_Tesla::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Tesla Tower", 1200.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("TeslaTurret"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TeslaTurret")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TeslaTurret")), (TEXT("Context")), false)->MaxHealth);
+	}
 
 }
 

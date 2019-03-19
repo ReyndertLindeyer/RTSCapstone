@@ -13,28 +13,6 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
-	//Setting up the variables from the datatable
-	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTable(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
-	unitConstructionDataTable = tempDataTable.Get();
-
-	static const FString ContextString(TEXT("Unit Variable Context"));
-
-
-	//Rifle Infantry Variables
-	FUnitVariables* UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("RifleInfantry")), ContextString, false);
-	rifleInfantryCost = UnitVariables->Cost;
-	rifleBuildTime = UnitVariables->BuildTime;
-
-	//Rocket Infantry Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("RocketInfantry")), ContextString, false);
-	rocketInfantryCost = UnitVariables->Cost;
-	rocketBuildTime = UnitVariables->BuildTime;
-
-	//Engineer Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Engineer")), ContextString, false);
-	engineerBuildTime = UnitVariables->Cost;
-	engineerBuildTime = UnitVariables->BuildTime;
-
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
 
 	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
@@ -51,7 +29,6 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 void ABuilding_Barrecks::BeginPlay()
@@ -61,8 +38,29 @@ void ABuilding_Barrecks::BeginPlay()
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
 	waypointMesh->SetRelativeLocation(wayPoint);
 
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Barracks", 700.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("Barracks"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Barracks")), (TEXT("Context")), false)->MaxHealth);
+	}
+
+	static const FString ContextString(TEXT("Unit Variable Context"));
+
+
+	//Rifle Infantry Variables
+	FUnitVariables* UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("RifleInfantry")), ContextString, false);
+	rifleInfantryCost = UnitVariables->Cost;
+	rifleBuildTime = UnitVariables->BuildTime;
+
+	//Rocket Infantry Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("RocketInfantry")), ContextString, false);
+	rocketInfantryCost = UnitVariables->Cost;
+	rocketBuildTime = UnitVariables->BuildTime;
+
+	//Engineer Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("Engineer")), ContextString, false);
+	engineerBuildTime = UnitVariables->Cost;
+	engineerBuildTime = UnitVariables->BuildTime;
 
 }
 

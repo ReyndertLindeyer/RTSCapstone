@@ -31,9 +31,12 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 void ABuilding_Turret_Cannon::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Cannon Emplacement", 700.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("CannonTurret"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("CannonTurret")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("CannonTurret")), (TEXT("Context")), false)->MaxHealth);
+	}
 
 }
 

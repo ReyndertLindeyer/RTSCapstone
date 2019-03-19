@@ -100,6 +100,11 @@ void II_Entity::SetMaxHealth(float inNum)
 	maxHealth = inNum;
 }
 
+void II_Entity::SetName(FString name_)
+{
+	name = name_;
+}
+
 void II_Entity::SetOwner(II_Player * owner_)
 {
 	owner = owner_;

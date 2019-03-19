@@ -17,14 +17,16 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 // Called when the game starts or when spawned
 void ABuilding_TechCenter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Technology Centre", 1000.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("TechCenter"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), (TEXT("Context")), false)->MaxHealth);
+	}
 }

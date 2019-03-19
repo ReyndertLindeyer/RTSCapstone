@@ -13,43 +13,6 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
-	//Setting up the variables from the datatable
-	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTable(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
-	unitConstructionDataTable = tempDataTable.Get();
-
-	static const FString ContextString(TEXT("Unit Variable Context"));
-
-
-	//Harvester Variables
-	FUnitVariables* UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Harvester")), ContextString, false);
-	harvesterCost = UnitVariables->Cost;
-	harvesterBuildTime = UnitVariables->BuildTime;
-
-	//Humvee Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("Humvee")), ContextString, false);
-	humveeCost = UnitVariables->Cost;
-	humveeTime = UnitVariables->BuildTime;
-
-	//Light Tank Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("LightTank")), ContextString, false);
-	tankCost = UnitVariables->Cost;
-	tankTime = UnitVariables->BuildTime;
-
-	//Artillary Tank Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("ArtillaryTank")), ContextString, false);
-	artilleryTankCost = UnitVariables->Cost;
-	artilleryTankBuildTime = UnitVariables->BuildTime;
-
-	//Heavy Tank Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("HeavyTank")), ContextString, false);
-	heavyTankCost = UnitVariables->Cost;
-	heavyTankTime = UnitVariables->BuildTime;
-
-	//Outpost Creator Variables
-	UnitVariables = unitConstructionDataTable->FindRow<FUnitVariables>(FName(TEXT("OutpostCreator")), ContextString, false);
-	outpostCost = UnitVariables->Cost;
-	outpostTime = UnitVariables->BuildTime;
-
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the building
 
 	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
@@ -66,7 +29,6 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 void ABuilding_VehicleFactory::BeginPlay()
@@ -75,6 +37,44 @@ void ABuilding_VehicleFactory::BeginPlay()
 	waypointMesh->SetHiddenInGame(true);
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
 	waypointMesh->SetRelativeLocation(wayPoint);
+
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("WarFactory"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), (TEXT("Context")), false)->MaxHealth);
+	}
+
+	static const FString ContextString(TEXT("Unit Variable Context"));
+	//Harvester Variables
+	FUnitVariables* UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("Harvester")), ContextString, false);
+	harvesterCost = UnitVariables->Cost;
+	harvesterBuildTime = UnitVariables->BuildTime;
+
+	//Humvee Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("Humvee")), ContextString, false);
+	humveeCost = UnitVariables->Cost;
+	humveeTime = UnitVariables->BuildTime;
+
+	//Light Tank Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("LightTank")), ContextString, false);
+	tankCost = UnitVariables->Cost;
+	tankTime = UnitVariables->BuildTime;
+
+	//Artillary Tank Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("ArtillaryTank")), ContextString, false);
+	artilleryTankCost = UnitVariables->Cost;
+	artilleryTankBuildTime = UnitVariables->BuildTime;
+
+	//Heavy Tank Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("HeavyTank")), ContextString, false);
+	heavyTankCost = UnitVariables->Cost;
+	heavyTankTime = UnitVariables->BuildTime;
+
+	//Outpost Creator Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("OutpostCreator")), ContextString, false);
+	outpostCost = UnitVariables->Cost;
+	outpostTime = UnitVariables->BuildTime;
 }
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)

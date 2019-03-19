@@ -15,10 +15,9 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	buildingMesh->SetSimulatePhysics(false);
 	
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+	decal->DecalSize = FVector(10, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
-	decal->ComponentTags.Add(FName("BuildArea"));
 }
 
 // Called when the game starts or when spawned

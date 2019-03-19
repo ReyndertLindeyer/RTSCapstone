@@ -11,7 +11,46 @@
 
 
 
+
+#include "Engine/DataTable.h"
+#include "UObject/ConstructorHelpers.h"
+
 #include "I_Player.generated.h"
+
+
+
+USTRUCT(BlueprintType)
+struct FUnitVariables : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 Cost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 BuildTime;
+};
+
+
+USTRUCT(BlueprintType)
+struct FBuildingVariables : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 Cost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 BuildTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 PowerConsumption;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int32 MaxHealth;
+};
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -45,12 +84,21 @@ public:
 	void ChangePower(int amount);
 	int GetPower();
 
+	UDataTable* GetBuildingDataTable();
+
+	UDataTable* GetUnitConstructionDataTable();
+
+
 private:
 	// Variables
 	TArray<AActor*> UnitList;
 	TArray<AActor*> BuildingList;
 
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UDataTable* buildingDataTable;
 
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UDataTable* unitConstructionDataTable;
 
 	FString PlayerName;
 	

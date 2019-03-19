@@ -14,7 +14,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(3, buildRadius, buildRadius);
+	decal->DecalSize = FVector(10, buildRadius, buildRadius);
 
 }
 
@@ -22,8 +22,12 @@ void ABuilding_PowerPlant::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Powerplant", 700.0f);
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("Powerplant"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Powerplant")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Powerplant")), (TEXT("Context")), false)->MaxHealth);
+	}
 
 }
 
