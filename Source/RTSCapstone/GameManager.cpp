@@ -9,6 +9,14 @@ AGameManager::AGameManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	playerList = TArray<AActor*>();
+
+	/*
+	//Setting up the variables from the datatable
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableA(TEXT("/Game/Game_Assets/DataTables/BuildingVariables.BuildingVariables"));
+	buildingDataTable = tempDataTableA.Get();
+	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableB(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
+	unitConstructionDataTable = tempDataTableB.Get();
+	*/
 }
 
 // Called when the game starts or when spawned
@@ -31,7 +39,8 @@ void AGameManager::Tick(float DeltaTime)
 		{
 			// Set the player to player 0 if one is found
 			playerList[0] = Itr->GetPlayerActor();
-		
+			//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
+			//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);
 		}
 	}
 

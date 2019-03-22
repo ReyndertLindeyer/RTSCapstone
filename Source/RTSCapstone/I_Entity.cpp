@@ -105,7 +105,7 @@ void II_Entity::SetName(FString name_)
 	name = name_;
 }
 
-void II_Entity::SetOwner(II_Player * owner_)
+void II_Entity::SetOwningEntity(II_Player * owner_)
 {
 	owner = owner_;
 }

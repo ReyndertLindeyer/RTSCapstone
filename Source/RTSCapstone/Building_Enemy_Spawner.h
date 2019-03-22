@@ -6,6 +6,12 @@
 #include "BuildingMaster.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "Runtime/Engine/Classes/Components/SphereComponent.h"
+
+#include "UNIT_Rifleman.h"
+#include "UNIT_Rocketeer.h"
+#include "UNIT_Engineer.h"
+
 #include "Building_Enemy_Spawner.generated.h"
 
 /**
@@ -30,6 +36,8 @@ public:
 		int32 buildingType;
 
 	virtual void BeginPlay() override;
+
+	void SetMesh(UStaticMesh* inMesh);
 
 private:
 	FVector waypoint; 

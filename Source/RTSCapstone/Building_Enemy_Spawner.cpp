@@ -6,7 +6,7 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 
 	PrimaryActorTick.bCanEverTick = false;
 
-
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Engine/BasicShapes/Sphere.Sphere")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
@@ -14,7 +14,7 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 
 	waypoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
 
-	buildingType = 0;
+	buildingType = 1;
 }
 
 
@@ -22,40 +22,30 @@ void ABuilding_Enemy_Spawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (buildingType == 1) {
-		///Spawn small melee unit
-		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	}
-	else if (buildingType == 2) {
-		///Spawn small ranged unit
-		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	}
-	else if (buildingType == 3) {
-		///Spawn large melee unit
-		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	}
-	else if (buildingType == 4) {
-		///Spawn large ranged unit
-		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	}
-	else {
-		buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	}
+	constructed = true;
 
 	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Spawner", 1200.0f);
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Spawner", 10.0f);
 }
 
 void ABuilding_Enemy_Spawner::SpawnUnit()
 {
+	UWorld* const World = this->GetWorld();
+	ACharacter* holder;
 	if (buildingType == 1) {
-		///Spawn small melee unit
+		holder = World->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rifleman", 200.0f);
+		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 	else if (buildingType == 2) {
-		///Spawn small ranged unit
+		holder = World->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rocketeer", 200.0f);
+		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 	else if (buildingType == 3) {
-		///Spawn large melee unit
+		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
+		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 	else if (buildingType == 4) {
 		///Spawn large ranged unit
@@ -65,4 +55,8 @@ void ABuilding_Enemy_Spawner::SpawnUnit()
 void ABuilding_Enemy_Spawner::SetupBulding(FVector inVec)
 {
 	waypoint = inVec;
+}
+
+void ABuilding_Enemy_Spawner::SetMesh(UStaticMesh* inMesh) {
+	buildingMesh->SetStaticMesh(inMesh);
 }

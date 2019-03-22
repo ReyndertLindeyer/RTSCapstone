@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
+#include "Engine/DataTable.h"
+#include "UObject/ConstructorHelpers.h"
+
 // Interface
 #include "I_Player.h"
 
@@ -26,6 +29,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	//class UDataTable* buildingDataTable;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	//class UDataTable* unitConstructionDataTable;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
