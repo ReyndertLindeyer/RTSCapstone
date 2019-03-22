@@ -88,7 +88,6 @@ public:
 
 	UDataTable* GetUnitConstructionDataTable();
 
-
 private:
 	// Variables
 	TArray<AActor*> UnitList;

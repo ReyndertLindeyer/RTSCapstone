@@ -51,7 +51,8 @@ void AMyRTSPlayerController::BeginPlay()
 
 	ChangeResources(50000);
 
-	buildingManagerObject->SpawnConstructionYard(hit.Location);
+	if (spawnCY)
+		buildingManagerObject->SpawnConstructionYard(hit.Location);
 
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 

@@ -38,7 +38,6 @@ void II_Player::InitializePlayer(FString playerName)
 {
 	PlayerName = playerName;
 
-
 	//Setting up the variables from the datatable
 	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableA(TEXT("/Game/Game_Assets/DataTables/BuildingVariables.BuildingVariables"));
 	buildingDataTable = tempDataTableA.Get();
