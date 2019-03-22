@@ -122,6 +122,9 @@ public:
 
 protected:
 
+	// DEBUGGING
+	bool spawnCY = false;
+
 
 	/// Renamed the functions for clarity.
 	UFUNCTION()

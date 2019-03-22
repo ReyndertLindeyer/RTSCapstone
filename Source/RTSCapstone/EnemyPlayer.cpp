@@ -16,6 +16,9 @@ AEnemyPlayer::AEnemyPlayer()
 	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableB(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
 	SetUnitConstructionDataTable(tempDataTableB.Get());
 
+	playerName = FString("Default Player");
+	playerTeam = 0;
+
 }
 
 // Called when the game starts or when spawned
@@ -23,7 +26,7 @@ void AEnemyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitializePlayer("Enemy Player");
+	InitializePlayer(playerName, playerTeam);
 	
 }
 

@@ -27,4 +27,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+		FString playerName;
+	UPROPERTY(EditAnywhere)
+		int32 playerTeam;
+
+
 };
