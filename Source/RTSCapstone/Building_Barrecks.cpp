@@ -44,24 +44,6 @@ void ABuilding_Barrecks::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Barracks")), (TEXT("Context")), false)->MaxHealth);
 	}
 
-	static const FString ContextString(TEXT("Unit Variable Context"));
-
-
-	//Rifle Infantry Variables
-	FUnitVariables* UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("RifleInfantry")), ContextString, false);
-	rifleInfantryCost = UnitVariables->Cost;
-	rifleBuildTime = UnitVariables->BuildTime;
-
-	//Rocket Infantry Variables
-	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("RocketInfantry")), ContextString, false);
-	rocketInfantryCost = UnitVariables->Cost;
-	rocketBuildTime = UnitVariables->BuildTime;
-
-	//Engineer Variables
-	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("Engineer")), ContextString, false);
-	engineerBuildTime = UnitVariables->Cost;
-	engineerBuildTime = UnitVariables->BuildTime;
-
 }
 
 int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)
@@ -157,6 +139,29 @@ void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 void ABuilding_Barrecks::SetHasPower(bool inBool)
 {
 	hasPower = inBool;
+}
+
+void ABuilding_Barrecks::InitializeBarracks()
+{
+
+
+	static const FString ContextString(TEXT("Unit Variable Context"));
+
+
+	//Rifle Infantry Variables
+	FUnitVariables* UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("RifleInfantry")), ContextString, false);
+	rifleInfantryCost = UnitVariables->Cost;
+	rifleBuildTime = UnitVariables->BuildTime;
+
+	//Rocket Infantry Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("RocketInfantry")), ContextString, false);
+	rocketInfantryCost = UnitVariables->Cost;
+	rocketBuildTime = UnitVariables->BuildTime;
+
+	//Engineer Variables
+	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("Engineer")), ContextString, false);
+	engineerBuildTime = UnitVariables->Cost;
+	engineerBuildTime = UnitVariables->BuildTime;
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)

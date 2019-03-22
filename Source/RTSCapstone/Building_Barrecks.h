@@ -35,6 +35,7 @@ public:
 	void SpawnUnit();
 	void SetWaypoint(FVector inVec);
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
+	void InitializeBarracks();
 
 
 protected:

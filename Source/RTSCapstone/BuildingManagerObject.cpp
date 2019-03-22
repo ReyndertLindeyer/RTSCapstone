@@ -111,19 +111,28 @@ bool UBuildingManagerObject::constructBuilding()
 			building = World->SpawnActor<ABuilding_Turret_Tesla>(ABuilding_Turret_Tesla::StaticClass(), buildingToBuild->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 		}
 		building->InitializeEntity(thePlayer, namesArray[whatBuilding].ToString(), buildingMaxHealth[whatBuilding]);
+		building->SetOwningEntity(thePlayer);
 		building->constructAtLocation(thePlayer);
 		thePlayer->ChangePower(-buildingPowerConsumption[whatBuilding]);
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
 		}
 
-		else if (building->IsA(ABuilding_Refinery::StaticClass())) {
+		if (building->IsA(ABuilding_Refinery::StaticClass())) {
 			refineryArray.Add((ABuilding_Refinery*)building);
 			Cast<ABuilding_Refinery>(building)->InitializeRefinery();
 		}
 
-		else if (building->IsA(ABuilding_TechCenter::StaticClass())) {
+		if (building->IsA(ABuilding_TechCenter::StaticClass())) {
 			techCenterArray.Add((ABuilding_TechCenter*)building);
+		}
+
+		if (building->IsA(ABuilding_Barrecks::StaticClass())) {
+			Cast<ABuilding_Barrecks>(building)->InitializeBarracks();
+		}
+
+		if (building->IsA(ABuilding_VehicleFactory::StaticClass())) {
+			Cast<ABuilding_VehicleFactory>(building)->InitializeWarFactory();
 		}
 
 		building->GetBuildingMesh()->SetMaterial(0, regularMaterial);

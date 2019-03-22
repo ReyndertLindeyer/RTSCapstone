@@ -41,6 +41,9 @@ void AEnemy_BaseManager::BeginPlay()
 	}
 
 	PrimaryActorTick.bCanEverTick = isStartingArea;
+	if (launchPoint && isStartingArea) {
+		launchPoint->EnableTick();
+	}
 }
 
 // Called every frame
@@ -71,4 +74,7 @@ void AEnemy_BaseManager::Tick(float DeltaTime)
 
 void AEnemy_BaseManager::ActivateManager() {
 	PrimaryActorTick.bCanEverTick = true;
+	if (launchPoint) {
+		launchPoint->EnableTick();
+	}
 }

@@ -6,22 +6,21 @@
 AEnemy_AttackLaunchPoint::AEnemy_AttackLaunchPoint()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
-	collectionRadius = 10;
+	collectionRadius = 100;
 
 	radiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	radiusSphere->SetSphereRadius(collectionRadius);
 	radiusSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	radiusSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy_AttackLaunchPoint::BeginOverlap);
+	radiusSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy_AttackLaunchPoint::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
 void AEnemy_AttackLaunchPoint::BeginPlay()
 {
 	Super::BeginPlay();
-
-	///If all of the arrays are full of the correct unit then launch a wave towards the nearest player structure
 	
 }
 
@@ -29,6 +28,33 @@ void AEnemy_AttackLaunchPoint::BeginOverlap(UPrimitiveComponent * OverlappedComp
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
 		///Check to see if the colliding unit is an enemy unit, what kind it is, and add it to the correct array
+		if (Cast<AUNIT_Rifleman>(OtherActor)) {
+			basicArrayA.Add(Cast<AUNIT_Rifleman>(OtherActor));
+		}
+		if (Cast<AUNIT_Rocketeer>(OtherActor)) {
+			basicArrayB.Add(Cast<AUNIT_Rocketeer>(OtherActor));
+		}
+		if (Cast<AUNIT_Engineer>(OtherActor)) {
+			basicArrayC.Add(Cast<AUNIT_Engineer>(OtherActor));
+		}
+	}
+}
+
+void AEnemy_AttackLaunchPoint::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (Cast<AUNIT_Rifleman>(OtherActor)) {
+			if (basicArrayA.Contains(Cast<AUNIT_Rifleman>(OtherActor)))
+				basicArrayA.Remove(Cast<AUNIT_Rifleman>(OtherActor));
+		}
+		if (Cast<AUNIT_Rocketeer>(OtherActor)) {
+			if (basicArrayB.Contains(Cast<AUNIT_Rocketeer>(OtherActor)))
+				basicArrayB.Remove(Cast<AUNIT_Rocketeer>(OtherActor));
+		}
+		if (Cast<AUNIT_Engineer>(OtherActor)) {
+			if(basicArrayC.Contains(Cast<AUNIT_Engineer>(OtherActor)))
+				basicArrayC.Remove(Cast<AUNIT_Engineer>(OtherActor));
+		}
 	}
 }
 
@@ -37,5 +63,139 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	///If all of the arrays are full of the correct unit then launch a wave towards the nearest player structure
+	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee) { //Add more variables for more units
+		int32 closestBuilding = 10000;
+		AActor* tempActor = nullptr;
+		TArray<AActor*> tempArray;
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_PowerPlant::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}				
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Refinery::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Barrecks::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_VehicleFactory::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_TechCenter::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Superweapon::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Gattling::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Cannon::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Artillery::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Tesla::StaticClass(), tempArray);
+		if (tempArray.Num() > 0) {
+			for (int i = 0; i < tempArray.Num(); i++) {
+				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
+					tempActor = tempArray[i];
+				}
+			}
+		}
+
+		tempArray.Empty();
+
+		if (tempActor != nullptr) {
+			for (int i = 0; i < basicArrayA.Num(); i++) {
+				basicArrayA[i]->MoveOrder(basicArrayA[i]->GetController(), tempActor->GetActorLocation());
+			}
+			for (int i = 0; i < basicArrayB.Num(); i++) {
+				basicArrayB[i]->MoveOrder(basicArrayB[i]->GetController(), tempActor->GetActorLocation());
+			}
+			for (int i = 0; i < basicArrayC.Num(); i++) {
+				basicArrayC[i]->MoveOrder(basicArrayC[i]->GetController(), tempActor->GetActorLocation());
+			}
+		}
+
+	}
+}
+
+void AEnemy_AttackLaunchPoint::EnableTick()
+{
+	PrimaryActorTick.bCanEverTick = true;
 }
 

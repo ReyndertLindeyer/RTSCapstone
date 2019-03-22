@@ -36,7 +36,7 @@ public:
 	void SetCurrentHealth(float inNum);
 	void SetMaxHealth(float inNum);
 	void SetName(FString name_);
-	void SetOwner(II_Player* owner_);
+	void SetOwningEntity(II_Player* owner_);
 
 	
 	virtual void DestroyEntity();
