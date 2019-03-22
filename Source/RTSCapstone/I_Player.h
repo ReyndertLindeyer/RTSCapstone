@@ -67,7 +67,7 @@ public:
 	// Methods
 	II_Player* GetPlayerReference();
 	
-	void InitializePlayer(FString playerName);
+	void InitializePlayer(FString playerName, int teamValue);
 	FString GetPlayerName();
 
 	void AddUnit(AActor* unitReference);
@@ -87,6 +87,8 @@ public:
 	UDataTable* GetBuildingDataTable();
 
 	UDataTable* GetUnitConstructionDataTable();
+
+	int teamValue;
 
 private:
 	// Variables

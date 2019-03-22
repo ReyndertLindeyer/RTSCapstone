@@ -34,7 +34,7 @@ TArray<AActor*> II_Player::GetBuildings()
 	return BuildingList;
 }
 
-void II_Player::InitializePlayer(FString playerName)
+void II_Player::InitializePlayer(FString playerName, int teamValue)
 {
 	PlayerName = playerName;
 

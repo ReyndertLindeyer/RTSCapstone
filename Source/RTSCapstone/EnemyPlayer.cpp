@@ -11,6 +11,9 @@ AEnemyPlayer::AEnemyPlayer()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	playerName = FString("Default Player");
+	playerTeam = 0;
+
 }
 
 // Called when the game starts or when spawned
@@ -18,7 +21,7 @@ void AEnemyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitializePlayer("Enemy Player");
+	InitializePlayer(playerName, playerTeam);
 	
 }
 
