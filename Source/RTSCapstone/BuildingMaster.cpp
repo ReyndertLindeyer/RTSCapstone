@@ -12,6 +12,7 @@ ABuildingMaster::ABuildingMaster()
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
+	buildingMesh->SetCollisionProfileName(TEXT("OverlapAll"));
 
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));
@@ -120,8 +121,9 @@ void ABuildingMaster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (constructed == false) {
-		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20), DeltaTime, spawnTime));
-		if (buildingMesh->GetComponentLocation().Z >= buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z + 20) {
+		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, 100), DeltaTime, spawnTime));
+		if (buildingMesh->GetComponentLocation().Z >= 100) {
+			buildingMesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 			constructed = true;
 			PrimaryActorTick.bCanEverTick = false;
 		}

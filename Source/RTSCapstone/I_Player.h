@@ -8,14 +8,12 @@
 // ARRAYS
 //#include "I_Unit.h"
 //#include "BuildingMaster.h"
-
-
-
-
-#include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
 
+#include "Engine/DataTable.h"
+
 #include "I_Player.generated.h"
+
 
 
 
@@ -87,6 +85,9 @@ public:
 	UDataTable* GetBuildingDataTable();
 
 	UDataTable* GetUnitConstructionDataTable();
+
+	void SetBuildingDataTable(UDataTable* inTable);
+	void SetUnitConstructionDataTable(UDataTable* inTable);
 
 
 private:

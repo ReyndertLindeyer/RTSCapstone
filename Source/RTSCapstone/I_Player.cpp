@@ -37,8 +37,6 @@ TArray<AActor*> II_Player::GetBuildings()
 void II_Player::InitializePlayer(FString playerName)
 {
 	PlayerName = playerName;
-
-
 	//Setting up the variables from the datatable
 	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableA(TEXT("/Game/Game_Assets/DataTables/BuildingVariables.BuildingVariables"));
 	buildingDataTable = tempDataTableA.Get();
@@ -79,6 +77,16 @@ UDataTable * II_Player::GetBuildingDataTable()
 UDataTable * II_Player::GetUnitConstructionDataTable()
 {
 	return unitConstructionDataTable;
+}
+
+void II_Player::SetBuildingDataTable(UDataTable * inTable)
+{
+	buildingDataTable = inTable;
+}
+
+void II_Player::SetUnitConstructionDataTable(UDataTable * inTable)
+{
+	unitConstructionDataTable = inTable;
 }
 
 
