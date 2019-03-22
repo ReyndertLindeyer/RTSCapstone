@@ -30,7 +30,7 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 
 	// Player Interface
-	InitializePlayer(FString("Player 1"));
+	InitializePlayer(FString("Player 1"), 1);
 
 	buildingManagerObject->SetPlayer(GetPlayerReference());
 }
