@@ -122,19 +122,19 @@ void AUNIT_Harvester::PostInitializeComponents()
 	}
 	
 	if (accelerateCue->IsValidLowLevelFast()) {
-		audioComponentSelect->SetSound(selectCue);
+		audioComponentSelect->SetSound(accelerateCue);
 	}
 
 	if (driveCue->IsValidLowLevelFast()) {
-		audioComponentOrder->SetSound(orderCue);
+		audioComponentOrder->SetSound(driveCue);
 	}
 
 	if (deccelerateCue->IsValidLowLevelFast()) {
-		audioComponentDeath->SetSound(deathCue);
+		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
 	if (harvestCue->IsValidLowLevelFast()) {
-		audioComponentIdle->SetSound(idleCue);
+		audioComponentHarvest->SetSound(harvestCue);
 	}
 }
 

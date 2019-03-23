@@ -33,6 +33,55 @@ AUNIT_MBT::AUNIT_MBT()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> idle(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> accel(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> drive(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> deccel(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+
+	//Store a reference to the Cue asset
+	fireCue = fire.Object;
+	selectCue = select.Object;
+	orderCue = order.Object;
+	deathCue = death.Object;
+	idleCue = idle.Object;
+	accelerateCue = accel.Object;
+	driveCue = drive.Object;
+	deccelerateCue = deccel.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentFire = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentOne"));
+	audioComponentSelect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentTwo"));
+	audioComponentOrder = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentThree"));
+	audioComponentDeath = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentFour"));
+	audioComponentIdle = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentFive"));
+	audioComponentAccelerate = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentSix"));
+	audioComponentDrive = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentSeven"));
+	audioComponentDeccelerate = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentEight"));
+
+	//Stop sound from playing when it's created
+	audioComponentFire->bAutoActivate = false;
+	audioComponentSelect->bAutoActivate = false;
+	audioComponentOrder->bAutoActivate = false;
+	audioComponentDeath->bAutoActivate = false;
+	audioComponentIdle->bAutoActivate = false;
+	audioComponentAccelerate->bAutoActivate = false;
+	audioComponentDrive->bAutoActivate = false;
+	audioComponentDeccelerate->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentFire->SetupAttachment(RootComponent);
+	audioComponentSelect->SetupAttachment(RootComponent);
+	audioComponentOrder->SetupAttachment(RootComponent);
+	audioComponentDeath->SetupAttachment(RootComponent);
+	audioComponentIdle->SetupAttachment(RootComponent);
+	audioComponentAccelerate->SetupAttachment(RootComponent);
+	audioComponentDrive->SetupAttachment(RootComponent);
+	audioComponentDeccelerate->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -46,6 +95,43 @@ void AUNIT_MBT::BeginPlay()
 	SpawnDefaultController();
 	
 
+}
+
+void AUNIT_MBT::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (selectCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(selectCue);
+	}
+
+	if (orderCue->IsValidLowLevelFast()) {
+		audioComponentOrder->SetSound(orderCue);
+	}
+
+	if (deathCue->IsValidLowLevelFast()) {
+		audioComponentDeath->SetSound(deathCue);
+	}
+
+	if (idleCue->IsValidLowLevelFast()) {
+		audioComponentIdle->SetSound(idleCue);
+	}
+
+	if (accelerateCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(accelerateCue);
+	}
+
+	if (driveCue->IsValidLowLevelFast()) {
+		audioComponentOrder->SetSound(driveCue);
+	}
+
+	if (deccelerateCue->IsValidLowLevelFast()) {
+		audioComponentDeath->SetSound(deccelerateCue);
+	}
+
+	if (harvestCue->IsValidLowLevelFast()) {
+		audioComponentFire->SetSound(fireCue);
+	}
 }
 
 // Called every frame
@@ -194,6 +280,7 @@ void AUNIT_MBT::Tick(float DeltaTime)
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
+					audioComponentFire->Play();
 
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 						targetActor = nullptr;
@@ -223,6 +310,9 @@ void AUNIT_MBT::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AUNIT_MBT::SetSelection(bool state)
 {
 	SelectionIndicator->SetVisibility(state);
+	if (state) {
+		audioComponentSelect->Play();
+	}
 }
 
 // Function Never Called
@@ -236,6 +326,7 @@ void AUNIT_MBT::AttackOrder(II_Entity* target)
 
 void AUNIT_MBT::DestroyEntity()
 {
+	audioComponentDeath->Play();
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
