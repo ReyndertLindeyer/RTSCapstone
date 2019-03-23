@@ -25,6 +25,7 @@ public:
 
 	/// Once we implement ownership, we'll be adding an additional argument to this function.
 	void InitializeEntity(II_Player* owner_, FString name, float maxHealth);
+	void TransferOwnership(II_Player* newOwner_);
 
 	int DealDamage(float amount);
 
