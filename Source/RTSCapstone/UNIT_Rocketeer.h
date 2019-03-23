@@ -8,6 +8,9 @@
 #include "Components/SphereComponent.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
+#include "Components/AudioComponent.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+
 // Interface
 #include "I_Unit.h"
 #include "I_Entity.h"
@@ -51,6 +54,8 @@ public:
 	// OVERIDE CLASS [II_Entity] -- Handles any calls on death
 	virtual void DestroyEntity() override;
 
+	void PostInitializeComponents();
+
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
@@ -60,6 +65,25 @@ private:
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
 	UParticleSystem* reactionPS;
+
+	//Sound Stuff
+	UPROPERTY(EditAnywhere)
+		USoundCue* fireCue;
+	UPROPERTY(EditAnywhere)
+		USoundCue* selectCue;
+	UPROPERTY(EditAnywhere)
+		USoundCue* orderCue;
+	UPROPERTY(EditAnywhere)
+		USoundCue* deathCue;
+
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentFire;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentSelect;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentOrder;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentDeath;
 
 public:
 	TArray<AActor*> entitiesInRange;

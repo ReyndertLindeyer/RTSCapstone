@@ -37,7 +37,56 @@ AUNIT_Harvester::AUNIT_Harvester()
 	currentResources = 0.0f;
 	maxResources = 500.0f;
 
-	
+
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> idle(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> accel(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> drive(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> deccel(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> harvest(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
+
+	//Store a reference to the Cue asset
+	selectCue = select.Object;
+	orderCue = order.Object;
+	deathCue = death.Object;
+	idleCue = idle.Object;
+	accelerateCue = accel.Object;
+	driveCue = drive.Object;
+	deccelerateCue = deccel.Object;
+	harvestCue = harvest.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentSelect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentOne"));
+	audioComponentOrder = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentTwo"));
+	audioComponentDeath = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentThree"));
+	audioComponentIdle = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentFour"));
+	audioComponentAccelerate = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentFive"));
+	audioComponentDrive = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentSix"));
+	audioComponentDeccelerate = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentSeven"));
+	audioComponentHarvest = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentEight"));
+
+	//Stop sound from playing when it's created
+	audioComponentSelect->bAutoActivate = false;
+	audioComponentOrder->bAutoActivate = false;
+	audioComponentDeath->bAutoActivate = false;
+	audioComponentIdle->bAutoActivate = false;
+	audioComponentAccelerate->bAutoActivate = false;
+	audioComponentDrive->bAutoActivate = false;
+	audioComponentDeccelerate->bAutoActivate = false;
+	audioComponentHarvest->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentSelect->SetupAttachment(RootComponent);
+	audioComponentOrder->SetupAttachment(RootComponent);
+	audioComponentDeath->SetupAttachment(RootComponent);
+	audioComponentIdle->SetupAttachment(RootComponent);
+	audioComponentAccelerate->SetupAttachment(RootComponent);
+	audioComponentDrive->SetupAttachment(RootComponent);
+	audioComponentDeccelerate->SetupAttachment(RootComponent);
+	audioComponentHarvest->SetupAttachment(RootComponent);
 
 }
 
@@ -50,6 +99,43 @@ void AUNIT_Harvester::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Harvester", startingHealth);
 	
 	SpawnDefaultController();
+}
+
+void AUNIT_Harvester::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (selectCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(selectCue);
+	}
+
+	if (orderCue->IsValidLowLevelFast()) {
+		audioComponentOrder->SetSound(orderCue);
+	}
+
+	if (deathCue->IsValidLowLevelFast()) {
+		audioComponentDeath->SetSound(deathCue);
+	}
+
+	if (idleCue->IsValidLowLevelFast()) {
+		audioComponentIdle->SetSound(idleCue);
+	}
+	
+	if (accelerateCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(selectCue);
+	}
+
+	if (driveCue->IsValidLowLevelFast()) {
+		audioComponentOrder->SetSound(orderCue);
+	}
+
+	if (deccelerateCue->IsValidLowLevelFast()) {
+		audioComponentDeath->SetSound(deathCue);
+	}
+
+	if (harvestCue->IsValidLowLevelFast()) {
+		audioComponentIdle->SetSound(idleCue);
+	}
 }
 
 // Called every frame
@@ -135,7 +221,8 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			else
 			{
 				targetNode = Cast<AResourceNode>(entitiesInRange[0]);
-
+				if (!audioComponentIdle->IsPlaying())
+					audioComponentIdle->Play();
 				// Do Nothing?
 			}
 
@@ -223,6 +310,8 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 
 				UE_LOG(LogTemp, Warning, TEXT("Harvester : %f / %f "), currentResources, maxResources);
 
+				if (!audioComponentHarvest->IsPlaying())
+					audioComponentHarvest->Play();
 			}
 		}
 
@@ -356,6 +445,9 @@ void AUNIT_Harvester::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AUNIT_Harvester::SetSelection(bool state)
 {
 	SelectionIndicator->SetVisibility(state);
+	if (state) {
+		audioComponentSelect->Play();
+	}
 }
 
 void AUNIT_Harvester::AttackOrder(II_Entity* target)
@@ -368,6 +460,7 @@ void AUNIT_Harvester::AttackOrder(II_Entity* target)
 
 void AUNIT_Harvester::DestroyEntity()
 {
+	audioComponentDeath->Play();
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{

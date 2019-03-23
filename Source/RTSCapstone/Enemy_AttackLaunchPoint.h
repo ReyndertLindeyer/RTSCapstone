@@ -8,9 +8,10 @@
 
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
-#include "UNIT_Rifleman.h"
-#include "UNIT_Rocketeer.h"
-#include "UNIT_Engineer.h"
+#include "UNIT_Grinder.h"
+#include "UNIT_Gattling.h"
+#include "UNIT_Roomba.h"
+#include "UNIT_Prism.h"
 
 #include "BuildingMaster.h"
 #include "Building_Construction_Yard.h"
@@ -69,7 +70,8 @@ public:
 	///////////////////////////////////////////
 	//Put enemy arrays here
 	///////////////////////////////////////////
-	TArray<AUNIT_Rifleman*> basicArrayA;
-	TArray<AUNIT_Rocketeer*> basicArrayB;
-	TArray<AUNIT_Engineer*> basicArrayC;
+	TArray<AUNIT_Grinder*> basicArrayA;
+	TArray<AUNIT_Gattling*> basicArrayB;
+	TArray<AUNIT_Roomba*> basicArrayC;
+	TArray<AUNIT_Prism*> basicArrayD;
 };

@@ -9,6 +9,9 @@
 #include "Components/SphereComponent.h"
 #include "ResourceNode.h"
 
+#include "Components/AudioComponent.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+
 // Interface Elements
 #include "I_Unit.h"
 #include "I_Entity.h"
@@ -51,10 +54,39 @@ public:
 
 	void HarvestNode(AResourceNode* node);
 
+	void PostInitializeComponents();
+
 
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	//Sound Stuff
+	USoundCue* selectCue;
+	USoundCue* orderCue;
+	USoundCue* deathCue;
+	USoundCue* idleCue;
+	USoundCue* accelerateCue;
+	USoundCue* driveCue;
+	USoundCue* deccelerateCue;
+	USoundCue* harvestCue;
+
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentSelect;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentOrder;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentDeath;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentIdle;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentAccelerate;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentDrive;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentDeccelerate;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentHarvest;
 
 public:
 	TArray<AActor*> entitiesInRange;

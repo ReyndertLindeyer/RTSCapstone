@@ -8,9 +8,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "Runtime/Engine/Classes/Components/SphereComponent.h"
 
-#include "UNIT_Rifleman.h"
-#include "UNIT_Rocketeer.h"
-#include "UNIT_Engineer.h"
+#include "UNIT_Grinder.h"
+#include "UNIT_Gattling.h"
+#include "UNIT_Roomba.h"
+#include "UNIT_Prism.h"
 
 #include "Building_Enemy_Spawner.generated.h"
 

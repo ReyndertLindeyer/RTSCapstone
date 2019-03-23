@@ -28,14 +28,17 @@ void AEnemy_AttackLaunchPoint::BeginOverlap(UPrimitiveComponent * OverlappedComp
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
 		///Check to see if the colliding unit is an enemy unit, what kind it is, and add it to the correct array
-		if (Cast<AUNIT_Rifleman>(OtherActor)) {
-			basicArrayA.Add(Cast<AUNIT_Rifleman>(OtherActor));
+		if (Cast<AUNIT_Grinder>(OtherActor)) {
+			basicArrayA.Add(Cast<AUNIT_Grinder>(OtherActor));
 		}
-		if (Cast<AUNIT_Rocketeer>(OtherActor)) {
-			basicArrayB.Add(Cast<AUNIT_Rocketeer>(OtherActor));
+		if (Cast<AUNIT_Gattling>(OtherActor)) {
+			basicArrayB.Add(Cast<AUNIT_Gattling>(OtherActor));
 		}
-		if (Cast<AUNIT_Engineer>(OtherActor)) {
-			basicArrayC.Add(Cast<AUNIT_Engineer>(OtherActor));
+		if (Cast<AUNIT_Roomba>(OtherActor)) {
+			basicArrayC.Add(Cast<AUNIT_Roomba>(OtherActor));
+		}
+		if (Cast<AUNIT_Prism>(OtherActor)) {
+			basicArrayD.Add(Cast<AUNIT_Prism>(OtherActor));
 		}
 	}
 }
@@ -43,17 +46,17 @@ void AEnemy_AttackLaunchPoint::BeginOverlap(UPrimitiveComponent * OverlappedComp
 void AEnemy_AttackLaunchPoint::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
-		if (Cast<AUNIT_Rifleman>(OtherActor)) {
-			if (basicArrayA.Contains(Cast<AUNIT_Rifleman>(OtherActor)))
-				basicArrayA.Remove(Cast<AUNIT_Rifleman>(OtherActor));
+		if (Cast<AUNIT_Grinder>(OtherActor)) {
+			basicArrayA.Remove(Cast<AUNIT_Grinder>(OtherActor));
 		}
-		if (Cast<AUNIT_Rocketeer>(OtherActor)) {
-			if (basicArrayB.Contains(Cast<AUNIT_Rocketeer>(OtherActor)))
-				basicArrayB.Remove(Cast<AUNIT_Rocketeer>(OtherActor));
+		if (Cast<AUNIT_Gattling>(OtherActor)) {
+			basicArrayB.Remove(Cast<AUNIT_Gattling>(OtherActor));
 		}
-		if (Cast<AUNIT_Engineer>(OtherActor)) {
-			if(basicArrayC.Contains(Cast<AUNIT_Engineer>(OtherActor)))
-				basicArrayC.Remove(Cast<AUNIT_Engineer>(OtherActor));
+		if (Cast<AUNIT_Roomba>(OtherActor)) {
+			basicArrayC.Remove(Cast<AUNIT_Roomba>(OtherActor));
+		}
+		if (Cast<AUNIT_Prism>(OtherActor)) {
+			basicArrayD.Remove(Cast<AUNIT_Prism>(OtherActor));
 		}
 	}
 }
@@ -64,7 +67,7 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	///If all of the arrays are full of the correct unit then launch a wave towards the nearest player structure
-	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee) { //Add more variables for more units
+	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee && basicArrayD.Num() >= numOfAdvancedRanged) { //Add more variables for more units
 		int32 closestBuilding = 10000;
 		AActor* tempActor = nullptr;
 		TArray<AActor*> tempArray;
