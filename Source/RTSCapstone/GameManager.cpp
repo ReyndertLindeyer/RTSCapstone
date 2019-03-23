@@ -31,8 +31,30 @@ void AGameManager::Tick(float DeltaTime)
 		{
 			// Set the player to player 0 if one is found
 			playerList[0] = Itr->GetPlayerActor();
-		
+			
+
+			
 		}
+
+		if (playerList[0] != nullptr)
+		{
+			/*II_Player* ally = Cast<II_Player>(playerList[2]);
+			II_Player* player = Cast<II_Player>(playerList[0]);*/
+		
+			// DEBUG -- Making all structures belonging to ally player become yours when you load in
+		/*for (int i = 0; i < Cast<II_Player>(playerList[2])->GetBuildings().Num(); i++)
+		{
+			Cast<II_Player>(playerList[0])->AddBuilding(Cast<II_Player>(playerList[2])->GetBuildings()[i]);
+		}*/
+
+		// DEBUG -- Making all units belonging to ally player become yours when you load in
+			/*for (int j = 0; j < Cast<II_Player>(playerList[2])->GetUnits().Num(); j++)
+			{	
+				Cast<II_Entity>(ally->GetUnits()[j])->TransferOwnership(player);
+			}
+			ally->GetUnits().Empty();*/
+		}
+		
 	}
 
 	// Uncomment for everyone at once
