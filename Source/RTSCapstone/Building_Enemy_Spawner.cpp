@@ -33,22 +33,24 @@ void ABuilding_Enemy_Spawner::SpawnUnit()
 	UWorld* const World = this->GetWorld();
 	ACharacter* holder;
 	if (buildingType == 1) {
-		holder = World->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
-		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rifleman", 200.0f);
+		holder = World->SpawnActor<AUNIT_Grinder>(AUNIT_Grinder::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Grinder", 200.0f);
 		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 	else if (buildingType == 2) {
-		holder = World->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
-		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rocketeer", 200.0f);
+		holder = World->SpawnActor<AUNIT_Gattling>(AUNIT_Gattling::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Gattling", 200.0f);
 		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 	else if (buildingType == 3) {
-		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
-		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
+		holder = World->SpawnActor<AUNIT_Roomba>(AUNIT_Roomba::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Roomba", 200.0f);
 		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 	else if (buildingType == 4) {
-		///Spawn large ranged unit
+		holder = World->SpawnActor<AUNIT_Prism>(AUNIT_Prism::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
+		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Roomba", 200.0f);
+		Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 	}
 }
 

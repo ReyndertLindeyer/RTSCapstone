@@ -30,6 +30,36 @@ AUNIT_Engineer::AUNIT_Engineer()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> use(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rifle_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rifle_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rifle_-_Attack_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rifle_-_Death_Cue"));
+
+	//Store a reference to the Cue asset
+	useCue = use.Object;
+	selectCue = select.Object;
+	orderCue = order.Object;
+	deathCue = death.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentUse = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentOne"));
+	audioComponentSelect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentTwo"));
+	audioComponentOrder = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentThree"));
+	audioComponentDeath = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentFour"));
+
+	//Stop sound from playing when it's created
+	audioComponentUse->bAutoActivate = false;
+	audioComponentSelect->bAutoActivate = false;
+	audioComponentOrder->bAutoActivate = false;
+	audioComponentDeath->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentUse->SetupAttachment(RootComponent);
+	audioComponentSelect->SetupAttachment(RootComponent);
+	audioComponentOrder->SetupAttachment(RootComponent);
+	audioComponentDeath->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +71,27 @@ void AUNIT_Engineer::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Engineer", startingHealth);
 
 	SpawnDefaultController();
+}
+
+void AUNIT_Engineer::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (useCue->IsValidLowLevelFast()) {
+		audioComponentUse->SetSound(useCue);
+	}
+
+	if (selectCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(selectCue);
+	}
+
+	if (orderCue->IsValidLowLevelFast()) {
+		audioComponentOrder->SetSound(orderCue);
+	}
+
+	if (deathCue->IsValidLowLevelFast()) {
+		audioComponentDeath->SetSound(deathCue);
+	}
 }
 
 // Called every frame
@@ -205,6 +256,9 @@ void AUNIT_Engineer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AUNIT_Engineer::SetSelection(bool state)
 {
 	SelectionIndicator->SetVisibility(state);
+	if (state) {
+		audioComponentSelect->Play();
+	}
 }
 
 void AUNIT_Engineer::AttackOrder(II_Entity* target)
@@ -217,6 +271,7 @@ void AUNIT_Engineer::AttackOrder(II_Entity* target)
 
 void AUNIT_Engineer::DestroyEntity()
 {
+	audioComponentDeath->Play();
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{

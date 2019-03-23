@@ -7,6 +7,9 @@
 // Components
 #include "Components/SphereComponent.h"
 
+#include "Components/AudioComponent.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+
 // Interface
 #include "I_Unit.h"
 #include "I_Entity.h"
@@ -46,9 +49,30 @@ public:
 	// OVERIDE CLASS [II_Entity] -- Handles any calls on death
 	virtual void DestroyEntity() override;
 
+	void PostInitializeComponents();
+
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	//Sound Stuff
+	UPROPERTY(EditAnywhere)
+		USoundCue* useCue;
+	UPROPERTY(EditAnywhere)
+		USoundCue* selectCue;
+	UPROPERTY(EditAnywhere)
+		USoundCue* orderCue;
+	UPROPERTY(EditAnywhere)
+		USoundCue* deathCue;
+
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentUse;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentSelect;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentOrder;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* audioComponentDeath;
 
 public:
 	TArray<AActor*> entitiesInRange;

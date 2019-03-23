@@ -30,6 +30,36 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
+
+	//Store a reference to the Cue asset
+	fireCue = fire.Object;
+	selectCue = select.Object;
+	orderCue = order.Object;
+	deathCue = death.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentFire = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentOne"));
+	audioComponentSelect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentTwo"));
+	audioComponentOrder = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentThree"));
+	audioComponentDeath = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentFour"));
+
+	//Stop sound from playing when it's created
+	audioComponentFire->bAutoActivate = false;
+	audioComponentSelect->bAutoActivate = false;
+	audioComponentOrder->bAutoActivate = false;
+	audioComponentDeath->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentFire->SetupAttachment(RootComponent);
+	audioComponentSelect->SetupAttachment(RootComponent);
+	audioComponentOrder->SetupAttachment(RootComponent);
+	audioComponentDeath->SetupAttachment(RootComponent);
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -45,6 +75,27 @@ void AUNIT_Rocketeer::BeginPlay()
 
 	SpawnDefaultController();
 
+}
+
+void AUNIT_Rocketeer::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (fireCue->IsValidLowLevelFast()) {
+		audioComponentFire->SetSound(fireCue);
+	}
+
+	if (selectCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(selectCue);
+	}
+
+	if (orderCue->IsValidLowLevelFast()) {
+		audioComponentOrder->SetSound(orderCue);
+	}
+
+	if (deathCue->IsValidLowLevelFast()) {
+		audioComponentDeath->SetSound(deathCue);
+	}
 }
 
 // Called every frame
@@ -199,6 +250,8 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, attackDamage, 500.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 
+					audioComponentFire->Play();
+
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 						targetActor = nullptr;
 				}
@@ -227,6 +280,9 @@ void AUNIT_Rocketeer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AUNIT_Rocketeer::SetSelection(bool state)
 {
 	SelectionIndicator->SetVisibility(state);
+	if (state) {
+		audioComponentSelect->Play();
+	}
 }
 
 // This Function is no longer called
@@ -240,6 +296,7 @@ void AUNIT_Rocketeer::AttackOrder(II_Entity* target)
 
 void AUNIT_Rocketeer::DestroyEntity()
 {
+	audioComponentDeath->Play();
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
