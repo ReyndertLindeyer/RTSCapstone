@@ -88,8 +88,6 @@ private:
 		UAudioComponent* audioComponentDrive;
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* audioComponentDeccelerate;
-	UPROPERTY(EditAnywhere)
-		UAudioComponent* audioComponentHarvest;
 
 public:
 	TArray<AActor*> entitiesInRange;
