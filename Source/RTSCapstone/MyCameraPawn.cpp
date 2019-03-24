@@ -10,7 +10,7 @@ AMyCameraPawn::AMyCameraPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	cameraSensitivity = 2.0f;
+	cameraSensitivity = 4.0f;
 	updateScreenTime = 0;
 	cameraQESpeed = 4;
 	unlocked = false;
@@ -74,7 +74,7 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	if (unlocked) {
 		//Rotate our camera's pitch and yaw, but limit the pitch so we're always looking downward
 		FRotator NewRotation = OurCameraSpringArm->GetComponentRotation();
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CameraInput.Y * 2, -85.0f, -15.0f);
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CameraInput.Y * 2, -85.0f, -25.0f);
 		OurCameraSpringArm->SetWorldRotation(NewRotation); 
 		NewRotation = RootComponent->GetComponentRotation();
 		NewRotation.Yaw += CameraInput.X * 2;
@@ -88,10 +88,10 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	}
 
 	//Zoom controls
-	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 0.0f) {
+	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 200.0f) {
 		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 100.0f, -zoom);
 	}
-	if (zoom == -1 && OurCameraSpringArm->TargetArmLength < 2000.0f) {
+	if (zoom == -1 && OurCameraSpringArm->TargetArmLength < 5000.0f) {
 		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 100.0f, zoom);
 	}
 
