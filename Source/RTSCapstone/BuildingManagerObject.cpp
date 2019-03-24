@@ -22,13 +22,13 @@ UBuildingManagerObject::UBuildingManagerObject()
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTesla_v1.devTesla_v1")).Get());
 
 
-	canBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("GreenBuildingGhost"));
+	//canBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("GreenBuildingGhost"));
 	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
 
-	cantBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("cantBuildIndicator"));
+	//cantBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("cantBuildIndicator"));
 	cantBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/RedBuildingGhost")).Get();
 
-	regularMaterial = CreateDefaultSubobject<UMaterialInterface>(TEXT("regularMaterial"));
+	//regularMaterial = CreateDefaultSubobject<UMaterialInterface>(TEXT("regularMaterial"));
 	regularMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/regularMaterial")).Get();
 }
 

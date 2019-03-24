@@ -39,14 +39,14 @@ AUNIT_Harvester::AUNIT_Harvester()
 
 
 	//Load our Sound Cue for the sound we created in the editor
-	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> idle(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> accel(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> drive(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> deccel(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> harvest(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Harvest_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Death_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> idle(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Idle_LOOP_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> accel(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Accelerate_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> drive(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Drive_LOOP_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> deccel(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Decelerate_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> harvest(TEXT("/Game/Game_Assets/Sounds/Harvester_Sounds_V1_Fix/Harvester_-_Harvest_LOOP_Cue"));
 
 	//Store a reference to the Cue asset
 	selectCue = select.Object;

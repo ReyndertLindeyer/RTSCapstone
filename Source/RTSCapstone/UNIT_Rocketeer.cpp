@@ -31,10 +31,10 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
 	//Load our Sound Cue for the sound we created in the editor
-	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
-	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Infantry_Rocket_Sounds_V1_Fix/Inf_Rocket_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Infantry_Rocket_Sounds_V1_Fix/Inf_Rocket_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Infantry_Rocket_Sounds_V1_Fix/Inf_Rocket_-_Attack_Order_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Infantry_Rocket_Sounds_V1_Fix/Inf_Rocket_-_Death_Cue"));
 
 	//Store a reference to the Cue asset
 	fireCue = fire.Object;
