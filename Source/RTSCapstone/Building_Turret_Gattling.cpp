@@ -22,6 +22,8 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BulletHit.P_BulletHit'")).Get();
 
+	buildingMesh->SetWorldScale3D(FVector(4, 4, 4));
+
 	currentAttackTimer = 0.0f;
 }
 

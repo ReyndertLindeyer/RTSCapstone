@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "BuildingMaster.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Runtime/Core/Public/Math/Vector.h"
 #include "Engine/StaticMesh.h"
 #include "Building_Ghost.generated.h"
 
@@ -42,5 +43,5 @@ public:
 
 	UStaticMeshComponent* GetBuildingMesh();
 
-	void SetMesh(UStaticMesh* inMesh);
+	void SetMesh(UStaticMesh* inMesh, int32 scale);
 };

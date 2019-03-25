@@ -10,13 +10,13 @@ UBuildingManagerObject::UBuildingManagerObject()
 	whatBuilding = 0;
 
 	//Setting all of the meshes for the ghost buildings
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devPowerplant_v1.devPowerplant_v1")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devRefinery_v1.devRefinery_v1")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/PowerPlant_Model/PowerPlant.PowerPlant")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Refinery_Model/Resource_Refinery.Resource_Refinery")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Barracks_Model/Barracks.Barracks")).Get());
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devGattling.devGattling")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/OrbitalCannon_Model/Orbital_Cannon.Orbital_Cannon")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devGattling.devGattling")).Get()); 
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTurret_v1.devTurret_v1")).Get());
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTesla_v1.devTesla_v1")).Get());
@@ -40,7 +40,10 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 
 		buildingToBuild = World->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		whatBuilding = whatBuilding_ - 1;
-		buildingToBuild->SetMesh(buildingMeshArray[whatBuilding]);
+		if(whatBuilding > 4)
+			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 4);
+		else
+			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 1);
 
 		EnableAllDecals();
 	}
@@ -112,7 +115,6 @@ bool UBuildingManagerObject::constructBuilding()
 		}
 		building->InitializeEntity(thePlayer, namesArray[whatBuilding].ToString(), buildingMaxHealth[whatBuilding]);
 		building->SetOwningEntity(thePlayer);
-		building->constructAtLocation(thePlayer);
 		thePlayer->ChangePower(-buildingPowerConsumption[whatBuilding]);
 		if (buildingPowerConsumption[whatBuilding] < 0) {
 			maxPower -= buildingPowerConsumption[whatBuilding];
@@ -134,6 +136,7 @@ bool UBuildingManagerObject::constructBuilding()
 		if (building->IsA(ABuilding_VehicleFactory::StaticClass())) {
 			Cast<ABuilding_VehicleFactory>(building)->InitializeWarFactory();
 		}
+		building->constructAtLocation(thePlayer);
 
 		building->GetBuildingMesh()->SetMaterial(0, regularMaterial);
 

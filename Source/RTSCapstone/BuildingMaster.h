@@ -82,6 +82,8 @@ protected:
 	UMaterialInterface* decalMaterial;
 	UMaterialInterface* selectMaterial;
 
+	float tempHeight;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

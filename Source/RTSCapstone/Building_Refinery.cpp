@@ -13,7 +13,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	canSpawnHarvester = true;
 
 	this->Tags.Add(FName("Refinery"));
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devRefinery_v1.devRefinery_v1")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Refinery_Model/Resource_Refinery.Resource_Refinery")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
@@ -24,7 +24,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 
 	harvestPt = CreateDefaultSubobject<USceneComponent>(TEXT("Harvest Point"));
 	harvestPt->SetupAttachment(RootComponent);
-	harvestPt->SetRelativeLocation(FVector(-75.0f, 0.0f, 40.0f));
+	harvestPt->SetRelativeLocation(FVector(0.0f, 400.0f, 150.0f));
 
 	isOccupied = false;
 	

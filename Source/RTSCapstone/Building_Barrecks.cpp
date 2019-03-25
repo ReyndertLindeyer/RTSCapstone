@@ -6,11 +6,11 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
-	buildRadius = 500;
+	buildRadius = 1000;
 	isBuilding = true;
 	hasPower = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devBarracks_v1.devBarracks_v1")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Barracks_Model/Barracks.Barracks")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
 	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
@@ -35,8 +35,6 @@ void ABuilding_Barrecks::BeginPlay()
 {
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
-	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
-	waypointMesh->SetRelativeLocation(wayPoint);
 
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
@@ -116,15 +114,15 @@ void ABuilding_Barrecks::SpawnUnit()
 	//Spawn the unit and give it its information
 	constructingUnit = false;
 	if (unitQueue[0] == 1) {
-		holder = World->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Rifleman>(AUNIT_Rifleman::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 300.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rifleman", 200.0f);
 	}
 	else if (unitQueue[0] == 2) {
-		holder = World->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Rocketeer>(AUNIT_Rocketeer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 300.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Rocketeer", 200.0f);
 	}
 	else {
-		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 300.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
 	}
 	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
@@ -146,6 +144,8 @@ void ABuilding_Barrecks::InitializeBarracks()
 
 
 	static const FString ContextString(TEXT("Unit Variable Context"));
+	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
+	waypointMesh->SetRelativeLocation(wayPoint);
 
 
 	//Rifle Infantry Variables

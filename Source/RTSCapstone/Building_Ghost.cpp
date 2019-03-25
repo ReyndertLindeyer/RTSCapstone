@@ -14,7 +14,7 @@ ABuilding_Ghost::ABuilding_Ghost()
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
 	buildingMesh->SetCollisionProfileName(TEXT("OverlapAll"));
-	radius = 20000;
+	radius = 2000000;
 
 	numOfBuildingCollisions = 0;
 
@@ -46,11 +46,19 @@ void ABuilding_Ghost::Tick(float DeltaTime)
 
 	for (int i = 0; i < outActors.Num(); i++) {
 		if (Cast<ABuildingMaster>(outActors[i])) {
-			if (FVector::Dist(GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
+
+			float distance = (outActors[i]->GetActorLocation() - GetActorLocation()).Size();
+			UE_LOG(LogTemp, Warning, TEXT("ghost is x: %d y: %d z: %d"), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
+			UE_LOG(LogTemp, Warning, TEXT("other is x: %d y: %d z: %d"), outActors[i]->GetActorLocation().X, outActors[i]->GetActorLocation().Y, outActors[i]->GetActorLocation().Z);
+
+			//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
+			if (distance < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
 				isInRadius = true;
+				//UE_LOG(LogTemp, Warning, TEXT("inside radius"));
 			}
 			else {
 				isInRadius = false;
+				//UE_LOG(LogTemp, Warning, TEXT("outside radius"));
 			}
 		}
 	}
@@ -73,9 +81,10 @@ UStaticMeshComponent * ABuilding_Ghost::GetBuildingMesh()
 }
 
 
-void ABuilding_Ghost::SetMesh(UStaticMesh* inMesh)
+void ABuilding_Ghost::SetMesh(UStaticMesh* inMesh, int32 scale)
 {
 	buildingMesh->SetStaticMesh(inMesh);
+	buildingMesh->SetWorldScale3D(FVector(scale));
 }
 
 
@@ -84,6 +93,7 @@ void ABuilding_Ghost::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 			if (!overlapping) {
 				overlapping = true;
 			}
+			UE_LOG(LogTemp, Warning, TEXT("overlapping"));
 			numOfBuildingCollisions++;
 	}
 }

@@ -15,16 +15,17 @@ AUNIT_Harvester::AUNIT_Harvester()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	//RootComponent->SetWorldScale3D(FVector(0.25f));
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -20.0f));
+	BodyMesh->SetRelativeScale3D(FVector(3.0f));
+	//RootComponent = BodyMesh;
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
@@ -233,13 +234,11 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::MOVING)
 	{
 
-		UE_LOG(LogTemp, Warning, TEXT("MOVING"));
 		// Ignore Combat until unit reaches destination
 
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 50.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 100.0f)
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
 		}
 
@@ -291,7 +290,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		}
 
 		// Target is out of range: chase it;
-		if (FVector::Dist(GetActorLocation(), targetLocation) < 25.0f)
+		if (FVector::Dist(GetActorLocation(), targetLocation) < 200.0f)
 		{
 			SetDestination(GetController(), GetActorLocation());
 
@@ -374,7 +373,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > 25.0f)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > 250.0f)
 			{
 				unitState = UNIT_STATE::SEEKING;
 				targetNode->isOccupied = false;

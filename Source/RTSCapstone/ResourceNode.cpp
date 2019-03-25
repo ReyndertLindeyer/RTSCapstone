@@ -18,6 +18,7 @@ AResourceNode::AResourceNode()
 	mesh->SetCollisionProfileName(FName("OverlapAll"));
 	mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mesh->SetSimulatePhysics(false);
+	mesh->SetWorldScale3D(FVector(8, 8, 8));
 
 	needsRespawning = false;
 	isOccupied = false;

@@ -13,10 +13,10 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
-	buildRadius = 500;
+	buildRadius = 5000;
 	isBuilding = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/OrbitalCannon_Model/Orbital_Cannon.Orbital_Cannon")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);

@@ -43,7 +43,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackRate = 2.25f;
 	UPROPERTY(EditAnywhere)
-		float detectRange = 500.0f;
+		float detectRange = 2000.0f;
 	
 private:
 	uint32 range;

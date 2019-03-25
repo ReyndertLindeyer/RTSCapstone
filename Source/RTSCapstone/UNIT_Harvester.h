@@ -98,7 +98,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float startingHealth = 1200.0f;
 	UPROPERTY(EditAnywhere)
-		float detectRange = 1250.0f;
+		float detectRange = 4000.0f;
 	UPROPERTY(EditAnywhere)
 		float harvestRate = 0.25f;
 

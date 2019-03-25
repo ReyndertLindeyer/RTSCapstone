@@ -10,7 +10,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildRadius = 500;
 	isBuilding = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devPowerplant_v1.devPowerplant_v1")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/PowerPlant_Model/PowerPlant.PowerPlant")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);

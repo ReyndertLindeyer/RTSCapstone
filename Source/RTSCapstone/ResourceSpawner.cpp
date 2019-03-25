@@ -9,9 +9,9 @@ AResourceSpawner::AResourceSpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	spawnRadius = 200.0f;
-	richSpawnRadius = 41.0f;
-	richness = 20;
+	spawnRadius = 2000.0f;
+	richSpawnRadius = 200.0f;
+	richness = 200;
 
 	root = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
 	root->InitCapsuleSize(spawnRadius, 20);
@@ -35,7 +35,7 @@ void AResourceSpawner::BeginPlay()
 			float distance = FVector::Dist(RootComponent->GetComponentLocation(), spawnLocation);
 
 			//Small randomization of variables to remove grid
-			spawnLocation = FVector(spawnLocation.X + FMath::RandRange(-10.0f, 10.0f), spawnLocation.Y + FMath::RandRange(-10.0f, 10.0f), spawnLocation.Z);
+			spawnLocation = FVector(spawnLocation.X + FMath::RandRange(-100.0f, 100.0f), spawnLocation.Y + FMath::RandRange(-100.0f, 100.0f), spawnLocation.Z);
 
 			if (distance < spawnRadius && distance < richSpawnRadius && distance > 1.0f) {
 				//Spawn rich resources
