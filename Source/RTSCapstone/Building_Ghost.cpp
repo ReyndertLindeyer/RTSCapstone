@@ -46,7 +46,6 @@ void ABuilding_Ghost::Tick(float DeltaTime)
 
 	for (int i = 0; i < outActors.Num(); i++) {
 		if (Cast<ABuildingMaster>(outActors[i])) {
-
 			float distance = (outActors[i]->GetActorLocation() - GetActorLocation()).Size();
 			UE_LOG(LogTemp, Warning, TEXT("ghost is x: %d y: %d z: %d"), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
 			UE_LOG(LogTemp, Warning, TEXT("other is x: %d y: %d z: %d"), outActors[i]->GetActorLocation().X, outActors[i]->GetActorLocation().Y, outActors[i]->GetActorLocation().Z);
