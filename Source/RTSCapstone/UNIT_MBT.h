@@ -99,9 +99,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackDamage = 7.0f;
 	UPROPERTY(EditAnywhere)
-		float detectRange = 500.0f;
+		float detectRange = 2000.0f;
 	UPROPERTY(EditAnywhere)
-		float attackRange = 250.0f;
+		float attackRange = 1800.0f;
 
 public:
 	// Sets default values for this character's properties

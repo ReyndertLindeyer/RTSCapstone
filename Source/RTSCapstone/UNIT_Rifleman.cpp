@@ -21,6 +21,7 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0f));
+	BodyMesh->SetRelativeScale3D(FVector(2.0f));
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);

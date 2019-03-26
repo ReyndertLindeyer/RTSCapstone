@@ -13,13 +13,11 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
-	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the building
-
 	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
 	waypointMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Waypoint.Waypoint")).Get());
 	waypointMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	waypointMesh->SetSimulatePhysics(false);
-	waypointMesh->SetupAttachment(RootComponent);
+	waypointMesh->SetupAttachment(RootComponent); 
 
 	countToCompleteUnit = 0.0f;
 
@@ -35,8 +33,6 @@ void ABuilding_VehicleFactory::BeginPlay()
 {
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
-	wayPoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Updates Waypoint
-	waypointMesh->SetRelativeLocation(wayPoint);
 
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
@@ -44,6 +40,11 @@ void ABuilding_VehicleFactory::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), (TEXT("Context")), false)->MaxHealth);
 	}
+
+	buildingMesh->SetWorldScale3D(FVector(6));
+
+	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
+	waypointMesh->SetWorldLocation(wayPoint);
 }
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)
@@ -149,28 +150,28 @@ void ABuilding_VehicleFactory::SpawnUnit()
 	ACharacter* holder;
 	//Spawn the unit and give it its information
 	constructingUnit = false;
-	if (unitQueue[0] == 1) {
-		holder = World->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	if (unitQueue[0] == 3) {
+		holder = World->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Harvester", 200.0f);
 	}
-	else if (unitQueue[0] == 2) {
-		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	else if (unitQueue[0] == 1) {
+		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Humvee", 200.0f);
 	}
-	else  if (unitQueue[0] == 3) {
-		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	else  if (unitQueue[0] == 2) {
+		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Tank", 200.0f);
 	}
 	else if (unitQueue[0] == 4) {
-	holder = World->SpawnActor<AUNIT_MArtillery>(AUNIT_MArtillery::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	holder = World->SpawnActor<AUNIT_MArtillery>(AUNIT_MArtillery::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Artillery", 200.0f);
 	}
 	else if (unitQueue[0] == 5) {
-	holder = World->SpawnActor<AUNIT_AvBT>(AUNIT_AvBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	holder = World->SpawnActor<AUNIT_AvBT>(AUNIT_AvBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "HeavyTank", 200.0f);
 	}
 	else {
-	holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
+	holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Outpost", 200.0f);
 	}
 	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
@@ -190,6 +191,8 @@ void ABuilding_VehicleFactory::SetHasPower(bool inBool)
 void ABuilding_VehicleFactory::InitializeWarFactory()
 {
 
+	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
+	waypointMesh->SetWorldLocation(wayPoint);
 	static const FString ContextString(TEXT("Unit Variable Context"));
 	//Harvester Variables
 	FUnitVariables* UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("Harvester")), ContextString, false);

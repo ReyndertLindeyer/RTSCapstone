@@ -41,6 +41,8 @@ void ABuilding_Turret_Tesla::BeginPlay()
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TeslaTurret")), (TEXT("Context")), false)->MaxHealth);
 	}
 
+	buildingMesh->SetWorldScale3D(FVector(5));
+
 }
 
 void ABuilding_Turret_Tesla::Tick(float DeltaTime)

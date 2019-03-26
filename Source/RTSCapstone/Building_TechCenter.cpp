@@ -29,4 +29,6 @@ void ABuilding_TechCenter::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), (TEXT("Context")), false)->MaxHealth);
 	}
+
+	buildingMesh->SetWorldScale3D(FVector(6));
 }

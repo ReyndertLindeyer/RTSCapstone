@@ -21,6 +21,8 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
+	BodyMesh->SetRelativeScale3D(FVector(8.0f));
+	BodyMesh->SetCanEverAffectNavigation(false);
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);

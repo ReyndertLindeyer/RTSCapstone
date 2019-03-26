@@ -23,6 +23,7 @@
 
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
+#include "UObject/ConstructorHelpers.h"
 
 #include "I_Player.h"
 

@@ -40,10 +40,12 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 
 		buildingToBuild = World->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		whatBuilding = whatBuilding_ - 1;
-		if(whatBuilding > 4)
+		if(whatBuilding > 5)
 			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 4);
+		else if (whatBuilding == 3 || whatBuilding == 4)
+			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 5);
 		else
-			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 1);
+			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 2);
 
 		EnableAllDecals();
 	}
@@ -52,6 +54,32 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 void UBuildingManagerObject::MoveBuilding(FVector location)
 {
 	buildingToBuild->SetActorLocation(location);
+
+	///Temp Code
+	/*
+	bool isInRadius = true;
+
+	TArray<AActor*> tempArray = thePlayer->GetBuildings();
+
+	for (int i = 0; i < tempArray.Num(); i++) {
+			//float distance = (outActors[i]->GetRootComponent()->GetComponentLocation() - RootComponent->GetComponentLocation()).Size();
+			//UE_LOG(LogTemp, Warning, TEXT("ghost is x: %d y: %d z: %d"), RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z);
+			//UE_LOG(LogTemp, Warning, TEXT("other is x: %d y: %d z: %d"), outActors[i]->GetRootComponent()->GetComponentLocation().X, outActors[i]->GetRootComponent()->GetComponentLocation().Y, outActors[i]->GetRootComponent()->GetComponentLocation().Z);
+			//UE_LOG(LogTemp, Warning, TEXT("%d"), FVector::Dist(tempArray[i]->GetActorLocation(), location));
+
+			//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
+			if (FVector::Dist(tempArray[i]->GetActorLocation(), location) < Cast<ABuildingMaster>(tempArray[i])->GetConstructionRadius() * 2) {
+				isInRadius = true;
+				break;
+			}
+			else {
+				isInRadius = false;
+			}
+	}
+
+	buildingToBuild->SetIsInRadius(isInRadius);
+	*/
+
 	if (buildingToBuild->GetIsInRadius() && !buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != canBuildIndicator) {
 		buildingToBuild->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
 	}

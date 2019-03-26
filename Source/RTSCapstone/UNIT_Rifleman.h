@@ -94,9 +94,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackRate = 0.25f;
 	UPROPERTY(EditAnywhere)
-		float detectRange = 500.0f;
+		float detectRange = 1500.0f;
 	UPROPERTY(EditAnywhere)
-		float attackRange = 250.0f;
+		float attackRange = 1300.0f;
 
 protected:
 	// Called when the game starts or when spawned

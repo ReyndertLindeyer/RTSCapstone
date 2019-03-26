@@ -98,17 +98,17 @@ public:
 	UPROPERTY(EditAnywhere)
 		float startingHealth = 1500.0f;
 	UPROPERTY(EditAnywhere)
-		float detectRange = 500.0f;
+		float detectRange = 2000.0f;
 
 	UPROPERTY(EditAnywhere)
-		float cannonRange = 325.0f;
+		float cannonRange = 1800.0f;
 	UPROPERTY(EditAnywhere)
 		float cannonDamage = 15.0f;
 	UPROPERTY(EditAnywhere)
 		float cannonTimer = 3.0f;
 
 	UPROPERTY(EditAnywhere)
-		float missileRange = 375.0f;
+		float missileRange = 1800.0f;
 	UPROPERTY(EditAnywhere)
 		float missileDamage = 22.0f;
 

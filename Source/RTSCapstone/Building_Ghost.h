@@ -41,6 +41,8 @@ public:
 	bool GetIsOverlapping();
 	bool GetIsInRadius();
 
+	void SetIsInRadius(bool isIn);
+
 	UStaticMeshComponent* GetBuildingMesh();
 
 	void SetMesh(UStaticMesh* inMesh, int32 scale);

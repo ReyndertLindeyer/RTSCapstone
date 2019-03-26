@@ -7,7 +7,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
-	buildRadius = 500;
+	buildRadius = 5000;
 	isBuilding = true;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/PowerPlant_Model/PowerPlant.PowerPlant")).Get());

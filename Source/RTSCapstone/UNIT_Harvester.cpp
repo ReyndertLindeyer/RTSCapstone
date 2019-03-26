@@ -15,7 +15,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	RootComponent->SetWorldScale3D(FVector(0.25f));
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -24,7 +24,8 @@ AUNIT_Harvester::AUNIT_Harvester()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -20.0f));
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
+	BodyMesh->SetRelativeScale3D(FVector(8.0f));
+	BodyMesh->SetCanEverAffectNavigation(false);
 	//RootComponent = BodyMesh;
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
@@ -373,7 +374,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > 250.0f)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > 1000.0f)
 			{
 				unitState = UNIT_STATE::SEEKING;
 				targetNode->isOccupied = false;

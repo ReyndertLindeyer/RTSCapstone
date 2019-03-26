@@ -25,7 +25,6 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
-	buildingMesh->SetWorldScale3D(FVector(4, 4, 4));
 
 	currentAttackTimer = 0.0f;
 }
@@ -40,6 +39,7 @@ void ABuilding_Turret_Cannon::BeginPlay()
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("CannonTurret")), (TEXT("Context")), false)->MaxHealth);
 	}
 
+	buildingMesh->SetWorldScale3D(FVector(5));
 }
 
 void ABuilding_Turret_Cannon::Tick(float DeltaTime)

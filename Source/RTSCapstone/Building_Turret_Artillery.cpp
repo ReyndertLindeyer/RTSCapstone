@@ -35,6 +35,8 @@ void ABuilding_Turret_Artillery::BeginPlay()
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), (TEXT("Context")), false)->MaxHealth);
 	}
 
+	buildingMesh->SetWorldScale3D(FVector(5));
+
 }
 
 void ABuilding_Turret_Artillery::Tick(float DeltaTime)

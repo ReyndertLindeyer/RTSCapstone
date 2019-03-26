@@ -74,7 +74,7 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	if (unlocked) {
 		//Rotate our camera's pitch and yaw, but limit the pitch so we're always looking downward
 		FRotator NewRotation = OurCameraSpringArm->GetComponentRotation();
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CameraInput.Y * 2, -85.0f, -25.0f);
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CameraInput.Y * 3, -85.0f, -25.0f);
 		OurCameraSpringArm->SetWorldRotation(NewRotation); 
 		NewRotation = RootComponent->GetComponentRotation();
 		NewRotation.Yaw += CameraInput.X * 2;
@@ -89,10 +89,10 @@ void AMyCameraPawn::Tick(float DeltaTime)
 
 	//Zoom controls
 	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 200.0f) {
-		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 100.0f, -zoom);
+		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 200.0f, -zoom);
 	}
 	if (zoom == -1 && OurCameraSpringArm->TargetArmLength < 5000.0f) {
-		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 100.0f, zoom);
+		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 200.0f, zoom);
 	}
 
 	//6 is a magic number that can be replaced by making the sensitivity higher

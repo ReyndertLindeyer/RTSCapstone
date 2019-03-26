@@ -22,6 +22,7 @@ AEnemy_BaseManager::AEnemy_BaseManager()
 	//baseRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	//baseRadiusSphere->SetSphereRadius(40);
 	RootComponent = baseSphere;
+	baseSphere->SetWorldScale3D(FVector(8));
 
 }
 
@@ -32,6 +33,7 @@ void AEnemy_BaseManager::BeginPlay()
 
 	if (buildingsArray.Num() > 0) {
 		for (int32 i = 0; i < buildingsArray.Num(); i++) {
+			UE_LOG(LogTemp, Warning, TEXT("%d"), buildingsArray.Num());
 			buildingsArray[i]->SetMesh(baseMeshes[buildingsArray[i]->buildingType - 1]);
 			counterArray.Add(FMath::RandRange(10.0f, 15.0f));
 			if (launchPoint) {
@@ -55,9 +57,11 @@ void AEnemy_BaseManager::Tick(float DeltaTime)
 		counterArray[i] -= DeltaTime;
 		if (!buildingsArray[i]) {
 			buildingsArray.RemoveAt(i, 1, true);
+			UE_LOG(LogTemp, Warning, TEXT("Remove because null"));
 
 		} 
 		else if (buildingsArray[i]->GetCurrentHealth() < 1) {
+			UE_LOG(LogTemp, Warning, TEXT("Remove because no health"));
 			buildingsArray.RemoveAt(i, 1, true);
 		}
 		else if (counterArray[i] <= 0.0f) {
