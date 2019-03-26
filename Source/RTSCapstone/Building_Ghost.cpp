@@ -45,12 +45,7 @@ void ABuilding_Ghost::Tick(float DeltaTime)
 
 	for (int i = 0; i < outActors.Num(); i++) {
 		if (Cast<ABuildingMaster>(outActors[i])) {
-
-			
-
 			float distance = (outActors[i]->GetRootComponent()->GetComponentLocation() - RootComponent->GetComponentLocation()).Size();
-			//UE_LOG(LogTemp, Warning, TEXT("ghost is x: %d y: %d z: %d"), RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z);
-			//UE_LOG(LogTemp, Warning, TEXT("other is x: %d y: %d z: %d"), outActors[i]->GetRootComponent()->GetComponentLocation().X, outActors[i]->GetRootComponent()->GetComponentLocation().Y, outActors[i]->GetRootComponent()->GetComponentLocation().Z);
 
 			//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
 			if (distance < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
