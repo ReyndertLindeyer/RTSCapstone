@@ -1,12 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UNIT_MBT.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "ConstructorHelpers.h"
-#include "DrawDebugHelpers.h"
+#include "UNIT_Scout.h"
 
 // Sets default values
-AUNIT_MBT::AUNIT_MBT()
+AUNIT_Scout::AUNIT_Scout()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,19 +13,19 @@ AUNIT_MBT::AUNIT_MBT()
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MBT/MBT_V1_UNREAL_Body.MBT_V1_UNREAL_Body'"));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/Scout/Scout_V1_UNREAL_Body.Scout_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
-	BodyMesh->SetRelativeScale3D(FVector(4.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
+	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
 	// TURRET
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
 	TurretMesh->SetupAttachment(BodyMesh);
-	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MBT/MBT_V1_UNREAL_Turret.MBT_V1_UNREAL_Turret'"));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/Scout/Scout_V1_UNREAL_Gun.Scout_V1_UNREAL_Gun'"));
 	UStaticMesh* turretMesh = TurretMeshAsset.Object;
 	TurretMesh->SetStaticMesh(turretMesh);
 	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
@@ -41,14 +38,15 @@ AUNIT_MBT::AUNIT_MBT()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
-	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
 	//Load our Sound Cue for the sound we created in the editor
-	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Basic_Tank_Sounds_V1/Basic_Tank_-_Fire_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rifle_-_Fire_Cue"));
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Basic_Tank_Sounds_V1/Basic_Tank_-_Select_Cue"));
 	static ConstructorHelpers::FObjectFinder<USoundCue> order(TEXT("/Game/Game_Assets/Sounds/Basic_Tank_Sounds_V1/Basic_Tank_-_Attack_Order_Cue"));
 	static ConstructorHelpers::FObjectFinder<USoundCue> death(TEXT("/Game/Game_Assets/Sounds/Basic_Tank_Sounds_V1/Basic_Tank_-_Death_Cue"));
@@ -96,22 +94,22 @@ AUNIT_MBT::AUNIT_MBT()
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
-void AUNIT_MBT::BeginPlay()
+void AUNIT_Scout::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (setPlayerOwner != nullptr)
-		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Main Battle Tank", startingHealth);
+		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Humvee", startingHealth);
 
 	SpawnDefaultController();
 	
-
 }
 
-void AUNIT_MBT::PostInitializeComponents()
+void AUNIT_Scout::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
@@ -149,13 +147,13 @@ void AUNIT_MBT::PostInitializeComponents()
 }
 
 // Called every frame
-void AUNIT_MBT::Tick(float DeltaTime)
+void AUNIT_Scout::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	if (targetActor != nullptr)
 	{
-		
+
 		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
 		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
 		TurretMesh->SetWorldRotation(targetRotation);
@@ -230,11 +228,11 @@ void AUNIT_MBT::Tick(float DeltaTime)
 					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-
-						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
-						targetActor = entitiesInRange[i];
-						break;
-
+						// Check if the entity is an allied unit.
+						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+						{
+							targetActor = entitiesInRange[0];
+						}
 					}
 				}
 
@@ -306,17 +304,15 @@ void AUNIT_MBT::Tick(float DeltaTime)
 			{
 				SetDestination(GetController(), GetActorLocation());
 
-				if (currentTimer >= attackRate)
+				if (currentTimer >= attackTimer)
 				{
-					currentTimer = 0.0f;
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
-					projectile->SetActorEnableCollision(false);
+					Cast<II_Entity>(targetActor)->DealDamage(attackDamage);
 					audioComponentFire->Play();
 
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 						targetActor = nullptr;
+
 				}
 			}
 		}
@@ -326,21 +322,21 @@ void AUNIT_MBT::Tick(float DeltaTime)
 	/// Attack Rate Timer
 	// Will count down regardless of whether it's combat or not.
 	// Think of it as a cooldown for an attack.
-	if (currentTimer < attackRate) {
+	if (currentTimer < attackTimer) {
 		currentTimer += DeltaTime;
 	}
+
 
 }
 
 // Called to bind functionality to input
-void AUNIT_MBT::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AUNIT_Scout::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
-
-void AUNIT_MBT::SetSelection(bool state)
+void AUNIT_Scout::SetSelection(bool state)
 {
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
@@ -348,8 +344,9 @@ void AUNIT_MBT::SetSelection(bool state)
 	}
 }
 
-// Function Never Called
-void AUNIT_MBT::AttackOrder(II_Entity* target)
+
+// Method Unused
+void AUNIT_Scout::AttackOrder(II_Entity* target)
 {
 	if (target->DealDamage(attackDamage) == 1)
 	{
@@ -357,7 +354,7 @@ void AUNIT_MBT::AttackOrder(II_Entity* target)
 	}
 }
 
-void AUNIT_MBT::DestroyEntity()
+void AUNIT_Scout::DestroyEntity()
 {
 	audioComponentDeath->Play();
 	// Remove from Owner's Array
@@ -372,4 +369,3 @@ void AUNIT_MBT::DestroyEntity()
 
 	Destroy(this);
 }
-

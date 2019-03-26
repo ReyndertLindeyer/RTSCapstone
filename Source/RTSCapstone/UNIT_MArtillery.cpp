@@ -11,19 +11,31 @@ AUNIT_MArtillery::AUNIT_MArtillery()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	//RootComponent->SetWorldScale3D(FVector(0.25f));
 
+	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
-	UStaticMesh* Asset = MeshAsset.Object;
-	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
-	BodyMesh->SetRelativeScale3D(FVector(8.0f));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MArtillery/MobileArtillery_V1_UNREAL_Body.MobileArtillery_V1_UNREAL_Body'"));
+	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
+	BodyMesh->SetStaticMesh(bodyMesh);
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
+	// TURRET
+	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
+	TurretMesh->SetupAttachment(BodyMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MArtillery/MobileArtillery_V1_UNREAL_Turret.MobileArtillery_V1_UNREAL_Turret'"));
+	UStaticMesh* turretMesh = TurretMeshAsset.Object;
+	TurretMesh->SetStaticMesh(turretMesh);
+	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	TurretMesh->SetRelativeScale3D(FVector(1.0f));
+	TurretMesh->SetCanEverAffectNavigation(false);
+
+	// SELECTION INDICATOR
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
@@ -140,15 +152,18 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
+	if (targetActor != nullptr)
+	{
 
-	ignoreActors.Add(this);
+		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
+		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
+		TurretMesh->SetWorldRotation(targetRotation);
+	}
 
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
+	else
+	{
+		TurretMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+	}
 
 	switch (unitState)
 	{
@@ -165,16 +180,27 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 		break;
 	}
 
-
-	// Narrow down all the AActors to only ones with an II_Entity script
-	entitiesInRange.Empty();
-	for (int i = 0; i < outActors.Num(); i++)
+	if (unitState != UNIT_STATE::MOVING)
 	{
-		if (Cast<II_Entity>(outActors[i]))
+		// Detect all AActors within a Radius
+		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+		TArray<AActor*> ignoreActors;
+		TArray<AActor*> outActors;
+
+		ignoreActors.Add(this);
+
+		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+
+		// Narrow down all the AActors to only ones with an II_Entity script
+		entitiesInRange.Empty();
+		for (int i = 0; i < outActors.Num(); i++)
 		{
-			if (!entitiesInRange.Contains(outActors[i]))
+			if (Cast<II_Entity>(outActors[i]))
 			{
-				entitiesInRange.Add(outActors[i]);
+				if (!entitiesInRange.Contains(outActors[i]))
+				{
+					entitiesInRange.Add(outActors[i]);
+				}
 			}
 		}
 	}

@@ -21,7 +21,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
 	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
-	BodyMesh->SetRelativeScale3D(FVector(4.0f));
+	BodyMesh->SetRelativeScale3D(FVector(3.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
 	// TURRET
@@ -151,16 +151,18 @@ void AUNIT_AvBT::PostInitializeComponents()
 void AUNIT_AvBT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (targetActor != nullptr)
+	{
 
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
+		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
+		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
+		TurretMesh->SetWorldRotation(targetRotation);
+	}
 
-	ignoreActors.Add(this);
-
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
+	else
+	{
+		TurretMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+	}
 
 	switch (unitState)
 	{
@@ -168,27 +170,36 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	case UNIT_STATE::SEEKING:
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), missileRange, 24, FColor(255, 0, 0, 15));
 		break;
 	case UNIT_STATE::ATTACKING:
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), missileRange, 24, FColor(255, 0, 0, 15));
 		break;
 	case UNIT_STATE::MOVING:
 		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 
-
-	// Narrow down all the AActors to only ones with an II_Entity script
-	entitiesInRange.Empty();
-	for (int i = 0; i < outActors.Num(); i++)
+	if (unitState != UNIT_STATE::MOVING)
 	{
-		if (Cast<II_Entity>(outActors[i]))
+		// Detect all AActors within a Radius
+		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+		TArray<AActor*> ignoreActors;
+		TArray<AActor*> outActors;
+
+		ignoreActors.Add(this);
+
+		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+
+		// Narrow down all the AActors to only ones with an II_Entity script
+		entitiesInRange.Empty();
+		for (int i = 0; i < outActors.Num(); i++)
 		{
-			if (!entitiesInRange.Contains(outActors[i]))
+			if (Cast<II_Entity>(outActors[i]))
 			{
-				entitiesInRange.Add(outActors[i]);
+				if (!entitiesInRange.Contains(outActors[i]))
+				{
+					entitiesInRange.Add(outActors[i]);
+				}
 			}
 		}
 	}
@@ -235,7 +246,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 200.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;

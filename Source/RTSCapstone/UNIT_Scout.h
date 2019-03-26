@@ -19,10 +19,10 @@
 #include "Components/StaticMeshComponent.h"
 
 #include "GameFramework/Character.h"
-#include "UNIT_MArtillery.generated.h"
+#include "UNIT_Scout.generated.h"
 
 UCLASS()
-class RTSCAPSTONE_API AUNIT_MArtillery : public ACharacter, public II_Unit, public II_Entity
+class RTSCAPSTONE_API AUNIT_Scout : public ACharacter, public II_Unit, public II_Entity
 {
 	GENERATED_BODY()
 
@@ -31,7 +31,7 @@ public:
 
 	UStaticMeshComponent* BodyMesh;
 	UStaticMeshComponent* TurretMesh;
-
+	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;
 
@@ -55,7 +55,10 @@ private:
 	float currentTimer;
 	float targetTimer = 3.0f;
 
-	UParticleSystem* PS;
+	//Particle System Cannon
+	UParticleSystem* PSC;
+	//Particle System Missile
+	UParticleSystem* PSM;
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
 	UParticleSystem* reactionPS;
@@ -92,19 +95,25 @@ public:
 	TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
-		float startingHealth = 350.0f;
+		float startingHealth = 1500.0f;
 	UPROPERTY(EditAnywhere)
-		float attackRate = 3.5f;
+		float detectRange = 1500.0f;
+
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 35.0f;
+		float attackRange = 1300.0f;
 	UPROPERTY(EditAnywhere)
-		float detectRange = 3000.0f;
+		float attackDamage = 2.5f;
 	UPROPERTY(EditAnywhere)
-		float attackRange = 2700.0f;
+		float attackTimer = 0.125f;
+
+
+	bool secondShot = false;
+
+	//######################################################
 
 public:
 	// Sets default values for this character's properties
-	AUNIT_MArtillery();
+	AUNIT_Scout();
 
 protected:
 	// Called when the game starts or when spawned

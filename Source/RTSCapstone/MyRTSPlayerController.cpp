@@ -52,8 +52,8 @@ void AMyRTSPlayerController::BeginPlay()
 	ChangeResources(50000);
 
 
-	if (spawnCY)
-		buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
+	//if (spawnCY)
+	buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
 		
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
@@ -70,8 +70,9 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 
 	if (placingBuilding == true) {
 		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, hit);
-
+		//GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, hit);
+		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+		//buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, buildingManagerObject->GetBuildingToBuild()->GetActorLocation().Z));
 		//GetHitResultUnderCursorByChannel(ECollisionChannel::ECC_GameTraceChannel1, false, hit);
 
 		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, hit.Location.Z));
@@ -492,7 +493,7 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
 				//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
-				FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+				FVector MoveLocation = hit.Location + FVector(i / 2 * 500, i % 2 * 500, 0);
 
 				//Code to make the units move
 				Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);

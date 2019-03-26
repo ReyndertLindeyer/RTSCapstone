@@ -177,17 +177,18 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (targetActor != nullptr)
+	{
 
+		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
+		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
+		PivotMesh->SetWorldRotation(targetRotation);
+	}
 
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
-
-	ignoreActors.Add(this);
-
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
+	else
+	{
+		PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+	}
 
 	switch (unitState)
 	{
@@ -204,16 +205,27 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 		break;
 	}
 
-
-	// Narrow down all the AActors to only ones with an II_Entity script
-	entitiesInRange.Empty();
-	for (int i = 0; i < outActors.Num(); i++)
+	if (unitState != UNIT_STATE::MOVING)
 	{
-		if (Cast<II_Entity>(outActors[i]))
+		// Detect all AActors within a Radius
+		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+		TArray<AActor*> ignoreActors;
+		TArray<AActor*> outActors;
+
+		ignoreActors.Add(this);
+
+		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+
+		// Narrow down all the AActors to only ones with an II_Entity script
+		entitiesInRange.Empty();
+		for (int i = 0; i < outActors.Num(); i++)
 		{
-			if (!entitiesInRange.Contains(outActors[i]))
+			if (Cast<II_Entity>(outActors[i]))
 			{
-				entitiesInRange.Add(outActors[i]);
+				if (!entitiesInRange.Contains(outActors[i]))
+				{
+					entitiesInRange.Add(outActors[i]);
+				}
 			}
 		}
 	}
@@ -260,7 +272,7 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;

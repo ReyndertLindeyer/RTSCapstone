@@ -11,16 +11,16 @@ AUNIT_MOutpost::AUNIT_MOutpost()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	//RootComponent->SetWorldScale3D(FVector(0.25f));
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
+	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MOutpost/MOutpost_V1_UNREAL.MOutpost_V1_UNREAL'"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -60.0f));
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
