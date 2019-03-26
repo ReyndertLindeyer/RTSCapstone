@@ -31,6 +31,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* BodyMesh;
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* TurretMesh;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;

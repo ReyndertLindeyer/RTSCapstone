@@ -13,19 +13,53 @@ AUNIT_Gattling::AUNIT_Gattling()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	//RootComponent->SetWorldScale3D(FVector(0.25f));
 
+	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
-	UStaticMesh* Asset = MeshAsset.Object;
-	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
-	BodyMesh->SetRelativeScale3D(FVector(8.0f));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/GattlingTank/GattlingTank_V1_UNREAL_Body.GattlingTank_V1_UNREAL_Body'"));
+	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
+	BodyMesh->SetStaticMesh(bodyMesh);
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
+	// TURRET
+	PivotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
+	PivotMesh->SetupAttachment(BodyMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/GattlingTank/GattlingTank_V1_UNREAL_Pivot.GattlingTank_V1_UNREAL_Pivot'"));
+	UStaticMesh* turretMesh = TurretMeshAsset.Object;
+	PivotMesh->SetStaticMesh(turretMesh);
+	PivotMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	PivotMesh->SetRelativeScale3D(FVector(1.0f));
+	PivotMesh->SetCanEverAffectNavigation(false);
+
+	// Gun 1
+	RightGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Gun Mesh"));
+	RightGunMesh->SetupAttachment(PivotMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>RightGunMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/GattlingTank/GattlingTank_V1_UNREAL_Gun1.GattlingTank_V1_UNREAL_Gun1'"));
+	UStaticMesh* rightGunMesh = RightGunMeshAsset.Object;
+	RightGunMesh->SetStaticMesh(rightGunMesh);
+	RightGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	RightGunMesh->SetRelativeScale3D(FVector(1.0f));
+	RightGunMesh->SetCanEverAffectNavigation(false);
+
+	// GUN 2
+	LeftGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Gun Mesh"));
+	LeftGunMesh->SetupAttachment(PivotMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>LeftGunMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/GattlingTank/GattlingTank_V1_UNREAL_Gun002.GattlingTank_V1_UNREAL_Gun002'"));
+	UStaticMesh* leftGunMesh = LeftGunMeshAsset.Object;
+	LeftGunMesh->SetStaticMesh(leftGunMesh);
+	LeftGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	LeftGunMesh->SetRelativeScale3D(FVector(1.0f));
+	LeftGunMesh->SetCanEverAffectNavigation(false);
+
+	// SELECTION INDICATOR
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
@@ -205,9 +239,14 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
+					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						targetActor = entitiesInRange[0];
+						// Check if the entity is an allied unit.
+						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+						{
+							targetActor = entitiesInRange[0];
+						}
 					}
 				}
 

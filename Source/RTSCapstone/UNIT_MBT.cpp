@@ -11,19 +11,31 @@ AUNIT_MBT::AUNIT_MBT()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	//RootComponent->SetWorldScale3D(FVector(0.25f));
 
+	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
-	UStaticMesh* Asset = MeshAsset.Object;
-	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
-	BodyMesh->SetRelativeScale3D(FVector(8.0f));
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MBT/MBT_V1_UNREAL_Body.MBT_V1_UNREAL_Body'"));
+	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
+	BodyMesh->SetStaticMesh(bodyMesh);
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
+	// TURRET
+	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
+	TurretMesh->SetupAttachment(BodyMesh);
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MBT/MBT_V1_UNREAL_Turret.MBT_V1_UNREAL_Turret'"));
+	UStaticMesh* turretMesh = TurretMeshAsset.Object;
+	TurretMesh->SetStaticMesh(turretMesh);
+	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	TurretMesh->SetRelativeScale3D(FVector(1.0f));
+	TurretMesh->SetCanEverAffectNavigation(false);
+
+	// SELECTION INDICATOR
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
@@ -201,9 +213,14 @@ void AUNIT_MBT::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
+					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						targetActor = entitiesInRange[0];
+						// Check if the entity is an allied unit.
+						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+						{
+							targetActor = entitiesInRange[0];
+						}
 					}
 				}
 
