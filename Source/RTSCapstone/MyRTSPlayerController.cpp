@@ -51,7 +51,7 @@ void AMyRTSPlayerController::BeginPlay()
 
 	ChangeResources(50000);
 
-	//if (spawnCY)
+	if (spawnCY)
 		buildingManagerObject->SpawnConstructionYard(FVector(995.0, 4935.0, 100.0));
 
 	/// Disabled for debugging
@@ -69,8 +69,11 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 
 	if (placingBuilding == true) {
 		FHitResult hit;
-		GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, buildingManagerObject->GetBuildingToBuild()->GetActorLocation().Z));
+		GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, hit);
+
+		//GetHitResultUnderCursorByChannel(ECollisionChannel::ECC_GameTraceChannel1, false, hit);
+
+		buildingManagerObject->MoveBuilding(FVector(hit.Location.X, hit.Location.Y, hit.Location.Z));
 	}
 
 	if (buildingCountdown > 0) {

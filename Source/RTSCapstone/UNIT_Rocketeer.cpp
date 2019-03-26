@@ -22,6 +22,7 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0f));
 	BodyMesh->SetRelativeScale3D(FVector(2.0f));
+	BodyMesh->SetCanEverAffectNavigation(false);
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
