@@ -263,10 +263,7 @@ void AUNIT_Engineer::SetSelection(bool state)
 
 void AUNIT_Engineer::AttackOrder(II_Entity* target)
 {
-	/*if (target->DealDamage(attackDamage) == 1)
-	{
-		targetEntity = nullptr;
-	}*/
+	//targetActor = target->GetActor();
 }
 
 void AUNIT_Engineer::DestroyEntity()

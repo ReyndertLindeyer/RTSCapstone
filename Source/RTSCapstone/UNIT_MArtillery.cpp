@@ -352,10 +352,7 @@ void AUNIT_MArtillery::SetSelection(bool state)
 // Method Never Called
 void AUNIT_MArtillery::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_MArtillery::DestroyEntity()

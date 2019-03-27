@@ -178,18 +178,18 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	switch (unitState)
 	{
 	case UNIT_STATE::IDLE:
-		UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
 	case UNIT_STATE::SEEKING:
-		UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
-		UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
 		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
@@ -380,10 +380,7 @@ void AUNIT_AvBT::SetSelection(bool state)
 // Method Unused
 void AUNIT_AvBT::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(cannonDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_AvBT::DestroyEntity()

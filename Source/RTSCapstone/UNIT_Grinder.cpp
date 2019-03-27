@@ -234,10 +234,7 @@ void AUNIT_Grinder::SetSelection(bool state)
 // Method Unused
 void AUNIT_Grinder::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_Grinder::DestroyEntity()

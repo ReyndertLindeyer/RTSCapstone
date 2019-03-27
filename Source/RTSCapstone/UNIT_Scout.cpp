@@ -351,10 +351,7 @@ void AUNIT_Scout::SetSelection(bool state)
 // Method Unused
 void AUNIT_Scout::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_Scout::DestroyEntity()

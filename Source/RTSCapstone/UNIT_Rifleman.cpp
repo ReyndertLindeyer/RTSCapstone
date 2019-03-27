@@ -287,10 +287,7 @@ void AUNIT_Rifleman::SetSelection(bool state)
 // Function is never called, but should be for hitscan classes
 void AUNIT_Rifleman::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_Rifleman::DestroyEntity()
