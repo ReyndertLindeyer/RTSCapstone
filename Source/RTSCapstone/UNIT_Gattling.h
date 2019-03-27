@@ -32,10 +32,17 @@ class RTSCAPSTONE_API AUNIT_Gattling : public ACharacter, public II_Unit, public
 				// VARIABLES & COMPONENTS
 public:
 
-	UStaticMeshComponent* BodyMesh;
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* BodyMesh;
+	
 	UStaticMeshComponent* PivotMesh;
 	UStaticMeshComponent* LeftGunMesh;
 	UStaticMeshComponent* RightGunMesh;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos1;
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos2;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;

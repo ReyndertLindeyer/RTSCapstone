@@ -29,8 +29,14 @@ class RTSCAPSTONE_API AUNIT_MArtillery : public ACharacter, public II_Unit, publ
 		// VARIABLES & COMPONENTS
 public:
 
-	UStaticMeshComponent* BodyMesh;
-	UStaticMeshComponent* TurretMesh;
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* BodyMesh;
+	
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* TurretMesh;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;

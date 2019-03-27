@@ -12,7 +12,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
-
+	
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -20,7 +20,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/ADVBT_V1_UNREAL_Body.ADVBT_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, -20.0f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(3.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
@@ -40,6 +40,16 @@ AUNIT_AvBT::AUNIT_AvBT()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+
+	// PARTICLE SYSTEMS
+	barrelPos1 = CreateDefaultSubobject<USceneComponent>(TEXT("Left Barrel"));
+	barrelPos1->SetRelativeLocation(FVector(56.5f, -12.0f, 35.0f));
+	barrelPos1->SetupAttachment(TurretMesh);
+
+	barrelPos2 = CreateDefaultSubobject<USceneComponent>(TEXT("Right Barrel"));
+	barrelPos2->SetRelativeLocation(FVector(56.5f, 25.0f, 35.0f));
+	barrelPos2->SetupAttachment(TurretMesh);
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();

@@ -20,7 +20,7 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MArtillery/MobileArtillery_V1_UNREAL_Body.MobileArtillery_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 13.5f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
@@ -40,6 +40,11 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+	// PARTICLE SYSTEMS
+	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	barrelPos->SetRelativeLocation(FVector(66.0f, -4.25f, 51.0f));
+	barrelPos->SetupAttachment(TurretMesh);
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();

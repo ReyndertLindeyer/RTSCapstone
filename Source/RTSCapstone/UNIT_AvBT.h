@@ -38,6 +38,11 @@ public:
 		UStaticMeshComponent* SelectionIndicator;
 
 	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos1;
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos2;
+
+	UPROPERTY(EditAnywhere)
 		AActor* setPlayerOwner;
 	// FUNCTIONS
 public:

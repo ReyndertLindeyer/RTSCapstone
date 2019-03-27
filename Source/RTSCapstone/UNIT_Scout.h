@@ -29,8 +29,13 @@ class RTSCAPSTONE_API AUNIT_Scout : public ACharacter, public II_Unit, public II
 		// VARIABLES & COMPONENTS
 public:
 
-	UStaticMeshComponent* BodyMesh;
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* BodyMesh;
+	
 	UStaticMeshComponent* TurretMesh;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos;
 	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;
