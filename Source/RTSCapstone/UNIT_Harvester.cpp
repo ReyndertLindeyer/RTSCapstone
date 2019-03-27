@@ -167,33 +167,37 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		break;
 	}
 
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
-
-	ignoreActors.Add(this);
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
-	// Narrow down all the AActors to only ones with an II_Entity script
-	entitiesInRange.Empty();
-	for (int i = 0; i < outActors.Num(); i++)
+	if (!returning)
 	{
-		if (Cast<AResourceNode>(outActors[i]))
+		// Detect all AActors within a Radius
+		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+		TArray<AActor*> ignoreActors;
+		TArray<AActor*> outActors;
+
+		ignoreActors.Add(this);
+		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+
+		// Narrow down all the AActors to only ones with an II_Entity script
+		entitiesInRange.Empty();
+		for (int i = 0; i < outActors.Num(); i++)
 		{
-			if (!entitiesInRange.Contains(outActors[i]))
+			if (Cast<AResourceNode>(outActors[i]))
 			{
-				entitiesInRange.Add(outActors[i]);
+				if (!entitiesInRange.Contains(outActors[i]))
+				{
+					entitiesInRange.Add(outActors[i]);
+				}
 			}
 		}
 	}
+	
 	
 	// IDLE STATE
 	if (unitState == UNIT_STATE::IDLE)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
 
-		if (currentResources >= maxResources)
+		if (currentResources >= maxResources || returning)
 			unitState = UNIT_STATE::INTERACTING;
 
 		SetDestination(GetController(), GetActorLocation());
@@ -290,6 +294,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		if (currentResources <= 0)
 		{
 			unitState = UNIT_STATE::IDLE;
+			returning = false;
 		}
 
 		// Target is out of range: chase it;
@@ -336,34 +341,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("Full Resource Load"));
 			if (GetEntityOwner() != nullptr)
 			{
-				if (targetRefinery == nullptr)
-				{
-					for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++)
-					{
-						if (Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]))
-						{
-							if (targetRefinery == nullptr)
-								targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
-
-							else
-							{
-								if (FVector::Dist(GetEntityOwner()->GetBuildings()[i]->GetActorLocation(), GetActorLocation()) < FVector::Dist(targetRefinery->GetActorLocation(), GetActorLocation()))
-								{
-									targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
-								}
-							}
-
-						}
-					}
-				}
-
-				if (targetRefinery != nullptr)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Refinery Found.  Returning"));					
-					MoveOrder(GetController(), targetRefinery->harvestPt->GetComponentLocation());
-					return;
-				}
-				
+				ReturnToRefinery();
 			}
 			
 		}
@@ -408,6 +386,51 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		currentTimer += DeltaTime;
 	}
 
+}
+
+void AUNIT_Harvester::ReturnToRefinery()
+{
+	if (targetRefinery == nullptr)
+	{
+		for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++)
+		{
+			if (Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]))
+			{
+				if (targetRefinery == nullptr)
+					targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
+
+				else
+				{
+					if (FVector::Dist(GetEntityOwner()->GetBuildings()[i]->GetActorLocation(), GetActorLocation()) < FVector::Dist(targetRefinery->GetActorLocation(), GetActorLocation()))
+					{
+						targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
+					}
+				}
+
+			}
+		}
+	}
+
+	if (targetRefinery != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Refinery Found.  Returning"));
+		MoveOrder(GetController(), targetRefinery->harvestPt->GetComponentLocation());
+		returning = true;
+		targetNode = nullptr;
+
+		return;
+	}
+}
+
+void AUNIT_Harvester::ReturnToRefinery(ABuilding_Refinery* refinery)
+{
+	targetRefinery = refinery;
+	ReturnToRefinery();
+}
+
+void AUNIT_Harvester::TargetNode(AResourceNode* node)
+{
+	targetNode = node;
 }
 
 void AUNIT_Harvester::HarvestNode(AResourceNode* node)

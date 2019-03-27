@@ -52,6 +52,10 @@ public:
 	// OVERIDE CLASS [II_Entity] -- Handles any calls on death
 	virtual void DestroyEntity() override;
 
+	void ReturnToRefinery();
+	void ReturnToRefinery(ABuilding_Refinery* refinery);
+	
+	void TargetNode(AResourceNode* node);
 	void HarvestNode(AResourceNode* node);
 
 	void PostInitializeComponents();
@@ -60,6 +64,8 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool returning;
 
 	//Sound Stuff
 	USoundCue* selectCue;

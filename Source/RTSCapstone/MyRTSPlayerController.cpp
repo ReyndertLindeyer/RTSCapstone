@@ -498,7 +498,27 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 				// If an entity is hit
 				if (Cast<II_Entity>(hit.Actor))
 				{
-					if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
+					// If the Selected unit is a harvester and thie hit actor is a refinery
+					if (Cast<AUNIT_Harvester>(SelectedCharacters[i]))
+					{
+						if (Cast<ABuilding_Refinery>(hit.Actor))
+						{
+							// If the the harvester and the refinery share the same owner
+							if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() == Cast<II_Player>(this))
+							{
+								// Return to the selected refinery
+								Cast<AUNIT_Harvester>(SelectedCharacters[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
+							}
+						}
+
+						else if (Cast<AResourceNode>(hit.Actor))
+						{
+							Cast<AUNIT_Harvester>(SelectedCharacters[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
+						}
+						
+					}
+
+					else if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
 					{
 						UE_LOG(LogTemp, Warning, TEXT("Enemy Entity Hit"));
 						Cast<II_Unit>(SelectedCharacters[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
