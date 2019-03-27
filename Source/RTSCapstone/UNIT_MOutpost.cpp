@@ -27,6 +27,8 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	hasRoom = false;
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -217,6 +219,35 @@ void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 	}*/
 }
 
+bool AUNIT_MOutpost::HasRoom() {
+	// Detect all AActors within a Radius
+	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+	TArray<AActor*> ignoreActors;
+	TArray<AActor*> outActors;
+
+	ignoreActors.Add(this);
+
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), RootComponent->GetComponentLocation(), 400, objectTypes, nullptr, ignoreActors, outActors);
+
+	for (int i = 0; i < outActors.Num(); i++) {
+		if (Cast<ABuildingMaster>(outActors[i])) {
+			float distance = (outActors[i]->GetRootComponent()->GetComponentLocation() - RootComponent->GetComponentLocation()).Size();
+
+			//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
+			if (distance > 400) {
+				hasRoom = true;
+				//UE_LOG(LogTemp, Warning, TEXT("inside radius"));
+			}
+			else {
+				hasRoom = false;
+				break;
+				//UE_LOG(LogTemp, Warning, TEXT("outside radius"));
+			}
+		}
+	}
+	return hasRoom;
+}
+
 void AUNIT_MOutpost::DestroyEntity()
 {
 	// Remove from Owner's Array
@@ -231,4 +262,3 @@ void AUNIT_MOutpost::DestroyEntity()
 
 	Destroy(this);
 }
-

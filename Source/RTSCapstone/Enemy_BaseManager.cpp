@@ -52,32 +52,38 @@ void AEnemy_BaseManager::BeginPlay()
 void AEnemy_BaseManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (isStartingArea) {
 
-	for (int32 i = 0; i < buildingsArray.Num(); i++) {
-		counterArray[i] -= DeltaTime;
-		if (!buildingsArray[i]) {
-			buildingsArray.RemoveAt(i, 1, true);
-			UE_LOG(LogTemp, Warning, TEXT("Remove because null"));
+		for (int32 i = 0; i < buildingsArray.Num(); i++) {
+			counterArray[i] -= DeltaTime;
+			if (!buildingsArray[i]) {
+				buildingsArray.RemoveAt(i, 1, true);
+				UE_LOG(LogTemp, Warning, TEXT("Remove because null"));
 
-		} 
-		else if (buildingsArray[i]->GetCurrentHealth() < 1) {
-			UE_LOG(LogTemp, Warning, TEXT("Remove because no health"));
-			buildingsArray.RemoveAt(i, 1, true);
+			}
+			else if (buildingsArray[i]->GetCurrentHealth() < 1) {
+				UE_LOG(LogTemp, Warning, TEXT("Remove because no health"));
+				buildingsArray.RemoveAt(i, 1, true);
+			}
+			else if (counterArray[i] <= 0.0f) {
+				buildingsArray[i]->SpawnUnit();
+				counterArray[i] = FMath::RandRange(10.0f, 15.0f);
+			}
 		}
-		else if (counterArray[i] <= 0.0f) {
-			buildingsArray[i]->SpawnUnit();
-			counterArray[i] = FMath::RandRange(10.0f, 15.0f);
+		if (buildingsArray.Num() == 0) {
+			GetWorld()->SpawnActor<AResourceSpawner>(AResourceSpawner::StaticClass(), this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+			for (int32 i = 0; i < adjacentManagerArray.Num(); i++) {
+				if (adjacentManagerArray[i] != nullptr)
+					adjacentManagerArray[i]->ActivateManager();
+			}
+			Destroy(this);
 		}
 	}
-	if (buildingsArray.Num() == 0) {
-		GetWorld()->SpawnActor<AResourceSpawner>(AResourceSpawner::StaticClass(), this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-		Destroy(this);
-	}
-
 }
 
 void AEnemy_BaseManager::ActivateManager() {
 	PrimaryActorTick.bCanEverTick = true;
+	isStartingArea = true;
 	if (launchPoint) {
 		launchPoint->EnableTick();
 	}

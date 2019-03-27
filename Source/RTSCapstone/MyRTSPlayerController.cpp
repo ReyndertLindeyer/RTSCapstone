@@ -53,7 +53,9 @@ void AMyRTSPlayerController::BeginPlay()
 
 
 	//if (spawnCY)
-	buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
+	//buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
+
+	teamValue = 1;
 		
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 

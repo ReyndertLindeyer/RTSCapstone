@@ -45,9 +45,12 @@ public:
 	// OVERIDE CLASS [II_Entity] -- Handles any calls on death
 	virtual void DestroyEntity() override;
 
+
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool hasRoom;
 
 public:
 	TArray<AActor*> entitiesInRange;
@@ -58,6 +61,8 @@ public:
 		float detectRange = 500.0f;
 	UPROPERTY(EditAnywhere)
 		float attackRange = 250.0f;
+
+	bool HasRoom();
 
 public:
 	// Sets default values for this character's properties
