@@ -233,11 +233,9 @@ void AUNIT_Scout::Tick(float DeltaTime)
 					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// Check if the entity is an allied unit.
-						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
-						{
-							targetActor = entitiesInRange[0];
-						}
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 

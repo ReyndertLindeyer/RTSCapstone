@@ -178,14 +178,18 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	switch (unitState)
 	{
 	case UNIT_STATE::IDLE:
+		UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
 	case UNIT_STATE::SEEKING:
+		UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
+		UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
+		UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
 		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
@@ -239,11 +243,9 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// Check if the entity is an allied unit.
-						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
-						{
-							targetActor = entitiesInRange[0];
-						}
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 

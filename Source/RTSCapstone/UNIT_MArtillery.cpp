@@ -233,7 +233,9 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 				{
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						targetActor = entitiesInRange[0];
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 
