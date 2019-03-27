@@ -161,6 +161,7 @@ void AUNIT_AvBT::PostInitializeComponents()
 void AUNIT_AvBT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 	if (targetActor != nullptr)
 	{
 

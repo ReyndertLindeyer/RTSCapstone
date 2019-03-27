@@ -24,7 +24,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 
 	harvestPt = CreateDefaultSubobject<USceneComponent>(TEXT("Harvest Point"));
 	harvestPt->SetupAttachment(RootComponent);
-	harvestPt->SetRelativeLocation(FVector(0.0f, 400.0f, 150.0f));
+	harvestPt->SetRelativeLocation(FVector(0.0f, 400.0f, 10.0f));
 
 	isOccupied = false;
 	
