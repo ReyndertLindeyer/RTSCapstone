@@ -21,11 +21,17 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -60.0f));
+	BodyMesh->SetCanEverAffectNavigation(false);
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BuildingMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Placeholder_Construction_Yard.Placeholder_Construction_Yard'"));
+	BuildingAsset = BuildingMeshAsset.Object;
+
+	buildingGhost = nullptr;
 
 	hasRoom = false;
 
@@ -219,33 +225,42 @@ void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 	}*/
 }
 
-bool AUNIT_MOutpost::HasRoom() {
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
-
-	ignoreActors.Add(this);
-
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), RootComponent->GetComponentLocation(), 400, objectTypes, nullptr, ignoreActors, outActors);
-
-	for (int i = 0; i < outActors.Num(); i++) {
-		if (Cast<ABuildingMaster>(outActors[i])) {
-			float distance = (outActors[i]->GetRootComponent()->GetComponentLocation() - RootComponent->GetComponentLocation()).Size();
-
-			//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
-			if (distance > 400) {
-				hasRoom = true;
-				//UE_LOG(LogTemp, Warning, TEXT("inside radius"));
-			}
-			else {
-				hasRoom = false;
-				break;
-				//UE_LOG(LogTemp, Warning, TEXT("outside radius"));
-			}
-		}
+bool AUNIT_MOutpost::StartGhostBuilding() {
+	UE_LOG(LogTemp, Warning, TEXT("StartGhostBuilding"));
+	if (buildingGhost != nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("CheckGhost")); 
+		buildingGhost->SetActorLocation(GetActorLocation());
+		return buildingGhost->GetIsOverlapping();
 	}
-	return hasRoom;
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("MakeGhost"));
+		buildingGhost = GetWorld()->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		buildingGhost->SetIgnoreActor(this);
+		buildingGhost->SetMesh(BuildingAsset, 6);
+
+		return buildingGhost->GetIsOverlapping();
+	}
+}
+
+void AUNIT_MOutpost::StopGhostBuilding()
+{
+	UE_LOG(LogTemp, Warning, TEXT("StopGhost"));
+	if (buildingGhost != nullptr) {
+		buildingGhost->Destroy();
+		buildingGhost = nullptr;
+	}
+}
+
+void AUNIT_MOutpost::BuildGhostBuilding()
+{
+	UE_LOG(LogTemp, Warning, TEXT("BuildGhost"));
+	if (buildingGhost != nullptr) {
+		buildingGhost->Destroy();
+		buildingGhost = nullptr;
+	}
+	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+	tempBuilding->InitializeEntity(GetEntityOwner(), "Outpost", 1000);
+	DestroyEntity();
 }
 
 void AUNIT_MOutpost::DestroyEntity()

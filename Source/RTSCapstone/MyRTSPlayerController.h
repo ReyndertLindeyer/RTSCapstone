@@ -7,6 +7,7 @@
 #include "BuildingMaster.h"
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
+#include "UNIT_MOutpost.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
 #include "ProFow.h"
@@ -116,6 +117,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void UpdateScreenSize();
 
+	//Functions for the Outpost
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasMOutpostSelected();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool StartGhostOutpost();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void StopGhostOutpost();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildGhostOutpost();
+
 
 	UFUNCTION()
 		AActor* GetPlayerActor();
@@ -125,6 +136,7 @@ protected:
 	// DEBUGGING
 	bool spawnCY = false;
 
+	bool hasMobileOutpostSelected;
 
 	/// Renamed the functions for clarity.
 	UFUNCTION()

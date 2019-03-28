@@ -14,6 +14,9 @@
 // Meshes
 #include "Components/StaticMeshComponent.h"
 
+#include "Building_Ghost.h"
+#include "Building_Outpost.h"
+
 #include "GameFramework/Character.h"
 #include "UNIT_MOutpost.generated.h"
 
@@ -52,6 +55,10 @@ private:
 
 	bool hasRoom;
 
+	UStaticMesh* BuildingAsset;
+
+	ABuilding_Ghost* buildingGhost;
+
 public:
 	TArray<AActor*> entitiesInRange;
 
@@ -62,7 +69,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackRange = 250.0f;
 
-	bool HasRoom();
+	bool StartGhostBuilding();
+	void StopGhostBuilding();
+	void BuildGhostBuilding();
 
 public:
 	// Sets default values for this character's properties

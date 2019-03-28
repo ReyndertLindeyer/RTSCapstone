@@ -75,6 +75,11 @@ void ABuilding_Ghost::SetIsInRadius(bool isIn) {
 	isInRadius = isIn;
 }
 
+void ABuilding_Ghost::SetIgnoreActor(AActor * inActor)
+{
+	ignoreActor = inActor;
+}
+
 
 UStaticMeshComponent * ABuilding_Ghost::GetBuildingMesh()
 {
@@ -91,17 +96,25 @@ void ABuilding_Ghost::SetMesh(UStaticMesh* inMesh, int32 scale)
 
 void ABuilding_Ghost::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (ignoreActor == nullptr) {
 			if (!overlapping) {
 				overlapping = true;
 			}
-			UE_LOG(LogTemp, Warning, TEXT("overlapping"));
 			numOfBuildingCollisions++;
+		}
+		else if ((OtherActor != ignoreActor)) {
+			if (!overlapping) {
+				overlapping = true;
+			}
+			numOfBuildingCollisions++;
+		}
 	}
 }
 
 void ABuilding_Ghost::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
+		if (ignoreActor == nullptr) {
 			if (numOfBuildingCollisions > 0) {
 				numOfBuildingCollisions--;
 			}
@@ -110,5 +123,16 @@ void ABuilding_Ghost::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, cl
 				overlapping = false;
 				numOfBuildingCollisions = 0;
 			}
+		}
+		else if((OtherActor != ignoreActor)) {
+			if (numOfBuildingCollisions > 0) {
+				numOfBuildingCollisions--;
+			}
+			if (numOfBuildingCollisions <= 0)
+			{
+				overlapping = false;
+				numOfBuildingCollisions = 0;
+			}
+		}
 	}
 }

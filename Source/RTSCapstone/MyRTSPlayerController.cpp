@@ -27,6 +27,8 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	selectedBarracks = false;
 	selectedFactory = false;
 
+	hasMobileOutpostSelected = false;
+
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 
 	// Player Interface
@@ -85,6 +87,12 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 			buildingCountdown -= DeltaTime;
 		else
 			buildingCountdown -= DeltaTime / 2;
+	}
+
+	if (SelectedCharacters.Num() == 1) {
+		if (Cast<AUNIT_MOutpost>(SelectedCharacters[0])) {
+			hasMobileOutpostSelected = true;
+		}
 	}
 
 	buildingManagerObject->CheckForDestroyedBuildings();
@@ -314,6 +322,15 @@ int32 AMyRTSPlayerController::GetUnitNumber()
 
 TArray<int32> AMyRTSPlayerController::UnitQueue()
 {
+	///Implement returning a queue of units
+	/*
+	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+		return Cast<ABuilding_Barrecks>(SelectedStructure)->GetUnitAtStartOfQueue();
+	}
+	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+		return Cast<ABuilding_VehicleFactory>(SelectedStructure)->Queue;
+	}
+	*/
 	return TArray<int32>();
 }
 
@@ -555,6 +572,26 @@ void AMyRTSPlayerController::OnRightMouseReleased() {
 			Cast<ABuilding_VehicleFactory>(SelectedStructure)->SetWaypoint(hit.Location);
 		}
 	}
+}
+
+bool AMyRTSPlayerController::HasMOutpostSelected()
+{
+	return hasMobileOutpostSelected;
+}
+
+bool AMyRTSPlayerController::StartGhostOutpost()
+{
+	return Cast<AUNIT_MOutpost>(SelectedCharacters[0])->StartGhostBuilding();
+}
+
+void AMyRTSPlayerController::StopGhostOutpost()
+{
+	Cast<AUNIT_MOutpost>(SelectedCharacters[0])->StopGhostBuilding();
+}
+
+void AMyRTSPlayerController::BuildGhostOutpost()
+{
+	Cast<AUNIT_MOutpost>(SelectedCharacters[0])->BuildGhostBuilding();
 }
 
 AActor* AMyRTSPlayerController::GetPlayerActor()

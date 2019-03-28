@@ -11,6 +11,7 @@
 #include "UNIT_MBT.h"
 #include "UNIT_MArtillery.h"
 #include "UNIT_Harvester.h"
+#include "UNIT_MOutpost.h"
 
 #include "Building_VehicleFactory.generated.h"
 
