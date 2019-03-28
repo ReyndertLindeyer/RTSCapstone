@@ -498,84 +498,87 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 	}
 
 	if (SelectedCharacters.Num() > 0.0f) {
-		
-		
-		
+
+
+
 		//Cycle through all units
 		for (int32 i = 0; i < SelectedCharacters.Num(); i++) {
-			
-			/// Disable Commands for Units that are not your own
-			if (Cast<II_Entity>(SelectedCharacters[i])->GetEntityOwner() == this)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
-				//Find location that the player right clicked on and store it
-				FHitResult hit;
-				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
-				//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
-				FVector MoveLocation = hit.Location + FVector(i / 2 * 500, i % 2 * 500, 0);
+			if (SelectedCharacters[i] != nullptr) {
 
-				// If an entity is hit
-				if (Cast<II_Entity>(hit.Actor))
+				/// Disable Commands for Units that are not your own
+				if (Cast<II_Entity>(SelectedCharacters[i])->GetEntityOwner() == this)
 				{
-					// If the Selected unit is a harvester and thie hit actor is a refinery
-					if (Cast<AUNIT_Harvester>(SelectedCharacters[i]))
+					UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
+					//Find location that the player right clicked on and store it
+					FHitResult hit;
+					GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+
+					//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
+					FVector MoveLocation = hit.Location + FVector(i / 2 * 500, i % 2 * 500, 0);
+
+					// If an entity is hit
+					if (Cast<II_Entity>(hit.Actor))
 					{
-						if (Cast<ABuilding_Refinery>(hit.Actor))
+						// If the Selected unit is a harvester and thie hit actor is a refinery
+						if (Cast<AUNIT_Harvester>(SelectedCharacters[i]))
 						{
-							// If the the harvester and the refinery share the same owner
-							if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() == Cast<II_Player>(this))
+							if (Cast<ABuilding_Refinery>(hit.Actor))
 							{
-								// Return to the selected refinery
-								Cast<AUNIT_Harvester>(SelectedCharacters[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
+								// If the the harvester and the refinery share the same owner
+								if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() == Cast<II_Player>(this))
+								{
+									// Return to the selected refinery
+									Cast<AUNIT_Harvester>(SelectedCharacters[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
+								}
 							}
+
+							else if (Cast<AResourceNode>(hit.Actor))
+							{
+								Cast<AUNIT_Harvester>(SelectedCharacters[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
+							}
+
 						}
 
-						else if (Cast<AResourceNode>(hit.Actor))
+						else if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
 						{
-							Cast<AUNIT_Harvester>(SelectedCharacters[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
+							UE_LOG(LogTemp, Warning, TEXT("Enemy Entity Hit"));
+							Cast<II_Unit>(SelectedCharacters[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
 						}
-						
 					}
 
-					else if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
+					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Enemy Entity Hit"));
-						Cast<II_Unit>(SelectedCharacters[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
+						//Code to make the units move	
+						Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
 					}
+
+
 				}
 
-				else
-				{
-					//Code to make the units move	
-					Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
-				}
+				/// Keep this here for if we need to command enemy units (DEBUG)
+				//UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
+				////Find location that the player right clicked on and store it
+				//FHitResult hit;
+				//GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
-				
+				////Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
+				//FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+
+				////Code to make the units move
+				//Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+
+
 			}
-
-			/// Keep this here for if we need to command enemy units (DEBUG)
-			//UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
-			////Find location that the player right clicked on and store it
-			//FHitResult hit;
-			//GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-
-			////Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
-			//FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
-
-			////Code to make the units move
-			//Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
-
-			
 		}
+
+		/// This functionality was rewritten and moved to OnLeftMousePressed in this class
+		/*if (HUDPtr->foundBuildings.Num() > 0.0f) {
+			for (int32 i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
+				selectedBuildings.Add(HUDPtr->foundBuildings[i]);
+			}
+		}*/
 	}
-
-	/// This functionality was rewritten and moved to OnLeftMousePressed in this class
-	/*if (HUDPtr->foundBuildings.Num() > 0.0f) {
-		for (int32 i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
-			selectedBuildings.Add(HUDPtr->foundBuildings[i]);
-		}
-	}*/
 }
 
 void AMyRTSPlayerController::OnMiddleMousePressed() 
