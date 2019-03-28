@@ -66,14 +66,15 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
-	GetCapsuleComponent()->SetCapsuleRadius(160.0f, true);
+	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
 
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 2000.0f;
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
 	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 120.0f;
 
 
 }
