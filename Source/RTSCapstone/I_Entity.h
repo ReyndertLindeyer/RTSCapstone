@@ -47,10 +47,10 @@ public:
 	
 
 private:
-
-	II_Player* owner;
-	bool isInitialized = false;
-	FString name;
-	float currentHealth, maxHealth = 100.0f;
+		II_Player* owner;
+		bool isInitialized = false;
+		FString name;
+		float currentHealth;
+		float maxHealth;
 	
 };

@@ -165,7 +165,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() || GetEntityOwner()->teamValue != Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue)
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && GetEntityOwner()->teamValue != Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue)
 					{
 						targetActor = entitiesInRange[0];
 					}

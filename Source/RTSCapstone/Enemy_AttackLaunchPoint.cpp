@@ -8,7 +8,7 @@ AEnemy_AttackLaunchPoint::AEnemy_AttackLaunchPoint()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	collectionRadius = 100;
+	collectionRadius = 800;
 
 	radiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	radiusSphere->SetSphereRadius(collectionRadius);

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Building_Enemy_Spawner.h"
+#include "Enemy_BaseManager.h"
 
 ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 
@@ -63,4 +64,25 @@ void ABuilding_Enemy_Spawner::SetupBulding(FVector inVec)
 
 void ABuilding_Enemy_Spawner::SetMesh(UStaticMesh* inMesh) {
 	buildingMesh->SetStaticMesh(inMesh);
+}
+
+
+void ABuilding_Enemy_Spawner::DestroyEntity()
+{
+	// Remove from Owner's Array
+	Cast<AEnemy_BaseManager>(myManager)->RemoveBuilding(this);
+}
+
+void ABuilding_Enemy_Spawner::KillMe() {
+
+	if (GetEntityOwner() != nullptr)
+	{
+		if (GetEntityOwner()->GetUnits().Contains(this))
+			GetEntityOwner()->GetUnits().Remove(this);
+
+		if (GetEntityOwner()->GetBuildings().Contains(this))
+			GetEntityOwner()->GetBuildings().Remove(this);
+	}
+
+	Destroy(this);
 }

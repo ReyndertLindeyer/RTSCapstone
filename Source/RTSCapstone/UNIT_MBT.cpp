@@ -238,7 +238,7 @@ void AUNIT_MBT::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
 					{
 
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));

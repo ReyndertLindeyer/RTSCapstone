@@ -35,7 +35,12 @@ void AEnemy_BaseManager::BeginPlay()
 		for (int32 i = 0; i < buildingsArray.Num(); i++) {
 			UE_LOG(LogTemp, Warning, TEXT("%d"), buildingsArray.Num());
 			buildingsArray[i]->SetMesh(baseMeshes[buildingsArray[i]->buildingType - 1]);
-			counterArray.Add(FMath::RandRange(10.0f, 15.0f));
+			buildingsArray[i]->myManager = this;
+			if(!isStartingArea)
+				counterArray.Add(FMath::RandRange(10.0f, 15.0f));
+			else
+				counterArray.Add(FMath::RandRange(60.0f, 70.0f));
+
 			if (launchPoint) {
 				buildingsArray[i]->SetupBulding(launchPoint->GetActorLocation());
 			}
@@ -55,19 +60,12 @@ void AEnemy_BaseManager::Tick(float DeltaTime)
 	if (isStartingArea) {
 
 		for (int32 i = 0; i < buildingsArray.Num(); i++) {
-			counterArray[i] -= DeltaTime;
-			if (!buildingsArray[i]) {
-				buildingsArray.RemoveAt(i, 1, true);
-				UE_LOG(LogTemp, Warning, TEXT("Remove because null"));
-
-			}
-			else if (buildingsArray[i]->GetCurrentHealth() < 1) {
-				UE_LOG(LogTemp, Warning, TEXT("Remove because no health"));
-				buildingsArray.RemoveAt(i, 1, true);
-			}
-			else if (counterArray[i] <= 0.0f) {
-				buildingsArray[i]->SpawnUnit();
-				counterArray[i] = FMath::RandRange(10.0f, 15.0f);
+			if (buildingsArray[i] != nullptr) {
+				counterArray[i] -= DeltaTime;
+				if (counterArray[i] <= 0.0f) {
+					buildingsArray[i]->SpawnUnit();
+					counterArray[i] = FMath::RandRange(10.0f, 15.0f);
+				}
 			}
 		}
 		if (buildingsArray.Num() == 0) {
@@ -86,5 +84,16 @@ void AEnemy_BaseManager::ActivateManager() {
 	isStartingArea = true;
 	if (launchPoint) {
 		launchPoint->EnableTick();
+	}
+}
+
+void AEnemy_BaseManager::RemoveBuilding(ABuilding_Enemy_Spawner* inBuilding) {
+	for (int32 i = 0; i < buildingsArray.Num(); i++) {
+		if (buildingsArray[i] == inBuilding) {
+			buildingsArray[i]->KillMe();
+			buildingsArray.RemoveAt(i, 1, true);
+			counterArray.RemoveAt(i, 1, true);
+			break;
+		}
 	}
 }

@@ -40,7 +40,12 @@ public:
 
 	void SetMesh(UStaticMesh* inMesh);
 
+	virtual void DestroyEntity() override;
+
+	AActor* myManager;
+
+	void KillMe();
+
 private:
 	FVector waypoint; 
-
 };

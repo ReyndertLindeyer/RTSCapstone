@@ -107,7 +107,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackRange = 1300.0f;
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 2.5f;
+		float attackDamage = 9.0f;
 	UPROPERTY(EditAnywhere)
 		float attackTimer = 0.125f;
 

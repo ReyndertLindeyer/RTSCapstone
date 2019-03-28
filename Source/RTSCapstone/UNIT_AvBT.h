@@ -110,7 +110,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float cannonRange = 1800.0f;
 	UPROPERTY(EditAnywhere)
-		float cannonDamage = 15.0f;
+		float cannonDamage = 26.0f;
 	UPROPERTY(EditAnywhere)
 		float cannonTimer = 3.0f;
 

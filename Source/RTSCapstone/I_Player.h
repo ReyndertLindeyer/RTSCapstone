@@ -87,7 +87,8 @@ public:
 	UDataTable* GetUnitConstructionDataTable();
 	void SetBuildingDataTable(UDataTable* inTable);
 	void SetUnitConstructionDataTable(UDataTable* inTable);
-	int teamValue;
+
+	int32 teamValue;
 
 private:
 	// Variables
