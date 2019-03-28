@@ -2,6 +2,7 @@
 
 #include "UNIT_Rifleman.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 
@@ -64,6 +65,15 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
+
+	GetCapsuleComponent()->SetCapsuleRadius(160.0f, true);
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 2000.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
 
 
 }
@@ -181,7 +191,7 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 60.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;

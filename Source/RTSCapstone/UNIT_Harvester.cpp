@@ -159,7 +159,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("ATTACKING"));
 		break;
 	case UNIT_STATE::MOVING:
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		//UE_LOG(LogTemp, Warning, TEXT("MOVING"));
 		break;
 	case UNIT_STATE::INTERACTING:
@@ -310,8 +310,10 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 				// Deposit Resources
 
 				/// Temp
-				if (currentResources - 20.0f >= 0)
+				if (currentResources - 20.0f >= 0) {
 					currentResources -= 20.0f;
+					GetEntityOwner()->ChangeResources(20);
+				}
 				else
 					currentResources = 0;
 

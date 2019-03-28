@@ -30,7 +30,7 @@ AMyCameraPawn::AMyCameraPawn()
 
 	//Swet the location of the spring arm as 50 units above the root and looking 60 degrees down
 	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(-60.0f, 0.0f, 0.0f));
-	OurCameraSpringArm->TargetArmLength = 400.f;
+	OurCameraSpringArm->TargetArmLength = 4000.f;
 	OurCameraSpringArm->bEnableCameraLag = false;
 	OurCameraSpringArm->bDoCollisionTest = false;
 	OurCameraSpringArm->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);

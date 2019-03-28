@@ -52,6 +52,7 @@ void AMyRTSPlayerController::BeginPlay()
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 
 	ChangeResources(50000);
+	ChangePower(20);
 
 
 	//if (spawnCY)

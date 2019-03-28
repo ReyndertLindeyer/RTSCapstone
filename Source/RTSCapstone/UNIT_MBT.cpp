@@ -2,6 +2,7 @@
 
 #include "UNIT_MBT.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 
@@ -102,6 +103,16 @@ AUNIT_MBT::AUNIT_MBT()
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+
+	GetCapsuleComponent()->SetCapsuleRadius(250.0f, true);
+	//GetCapsuleComponent()->SetCapsuleSize(200, 40, false);
 }
 
 // Called when the game starts or when spawned
@@ -113,7 +124,6 @@ void AUNIT_MBT::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Main Battle Tank", startingHealth);
 
 	SpawnDefaultController();
-	
 
 }
 
@@ -178,16 +188,16 @@ void AUNIT_MBT::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
 	case UNIT_STATE::SEEKING:
 		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
 		//UE_LOG(LogTemp, Warning, TEXT("ATTACKING"));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
 		//UE_LOG(LogTemp, Warning, TEXT("MOVING"));
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 

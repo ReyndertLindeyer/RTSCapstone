@@ -7,6 +7,8 @@
 // Components
 #include "Components/SphereComponent.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
+#include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
 
 #include "Components/AudioComponent.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
