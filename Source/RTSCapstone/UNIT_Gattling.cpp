@@ -22,7 +22,7 @@ AUNIT_Gattling::AUNIT_Gattling()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/GattlingTank/GattlingTank_V1_UNREAL_Body.GattlingTank_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 17.5f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
@@ -64,6 +64,15 @@ AUNIT_Gattling::AUNIT_Gattling()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+	
+	// PARTICLE SYSTEMS
+	barrelPos1 = CreateDefaultSubobject<USceneComponent>(TEXT("Left Barrel"));
+	barrelPos1->SetRelativeLocation(FVector(38.0f, -12.75f, 38.5f));
+	barrelPos1->SetupAttachment(PivotMesh);
+
+	barrelPos2 = CreateDefaultSubobject<USceneComponent>(TEXT("Right Barrel"));
+	barrelPos2->SetRelativeLocation(FVector(38.0f, 4.25f, 38.5f));
+	barrelPos2->SetupAttachment(PivotMesh);
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
@@ -254,11 +263,9 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// Check if the entity is an allied unit.
-						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
-						{
-							targetActor = entitiesInRange[0];
-						}
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 
@@ -376,10 +383,7 @@ void AUNIT_Gattling::SetSelection(bool state)
 // Method Unused
 void AUNIT_Gattling::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_Gattling::DestroyEntity()

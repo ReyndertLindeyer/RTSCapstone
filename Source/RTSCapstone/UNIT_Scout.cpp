@@ -38,6 +38,11 @@ AUNIT_Scout::AUNIT_Scout()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	// PARTICLE SYSTEMS
+	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	barrelPos->SetRelativeLocation(FVector(7.25f, 0.5f, 20.75f));
+	barrelPos->SetupAttachment(TurretMesh);
+
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
@@ -228,11 +233,9 @@ void AUNIT_Scout::Tick(float DeltaTime)
 					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// Check if the entity is an allied unit.
-						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
-						{
-							targetActor = entitiesInRange[0];
-						}
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 
@@ -348,10 +351,7 @@ void AUNIT_Scout::SetSelection(bool state)
 // Method Unused
 void AUNIT_Scout::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_Scout::DestroyEntity()

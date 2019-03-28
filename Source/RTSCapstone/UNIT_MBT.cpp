@@ -20,7 +20,7 @@ AUNIT_MBT::AUNIT_MBT()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MBT/MBT_V1_UNREAL_Body.MBT_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, -15.0f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
@@ -40,6 +40,12 @@ AUNIT_MBT::AUNIT_MBT()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+	// PARTICLE SYSTEMS
+	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	barrelPos->SetRelativeLocation(FVector(63.5f, 4.25f, 26.0f));
+	barrelPos->SetupAttachment(TurretMesh);
+	
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
@@ -169,14 +175,18 @@ void AUNIT_MBT::Tick(float DeltaTime)
 	switch (unitState)
 	{
 	case UNIT_STATE::IDLE:
+		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
 	case UNIT_STATE::SEEKING:
+		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
+		//UE_LOG(LogTemp, Warning, TEXT("ATTACKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
+		//UE_LOG(LogTemp, Warning, TEXT("MOVING"));
 		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
@@ -351,10 +361,8 @@ void AUNIT_MBT::SetSelection(bool state)
 // Function Never Called
 void AUNIT_MBT::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
+
 }
 
 void AUNIT_MBT::DestroyEntity()

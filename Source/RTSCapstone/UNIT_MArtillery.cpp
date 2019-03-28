@@ -20,7 +20,7 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/MArtillery/MobileArtillery_V1_UNREAL_Body.MobileArtillery_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 13.5f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
@@ -40,6 +40,11 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+	// PARTICLE SYSTEMS
+	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	barrelPos->SetRelativeLocation(FVector(66.0f, -4.25f, 51.0f));
+	barrelPos->SetupAttachment(TurretMesh);
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
@@ -228,7 +233,9 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 				{
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						targetActor = entitiesInRange[0];
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 
@@ -242,7 +249,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
@@ -345,10 +352,7 @@ void AUNIT_MArtillery::SetSelection(bool state)
 // Method Never Called
 void AUNIT_MArtillery::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_MArtillery::DestroyEntity()

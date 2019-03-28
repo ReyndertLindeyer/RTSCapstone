@@ -43,6 +43,7 @@ public:
 	void SetDestination(AController* controller, FVector destination);	// Allows AI to Decision Making 
 	void MoveOrder(AController* controller, FVector destination);		// Overrides AI Decision Making
 
+
 	virtual void SetSelection(bool state);
 	virtual void AttackOrder(II_Entity* target);
 	

@@ -12,7 +12,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
-
+	
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -20,7 +20,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/ADVBT_V1_UNREAL_Body.ADVBT_V1_UNREAL_Body'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -80.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, -20.0f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(3.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
@@ -40,6 +40,16 @@ AUNIT_AvBT::AUNIT_AvBT()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+
+	// PARTICLE SYSTEMS
+	barrelPos1 = CreateDefaultSubobject<USceneComponent>(TEXT("Left Barrel"));
+	barrelPos1->SetRelativeLocation(FVector(56.5f, -12.0f, 35.0f));
+	barrelPos1->SetupAttachment(TurretMesh);
+
+	barrelPos2 = CreateDefaultSubobject<USceneComponent>(TEXT("Right Barrel"));
+	barrelPos2->SetRelativeLocation(FVector(56.5f, 25.0f, 35.0f));
+	barrelPos2->SetupAttachment(TurretMesh);
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
@@ -151,6 +161,7 @@ void AUNIT_AvBT::PostInitializeComponents()
 void AUNIT_AvBT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 	if (targetActor != nullptr)
 	{
 
@@ -167,14 +178,18 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	switch (unitState)
 	{
 	case UNIT_STATE::IDLE:
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
 	case UNIT_STATE::SEEKING:
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
 		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
+		//UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
 		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
@@ -228,11 +243,9 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// Check if the entity is an allied unit.
-						if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
-						{
-							targetActor = entitiesInRange[0];
-						}
+						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 
@@ -367,10 +380,7 @@ void AUNIT_AvBT::SetSelection(bool state)
 // Method Unused
 void AUNIT_AvBT::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(cannonDamage) == 1)
-	{
-		//targetEntity = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_AvBT::DestroyEntity()

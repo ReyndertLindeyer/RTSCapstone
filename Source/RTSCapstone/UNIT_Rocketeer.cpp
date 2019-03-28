@@ -290,10 +290,7 @@ void AUNIT_Rocketeer::SetSelection(bool state)
 // This Function is no longer called
 void AUNIT_Rocketeer::AttackOrder(II_Entity* target)
 {
-	if (target->DealDamage(attackDamage) == 1)
-	{
-		//targetActor = nullptr;
-	}
+	targetActor = target->GetActor();
 }
 
 void AUNIT_Rocketeer::DestroyEntity()

@@ -15,7 +15,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	//RootComponent->SetWorldScale3D(FVector(0.25f));
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -23,8 +23,8 @@ AUNIT_Harvester::AUNIT_Harvester()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -20.0f));
-	BodyMesh->SetRelativeScale3D(FVector(8.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
+	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 	//RootComponent = BodyMesh;
 
@@ -145,55 +145,60 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
-
-	ignoreActors.Add(this);
-
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
-
 	switch (unitState)
 	{
 	case UNIT_STATE::IDLE:
+		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
 	case UNIT_STATE::SEEKING:
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
 		break;
 	case UNIT_STATE::ATTACKING:
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//UE_LOG(LogTemp, Warning, TEXT("ATTACKING"));
 		break;
 	case UNIT_STATE::MOVING:
 		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//UE_LOG(LogTemp, Warning, TEXT("MOVING"));
+		break;
+	case UNIT_STATE::INTERACTING:
+		//UE_LOG(LogTemp, Warning, TEXT("INTERACTING"));
 		break;
 	}
 
-
-	// Narrow down all the AActors to only ones with an II_Entity script
-	entitiesInRange.Empty();
-	for (int i = 0; i < outActors.Num(); i++)
+	if (!returning)
 	{
-		if (Cast<AResourceNode>(outActors[i]))
+		// Detect all AActors within a Radius
+		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+		TArray<AActor*> ignoreActors;
+		TArray<AActor*> outActors;
+
+		ignoreActors.Add(this);
+		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+
+		// Narrow down all the AActors to only ones with an II_Entity script
+		entitiesInRange.Empty();
+		for (int i = 0; i < outActors.Num(); i++)
 		{
-			if (!entitiesInRange.Contains(outActors[i]))
+			if (Cast<AResourceNode>(outActors[i]))
 			{
-				entitiesInRange.Add(outActors[i]);
+				if (!entitiesInRange.Contains(outActors[i]))
+				{
+					entitiesInRange.Add(outActors[i]);
+				}
 			}
 		}
 	}
-
-	if (targetNode != nullptr)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
-	}
 	
-
+	
 	// IDLE STATE
 	if (unitState == UNIT_STATE::IDLE)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
+
+		if (currentResources >= maxResources || returning)
+			unitState = UNIT_STATE::INTERACTING;
 
 		SetDestination(GetController(), GetActorLocation());
 
@@ -236,9 +241,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	{
 
 		// Ignore Combat until unit reaches destination
-
-
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 100.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			unitState = UNIT_STATE::IDLE;
 		}
@@ -249,6 +252,9 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::SEEKING)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
+
+		if (currentResources >= maxResources)
+			unitState = UNIT_STATE::INTERACTING;
 
 		if (targetNode == nullptr)
 		{
@@ -266,7 +272,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
-			if (FVector::Dist(GetActorLocation(), targetLocation) > 25.0f)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > 150.0f)
 			{
 				SetDestination(GetController(), targetLocation);
 			}
@@ -288,10 +294,11 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		if (currentResources <= 0)
 		{
 			unitState = UNIT_STATE::IDLE;
+			returning = false;
 		}
 
 		// Target is out of range: chase it;
-		if (FVector::Dist(GetActorLocation(), targetLocation) < 200.0f)
+		if (FVector::Dist(GetActorLocation(), targetLocation) < 150.0f)
 		{
 			SetDestination(GetController(), GetActorLocation());
 
@@ -315,6 +322,11 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			}
 		}
 
+		else
+		{
+			MoveOrder(GetController(), targetLocation);
+		}
+
 		
 	}
 
@@ -329,36 +341,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("Full Resource Load"));
 			if (GetEntityOwner() != nullptr)
 			{
-				if (targetRefinery == nullptr)
-				{
-					for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++)
-					{
-						if (Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]))
-						{
-							if (targetRefinery == nullptr)
-								targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
-
-							else
-							{
-								if (FVector::Dist(GetEntityOwner()->GetBuildings()[i]->GetActorLocation(), GetActorLocation()) < FVector::Dist(targetRefinery->GetActorLocation(), GetActorLocation()))
-								{
-									targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
-								}
-							}
-
-						}
-					}
-				}
-
-				if (targetRefinery != nullptr)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Refinery Found.  Returning"));
-					
-					unitState = UNIT_STATE::INTERACTING;
-					SetDestination(GetController(), targetRefinery->harvestPt->GetComponentLocation());
-					return;
-				}
-				
+				ReturnToRefinery();
 			}
 			
 		}
@@ -403,6 +386,51 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		currentTimer += DeltaTime;
 	}
 
+}
+
+void AUNIT_Harvester::ReturnToRefinery()
+{
+	if (targetRefinery == nullptr)
+	{
+		for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++)
+		{
+			if (Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]))
+			{
+				if (targetRefinery == nullptr)
+					targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
+
+				else
+				{
+					if (FVector::Dist(GetEntityOwner()->GetBuildings()[i]->GetActorLocation(), GetActorLocation()) < FVector::Dist(targetRefinery->GetActorLocation(), GetActorLocation()))
+					{
+						targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
+					}
+				}
+
+			}
+		}
+	}
+
+	if (targetRefinery != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Refinery Found.  Returning"));
+		MoveOrder(GetController(), targetRefinery->harvestPt->GetComponentLocation());
+		returning = true;
+		targetNode = nullptr;
+
+		return;
+	}
+}
+
+void AUNIT_Harvester::ReturnToRefinery(ABuilding_Refinery* refinery)
+{
+	targetRefinery = refinery;
+	ReturnToRefinery();
+}
+
+void AUNIT_Harvester::TargetNode(AResourceNode* node)
+{
+	targetNode = node;
 }
 
 void AUNIT_Harvester::HarvestNode(AResourceNode* node)
@@ -452,10 +480,7 @@ void AUNIT_Harvester::SetSelection(bool state)
 
 void AUNIT_Harvester::AttackOrder(II_Entity* target)
 {
-	/*if (target->DealDamage(attackDamage) == 1)
-	{
-		targetEntity = nullptr;
-	}*/
+	//targetActor = target->GetActor();
 }
 
 void AUNIT_Harvester::DestroyEntity()

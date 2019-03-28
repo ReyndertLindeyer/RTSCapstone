@@ -35,6 +35,9 @@ public:
 		UStaticMeshComponent* TurretMesh;
 
 	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos;
+
+	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;
 
 	UPROPERTY(EditAnywhere)

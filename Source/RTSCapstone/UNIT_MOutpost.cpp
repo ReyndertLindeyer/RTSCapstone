@@ -219,10 +219,7 @@ void AUNIT_MOutpost::SetSelection(bool state)
 // Function is Never Called
 void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 {
-	/*if (target->DealDamage(attackDamage) == 1)
-	{
-		targetEntity = nullptr;
-	}*/
+	targetActor = target->GetActor();
 }
 
 bool AUNIT_MOutpost::StartGhostBuilding() {

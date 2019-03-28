@@ -134,3 +134,8 @@ II_Player* II_Entity::GetEntityOwner()
 {
 	return owner;
 }
+
+AActor* II_Entity::GetActor()
+{
+	return Cast<AActor>(this);
+}
