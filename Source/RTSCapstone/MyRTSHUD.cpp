@@ -53,7 +53,7 @@ void AMyRTSHUD::DrawHUD() {
 					if (Cast<II_Unit>(FoundCharacters[i]))
 					{
 						/// Calls the inherited function from the unit.
-						Cast<II_Unit>(FoundCharacters[i])->SetSelection(false);
+						//Cast<II_Unit>(FoundCharacters[i])->SetSelection(false);
 					}
 
 				}
@@ -87,16 +87,18 @@ void AMyRTSHUD::DrawHUD() {
 
 		GetActorsInSelectionRectangle<ACharacter>(mouseStart, mouseEnd, FoundCharacters, false, false);
 
+		/*
 		if (FoundCharacters.Num() > 0)
 		{
 			for (int32 i = 0; i < FoundCharacters.Num(); i++)
 			{
 				if (Cast<II_Unit>(FoundCharacters[i]))
 				{
-					Cast<II_Unit>(FoundCharacters[i])->SetSelection(true);
+						Cast<II_Unit>(FoundCharacters[i])->SetSelection(true);
 				}
 			}
 		}
+		*/
 	}
 
 	//else if (!selectionStart && grabEverything) {

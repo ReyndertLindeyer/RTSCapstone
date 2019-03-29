@@ -42,6 +42,9 @@ public:
 	UPROPERTY()
 		TArray<ACharacter*> FoundCharacters;
 
+	UPROPERTY()
+		TArray<ACharacter*> OldFoundCharacters;
+
 	UFUNCTION()
 		FVector2D GetMousePos2D();
 

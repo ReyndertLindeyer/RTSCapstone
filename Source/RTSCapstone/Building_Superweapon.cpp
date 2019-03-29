@@ -16,6 +16,11 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PSA(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetTemplate(PSA.Get());
+	particleComp->bAutoActivate = false;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/OrbitalCannon_Model/Orbital_Cannon.Orbital_Cannon")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -41,6 +46,8 @@ void ABuilding_Superweapon::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("OrbitalCannon")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("OrbitalCannon")), (TEXT("Context")), false)->MaxHealth);
 	}
+	particleComp->SetWorldLocation(this->GetActorLocation());
+	particleComp->ActivateSystem();
 
 }
 

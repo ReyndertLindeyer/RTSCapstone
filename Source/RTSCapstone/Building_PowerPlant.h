@@ -22,4 +22,8 @@ public:
 	virtual void BeginPlay() override;
 	void Upgrade();
 
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* particleComp;
+
 };

@@ -20,4 +20,7 @@ public:
 		AActor* setPlayerOwner;
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* particleComp;
 };

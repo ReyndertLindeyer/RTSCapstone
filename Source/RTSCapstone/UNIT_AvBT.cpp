@@ -12,6 +12,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 	
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -107,6 +108,17 @@ AUNIT_AvBT::AUNIT_AvBT()
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 }
 
 // Called when the game starts or when spawned
@@ -152,7 +164,7 @@ void AUNIT_AvBT::PostInitializeComponents()
 		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
-	if (harvestCue->IsValidLowLevelFast()) {
+	if (fireCue->IsValidLowLevelFast()) {
 		audioComponentFire->SetSound(fireCue);
 	}
 }
@@ -370,11 +382,17 @@ void AUNIT_AvBT::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void AUNIT_AvBT::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
 }
+
+bool AUNIT_AvBT::GetSelection() {
+	return isSelected;
+}
+
 
 
 // Method Unused

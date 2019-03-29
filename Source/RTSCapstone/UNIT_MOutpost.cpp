@@ -12,6 +12,7 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -37,6 +38,17 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -213,8 +225,14 @@ void AUNIT_MOutpost::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AUNIT_MOutpost::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 }
+
+bool AUNIT_MOutpost::GetSelection() {
+	return isSelected;
+}
+
 
 // Function is Never Called
 void AUNIT_MOutpost::AttackOrder(II_Entity* target)

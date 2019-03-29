@@ -13,6 +13,7 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -67,6 +68,7 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	unitState = UNIT_STATE::IDLE;
 
 	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
@@ -292,10 +294,15 @@ void AUNIT_Rocketeer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AUNIT_Rocketeer::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
-	if (state) {
+	if (state && !audioComponentSelect->IsPlaying()) {
 		audioComponentSelect->Play();
 	}
+}
+
+bool AUNIT_Rocketeer::GetSelection() {
+	return isSelected;
 }
 
 // This Function is no longer called

@@ -10,6 +10,11 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	isBuilding = true;
 	hasPower = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetTemplate(PS.Get());
+	particleComp->bAutoActivate = false;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -45,6 +50,8 @@ void ABuilding_VehicleFactory::BeginPlay()
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
+	particleComp->SetWorldLocation(this->GetActorLocation());
+	particleComp->ActivateSystem();
 }
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)

@@ -57,5 +57,8 @@ private:
 	UPROPERTY()
 		UParticleSystemComponent* particleComp;
 	UParticleSystem* particleSystem;
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* particleCompBuild;
 	
 };

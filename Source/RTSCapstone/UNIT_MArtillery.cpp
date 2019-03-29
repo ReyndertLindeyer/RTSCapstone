@@ -12,6 +12,7 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -100,7 +101,18 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	audioComponentIdle->SetupAttachment(RootComponent);
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
-	audioComponentDeccelerate->SetupAttachment(RootComponent);
+	audioComponentDeccelerate->SetupAttachment(RootComponent); 
+	
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -147,7 +159,7 @@ void AUNIT_MArtillery::PostInitializeComponents()
 		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
-	if (harvestCue->IsValidLowLevelFast()) {
+	if (fireCue->IsValidLowLevelFast()) {
 		audioComponentFire->SetSound(fireCue);
 	}
 }
@@ -343,10 +355,16 @@ void AUNIT_MArtillery::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AUNIT_MArtillery::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
+}
+
+bool AUNIT_MArtillery::GetSelection()
+{
+	return isSelected;
 }
 
 // Method Never Called

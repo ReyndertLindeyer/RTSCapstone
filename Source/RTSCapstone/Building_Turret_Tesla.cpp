@@ -11,6 +11,11 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	isBuilding = true;
 	hasPower = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	particleCompBuild = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleCompBuild->SetTemplate(PS.Get());
+	particleCompBuild->bAutoActivate = false;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTesla_v1.devTesla_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -19,7 +24,7 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 
 	particleSystem = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Lightning.P_Lightning'")).Get();
 
-	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSCA"));
 	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
 	particleComp->SetTemplate(particleSystem);
 	particleComp->bAutoActivate = false;
@@ -42,6 +47,8 @@ void ABuilding_Turret_Tesla::BeginPlay()
 	}
 
 	buildingMesh->SetWorldScale3D(FVector(5));
+	particleCompBuild->SetWorldLocation(this->GetActorLocation());
+	particleCompBuild->ActivateSystem();
 
 }
 

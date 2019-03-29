@@ -13,6 +13,7 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -67,6 +68,7 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	unitState = UNIT_STATE::IDLE;
 
 	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
@@ -74,7 +76,8 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 120.0f;
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 60.0f;
+	GetCharacterMovement()->NavAgentProps.AgentHeight = 125.0f;
 
 
 }
@@ -289,10 +292,15 @@ void AUNIT_Rifleman::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AUNIT_Rifleman::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
+}
+
+bool AUNIT_Rifleman::GetSelection() {
+	return isSelected;
 }
 
 // Function is never called, but should be for hitscan classes

@@ -10,6 +10,11 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	isBuilding = true;
 	hasPower = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetTemplate(PS.Get());
+	particleComp->bAutoActivate = false;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Barracks_Model/Barracks.Barracks")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -43,7 +48,8 @@ void ABuilding_Barrecks::BeginPlay()
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 600.0f, 0.0f); //Updates Waypoint
 	waypointMesh->SetWorldLocation(wayPoint);
-
+	particleComp->SetWorldLocation(this->GetActorLocation());
+	particleComp->ActivateSystem();
 }
 
 int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)

@@ -10,6 +10,11 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	buildRadius = 500;
 	isBuilding = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetTemplate(PS.Get());
+	particleComp->bAutoActivate = false;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -31,4 +36,6 @@ void ABuilding_TechCenter::BeginPlay()
 	}
 
 	buildingMesh->SetWorldScale3D(FVector(6));
+	particleComp->SetWorldLocation(this->GetActorLocation());
+	particleComp->ActivateSystem();
 }

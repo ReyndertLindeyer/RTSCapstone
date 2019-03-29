@@ -13,6 +13,7 @@ AUNIT_MBT::AUNIT_MBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -110,8 +111,10 @@ AUNIT_MBT::AUNIT_MBT()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
 
-	GetCapsuleComponent()->SetCapsuleRadius(250.0f, true);
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 	//GetCapsuleComponent()->SetCapsuleSize(200, 40, false);
 }
 
@@ -159,7 +162,7 @@ void AUNIT_MBT::PostInitializeComponents()
 		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
-	if (harvestCue->IsValidLowLevelFast()) {
+	if (fireCue->IsValidLowLevelFast()) {
 		audioComponentFire->SetSound(fireCue);
 	}
 }
@@ -362,11 +365,17 @@ void AUNIT_MBT::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AUNIT_MBT::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
 }
+
+bool AUNIT_MBT::GetSelection() {
+	return isSelected;
+}
+
 
 // Function Never Called
 void AUNIT_MBT::AttackOrder(II_Entity* target)

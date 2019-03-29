@@ -50,6 +50,8 @@ public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
 	virtual void SetSelection(bool state) override;
 
+	virtual bool GetSelection() override;
+
 	// OVERRIDE CLASS [II_Unit] -- Handles Attack Orders
 	virtual void AttackOrder(II_Entity* target) override;
 
@@ -61,6 +63,8 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool isSelected;
 
 	UParticleSystem* PS;
 

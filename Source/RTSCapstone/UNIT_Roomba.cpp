@@ -14,6 +14,7 @@ AUNIT_Roomba::AUNIT_Roomba()
 
 
 	RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -35,6 +36,17 @@ AUNIT_Roomba::AUNIT_Roomba()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -226,7 +238,12 @@ void AUNIT_Roomba::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AUNIT_Roomba::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
+}
+
+bool AUNIT_Roomba::GetSelection() {
+	return isSelected;
 }
 
 

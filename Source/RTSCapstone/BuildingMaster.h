@@ -12,6 +12,7 @@
 #include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
 #include "Engine/DataTable.h"
 

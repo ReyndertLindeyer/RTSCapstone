@@ -25,6 +25,11 @@ void II_Unit::SetSelection(bool state)
 	// Do Nothing
 }
 
+bool II_Unit::GetSelection()
+{
+	return false;
+}
+
 void II_Unit::AttackOrder(II_Entity* target)
 {
 	// Do nothing

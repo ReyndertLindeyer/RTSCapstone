@@ -379,6 +379,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			/// (though it should work 100% of the time regardless, just coding practice)
 			if (!HUDPtr->isShift) 
 			{
+
 				SelectedCharacters.Empty();
 			}
 		}
@@ -407,10 +408,10 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					SelectedStructure->SetSelection(true);
 
 					
-					if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+					if (Cast<ABuilding_Barrecks>(SelectedStructure) && Cast<II_Entity>(SelectedStructure)->GetEntityOwner() == this) {
 						selectedBarracks = true;
 					}
-					if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+					if (Cast<ABuilding_VehicleFactory>(SelectedStructure) && Cast<II_Entity>(SelectedStructure)->GetEntityOwner() == this) {
 						selectedFactory = true;
 					}
 
@@ -456,6 +457,10 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				}
 
 				HUDPtr->bStartSelecting = false;
+
+				for (int i = 0; i < SelectedCharacters.Num(); i++) {
+					Cast<II_Unit>(SelectedCharacters[i])->SetSelection(true);
+				}
 				//HUDPtr->grabEverything = true;
 			}
 		}
@@ -498,9 +503,6 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 	}
 
 	if (SelectedCharacters.Num() > 0.0f) {
-
-
-
 		//Cycle through all units
 		for (int32 i = 0; i < SelectedCharacters.Num(); i++) {
 
@@ -569,6 +571,10 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 				//Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
 
 
+			}
+			else {
+				SelectedCharacters.RemoveAt(i, 0, true);
+				i--;
 			}
 		}
 

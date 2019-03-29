@@ -53,4 +53,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* waypointMesh;
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* particleComp;
 };

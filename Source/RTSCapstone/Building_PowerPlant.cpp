@@ -10,6 +10,11 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetTemplate(PS.Get());
+	particleComp->bAutoActivate = false;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/PowerPlant_Model/PowerPlant.PowerPlant")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -28,6 +33,8 @@ void ABuilding_PowerPlant::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Powerplant")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Powerplant")), (TEXT("Context")), false)->MaxHealth);
 	}
+	particleComp->SetWorldLocation(this->GetActorLocation());
+	particleComp->ActivateSystem();
 
 }
 
