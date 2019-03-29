@@ -158,9 +158,6 @@ protected:
 		void OnMiddleMouseReleased();
 
 	UPROPERTY()
-		TArray<ACharacter*> SelectedCharacters = TArray<ACharacter*>();
-
-	UPROPERTY()
 		ABuildingMaster* SelectedStructure;
 		/// TScriptInterface<II_Structure> SelectedStructure;  -- Leave this here for future reference
 

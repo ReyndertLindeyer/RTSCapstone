@@ -90,8 +90,8 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 			buildingCountdown -= DeltaTime / 2;
 	}
 
-	if (SelectedCharacters.Num() == 1) {
-		if (Cast<AUNIT_MOutpost>(SelectedCharacters[0])) {
+	if (GetSelectedCharacters().Num() == 1) {
+		if (Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])) {
 			hasMobileOutpostSelected = true;
 		}
 	}
@@ -145,13 +145,13 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 		}
 	}
 
-	else if (SelectedCharacters.Num() > 0)
+	else if (GetSelectedCharacters().Num() > 0)
 	{
 		TArray<ACharacter*> deletionArray;
 
-		for (int i = 0; i < SelectedCharacters.Num(); i++)
+		for (int i = 0; i < GetSelectedCharacters().Num(); i++)
 		{
-			II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+			II_Entity* entity = Cast<II_Entity>(GetSelectedCharacters()[i]);
 
 			// If the Entity will survive the damage
 			if (entity->GetCurrentHealth() - (entity->GetMaxHealth() / 10) > 0)
@@ -164,7 +164,7 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 			// Otherwise Destroy it
 			else
 			{
-				deletionArray.Add(SelectedCharacters[i]);
+				deletionArray.Add(GetSelectedCharacters()[i]);
 				UE_LOG(LogTemp, Warning, TEXT("Destroyed"));
 			}
 		}
@@ -173,7 +173,7 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 		{
 			for (int i = 0; i < deletionArray.Num(); i++)
 			{
-				SelectedCharacters.Remove(deletionArray[i]);
+				GetSelectedCharacters().Remove(deletionArray[i]);
 				Cast<II_Entity>(deletionArray[i])->DestroyEntity();
 			}
 		}
@@ -380,7 +380,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			if (!HUDPtr->isShift) 
 			{
 
-				SelectedCharacters.Empty();
+				GetSelectedCharacters().Empty();
 			}
 		}
 	}
@@ -436,13 +436,13 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				// Otherwise, if characters were found, select them.
 				else 
 				{
-					SelectedCharacters = HUDPtr->FoundCharacters;
-					HUDPtr->SetSelectedUnits(SelectedCharacters);
+					SetSelectedCharacters(HUDPtr->FoundCharacters);
+					HUDPtr->SetSelectedUnits(GetSelectedCharacters());
 
 					/// Debugging
-					for (int i = 0; i < SelectedCharacters.Num(); i++)
+					for (int i = 0; i < GetSelectedCharacters().Num(); i++)
 					{
-						II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+						II_Entity* entity = Cast<II_Entity>(GetSelectedCharacters()[i]);
 						if (entity->GetEntityOwner() != nullptr)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("%s (%s) : %f / %f  (%f%)"), *entity->GetName(), *entity->GetEntityOwner()->GetPlayerName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
@@ -458,8 +458,8 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 
 				HUDPtr->bStartSelecting = false;
 
-				for (int i = 0; i < SelectedCharacters.Num(); i++) {
-					Cast<II_Unit>(SelectedCharacters[i])->SetSelection(true);
+				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
+					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true);
 				}
 				//HUDPtr->grabEverything = true;
 			}
@@ -502,14 +502,18 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 		buildingManagerObject->DisableAllDecals();
 	}
 
-	if (SelectedCharacters.Num() > 0.0f) {
+	if (GetSelectedCharacters().Num() > 0.0f) {
 		//Cycle through all units
-		for (int32 i = 0; i < SelectedCharacters.Num(); i++) {
+		for (int32 i = 0; i < GetSelectedCharacters().Num(); i++) {
+			if (!(i < GetSelectedCharacters().Num())) {
+				break;
+			}
 
-			if (SelectedCharacters[i] != nullptr) {
+
+			if (GetSelectedCharacters()[i] != nullptr) {
 
 				/// Disable Commands for Units that are not your own
-				if (Cast<II_Entity>(SelectedCharacters[i])->GetEntityOwner() == this)
+				if (Cast<II_Entity>(GetSelectedCharacters()[i])->GetEntityOwner() == this)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
 					//Find location that the player right clicked on and store it
@@ -523,7 +527,7 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 					if (Cast<II_Entity>(hit.Actor))
 					{
 						// If the Selected unit is a harvester and thie hit actor is a refinery
-						if (Cast<AUNIT_Harvester>(SelectedCharacters[i]))
+						if (Cast<AUNIT_Harvester>(GetSelectedCharacters()[i]))
 						{
 							if (Cast<ABuilding_Refinery>(hit.Actor))
 							{
@@ -531,13 +535,13 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 								if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() == Cast<II_Player>(this))
 								{
 									// Return to the selected refinery
-									Cast<AUNIT_Harvester>(SelectedCharacters[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
+									Cast<AUNIT_Harvester>(GetSelectedCharacters()[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
 								}
 							}
 
 							else if (Cast<AResourceNode>(hit.Actor))
 							{
-								Cast<AUNIT_Harvester>(SelectedCharacters[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
+								Cast<AUNIT_Harvester>(GetSelectedCharacters()[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
 							}
 
 						}
@@ -545,14 +549,14 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 						else if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
 						{
 							UE_LOG(LogTemp, Warning, TEXT("Enemy Entity Hit"));
-							Cast<II_Unit>(SelectedCharacters[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
+							Cast<II_Unit>(GetSelectedCharacters()[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
 						}
 					}
 
 					else
 					{
 						//Code to make the units move	
-						Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+						Cast<II_Unit>(GetSelectedCharacters()[i])->MoveOrder(GetSelectedCharacters()[i]->GetController(), MoveLocation);
 					}
 
 
@@ -568,13 +572,9 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 				//FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
 
 				////Code to make the units move
-				//Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+				//Cast<II_Unit>(GetSelectedCharacters()[i])->MoveOrder(GetSelectedCharacters()[i]->GetController(), MoveLocation);
 
 
-			}
-			else {
-				SelectedCharacters.RemoveAt(i, 0, true);
-				i--;
 			}
 		}
 
@@ -626,17 +626,17 @@ bool AMyRTSPlayerController::HasMOutpostSelected()
 
 bool AMyRTSPlayerController::StartGhostOutpost()
 {
-	return Cast<AUNIT_MOutpost>(SelectedCharacters[0])->StartGhostBuilding();
+	return Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->StartGhostBuilding();
 }
 
 void AMyRTSPlayerController::StopGhostOutpost()
 {
-	Cast<AUNIT_MOutpost>(SelectedCharacters[0])->StopGhostBuilding();
+	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->StopGhostBuilding();
 }
 
 void AMyRTSPlayerController::BuildGhostOutpost()
 {
-	Cast<AUNIT_MOutpost>(SelectedCharacters[0])->BuildGhostBuilding();
+	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->BuildGhostBuilding();
 }
 
 AActor* AMyRTSPlayerController::GetPlayerActor()

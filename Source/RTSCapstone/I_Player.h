@@ -90,6 +90,9 @@ public:
 
 	int32 teamValue;
 
+	TArray<ACharacter*> GetSelectedCharacters();
+	void SetSelectedCharacters(TArray<ACharacter*> inArray);
+
 private:
 	// Variables
 	TArray<AActor*> UnitList;
@@ -100,6 +103,8 @@ private:
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class UDataTable* unitConstructionDataTable;
+
+			TArray<ACharacter*> SelectedCharacters = TArray<ACharacter*>();
 
 	FString PlayerName;
 	

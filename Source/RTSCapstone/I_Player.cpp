@@ -91,5 +91,13 @@ void II_Player::SetUnitConstructionDataTable(UDataTable * inTable)
 
 
 
+TArray<ACharacter*> II_Player::GetSelectedCharacters()
+{
+	return SelectedCharacters;
+}
 
+
+void II_Player::SetSelectedCharacters(TArray<ACharacter*> inArray){
+	SelectedCharacters = inArray;
+}
 
