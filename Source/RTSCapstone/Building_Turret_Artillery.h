@@ -31,9 +31,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		AActor* setPlayerOwner;
 
-	UPROPERTY(EditAnywhere)
-		UParticleSystemComponent* particleComp;
-
 	// AI STUFF
 	AActor* targetActor;
 	TArray<AActor*> entitiesInRange;

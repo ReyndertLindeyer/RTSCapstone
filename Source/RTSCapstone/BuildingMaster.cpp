@@ -9,6 +9,11 @@ ABuildingMaster::ABuildingMaster()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> DustPS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
+	dustParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	dustParticleComp->SetTemplate(DustPS.Get());
+	dustParticleComp->bAutoActivate = false;
+
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
@@ -122,6 +127,7 @@ void ABuildingMaster::Tick(float DeltaTime)
 	if (constructed == false) {
 		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, tempHeight), DeltaTime, spawnTime));
 		if (buildingMesh->GetComponentLocation().Z >= tempHeight) {
+			dustParticleComp->DeactivateSystem();
 			constructed = true;
 			PrimaryActorTick.bCanEverTick = false;
 		}
@@ -135,6 +141,8 @@ UStaticMeshComponent * ABuildingMaster::GetBuildingMesh()
 
 bool ABuildingMaster::constructAtLocation(II_Player* player)
 {
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
 	tempHeight = RootComponent->GetComponentLocation().Z;
 	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Z));
 	

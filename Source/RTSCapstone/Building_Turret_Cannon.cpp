@@ -15,11 +15,6 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	isBuilding = true;
 	hasPower = true;
 
-	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PSA(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
-	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
-	particleComp->SetTemplate(PSA.Get());
-	particleComp->bAutoActivate = false;
-
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTurret_v1.devTurret_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -45,8 +40,6 @@ void ABuilding_Turret_Cannon::BeginPlay()
 	}
 
 	buildingMesh->SetWorldScale3D(FVector(5));
-	particleComp->SetWorldLocation(this->GetActorLocation());
-	particleComp->ActivateSystem();
 }
 
 void ABuilding_Turret_Cannon::Tick(float DeltaTime)

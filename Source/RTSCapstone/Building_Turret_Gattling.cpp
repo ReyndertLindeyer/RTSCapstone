@@ -13,11 +13,6 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	isBuilding = true;
 	hasPower = true;
 
-	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PSA(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
-	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
-	particleComp->SetTemplate(PSA.Get());
-	particleComp->bAutoActivate = false;
-
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devGattling.devGattling")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -40,10 +35,6 @@ void ABuilding_Turret_Gattling::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
 	}
-
-	buildingMesh->SetWorldScale3D(FVector(5));
-	particleComp->SetWorldLocation(this->GetActorLocation());
-	particleComp->ActivateSystem();
 }
 
 void ABuilding_Turret_Gattling::Tick(float DeltaTime)

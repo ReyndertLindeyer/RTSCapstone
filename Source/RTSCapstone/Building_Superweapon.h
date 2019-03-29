@@ -42,7 +42,4 @@ public:
 
 private:
 	bool hasPower;
-
-	UPROPERTY(EditAnywhere)
-		UParticleSystemComponent* particleComp;
 };

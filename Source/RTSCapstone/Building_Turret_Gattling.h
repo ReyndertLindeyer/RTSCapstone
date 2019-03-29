@@ -52,7 +52,4 @@ public:
 private:
 	uint32 range;
 	bool hasPower;
-
-	UPROPERTY(EditAnywhere)
-		UParticleSystemComponent* particleComp;
 };

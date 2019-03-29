@@ -10,11 +10,6 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	isBuilding = true;
 	hasPower = true;
 
-	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
-	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
-	particleComp->SetTemplate(PS.Get());
-	particleComp->bAutoActivate = false;
-
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
@@ -50,8 +45,6 @@ void ABuilding_VehicleFactory::BeginPlay()
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
-	particleComp->SetWorldLocation(this->GetActorLocation());
-	particleComp->ActivateSystem();
 }
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)
@@ -162,7 +155,7 @@ void ABuilding_VehicleFactory::SpawnUnit()
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Harvester", 200.0f);
 	}
 	else if (unitQueue[0] == 1) {
-		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Scout>(AUNIT_Scout::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Humvee", 200.0f);
 	}
 	else  if (unitQueue[0] == 2) {

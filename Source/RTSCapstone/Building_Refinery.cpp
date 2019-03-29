@@ -12,11 +12,6 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	isBuilding = true;
 	canSpawnHarvester = true;
 
-	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> PS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
-	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
-	particleComp->SetTemplate(PS.Get());
-	particleComp->bAutoActivate = false;
-
 	this->Tags.Add(FName("Refinery"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Refinery_Model/Resource_Refinery.Resource_Refinery")).Get());
 	buildingMesh->SetSimulatePhysics(false);
@@ -44,8 +39,6 @@ void ABuilding_Refinery::BeginPlay()
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
 	}
-	particleComp->SetWorldLocation(this->GetActorLocation());
-	particleComp->ActivateSystem();
 }
 
 void ABuilding_Refinery::Tick(float DeltaTime)

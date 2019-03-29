@@ -37,7 +37,4 @@ public:
 
 private:
 	bool canSpawnHarvester;
-
-	UPROPERTY(EditAnywhere)
-		UParticleSystemComponent* particleComp;
 };

@@ -7,6 +7,7 @@
 #include "Engine/StaticMesh.h"
 
 //All of the units
+#include "UNIT_Scout.h"
 #include "UNIT_AvBT.h"
 #include "UNIT_MBT.h"
 #include "UNIT_MArtillery.h"
@@ -59,7 +60,4 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* waypointMesh;
-
-	UPROPERTY(EditAnywhere)
-		UParticleSystemComponent* particleComp;
 };

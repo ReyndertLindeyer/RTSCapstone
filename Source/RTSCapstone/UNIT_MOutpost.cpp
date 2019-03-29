@@ -241,6 +241,7 @@ void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 }
 
 bool AUNIT_MOutpost::StartGhostBuilding() {
+	/*
 	UE_LOG(LogTemp, Warning, TEXT("StartGhostBuilding"));
 	if (buildingGhost != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("CheckGhost")); 
@@ -255,26 +256,33 @@ bool AUNIT_MOutpost::StartGhostBuilding() {
 
 		return buildingGhost->GetIsOverlapping();
 	}
+	*/
+	return false;
 }
 
 void AUNIT_MOutpost::StopGhostBuilding()
 {
+	/*
 	UE_LOG(LogTemp, Warning, TEXT("StopGhost"));
 	if (buildingGhost != nullptr) {
 		buildingGhost->Destroy();
 		buildingGhost = nullptr;
 	}
+	*/
 }
 
 void AUNIT_MOutpost::BuildGhostBuilding()
 {
+	/*/
 	UE_LOG(LogTemp, Warning, TEXT("BuildGhost"));
 	if (buildingGhost != nullptr) {
 		buildingGhost->Destroy();
 		buildingGhost = nullptr;
 	}
+	*/
 	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 	tempBuilding->InitializeEntity(GetEntityOwner(), "Outpost", 1000);
+	tempBuilding->constructAtLocation(GetEntityOwner());
 	DestroyEntity();
 }
 

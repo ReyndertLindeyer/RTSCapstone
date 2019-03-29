@@ -61,6 +61,10 @@ protected:
 
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* dustParticleComp;
+
 	//Whether or not the building's radius should be on
 	bool buildRadiusActive;
 

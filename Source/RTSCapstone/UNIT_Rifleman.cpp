@@ -195,7 +195,7 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 60.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 120.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
