@@ -23,6 +23,11 @@ TArray<AActor*> II_Player::GetUnits()
 	return UnitList;
 }
 
+void II_Player::RemoveUnitAtIndex(int32 index)
+{
+	UnitList.RemoveAt(index);
+}
+
 void II_Player::AddBuilding(AActor* buildingReference)
 {
 	// Same problem occurs as the AddUnit function
@@ -32,6 +37,11 @@ void II_Player::AddBuilding(AActor* buildingReference)
 TArray<AActor*> II_Player::GetBuildings()
 {
 	return BuildingList;
+}
+
+void II_Player::RemoveBuildingAtIndex(int32 index)
+{
+	BuildingList.RemoveAt(index);
 }
 
 void II_Player::InitializePlayer(FString playerName, int teamValue)
@@ -101,3 +111,15 @@ void II_Player::SetSelectedCharacters(TArray<ACharacter*> inArray){
 	SelectedCharacters = inArray;
 }
 
+void II_Player::RemoveSelectedCharacterAtIndex(int32 index)
+{
+	SelectedCharacters.RemoveAt(index);
+}
+
+void II_Player::SetSelectedBuilding(AActor* inBuilding) {
+	selectedBuilding = inBuilding;
+}
+
+AActor* II_Player::GetSelectedBuilding() {
+	return selectedBuilding;
+}

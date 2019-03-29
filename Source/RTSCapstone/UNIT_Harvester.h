@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Engine.h"
 
 // Components
 #include "Components/SphereComponent.h"

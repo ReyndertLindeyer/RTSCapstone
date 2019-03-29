@@ -321,28 +321,34 @@ void AUNIT_Rocketeer::DestroyEntity()
 		if (GetEntityOwner()->GetUnits().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
-				if (GetEntityOwner()->GetUnits()[i])
-					GetEntityOwner()->GetUnits().RemoveAt(i);
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
 			}
 		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
-				if (GetEntityOwner()->GetBuildings()[i])
-					GetEntityOwner()->GetBuildings().RemoveAt(i);
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
 			}
 		}
 
 		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
-				if (GetEntityOwner()->GetSelectedCharacters()[i])
-					GetEntityOwner()->GetSelectedCharacters().RemoveAt(i);
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
 			}
 		}
 	}
 
-	Destroy(this);
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }
 

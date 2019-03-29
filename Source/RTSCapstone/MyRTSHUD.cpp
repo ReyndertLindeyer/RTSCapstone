@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyRTSHUD.h"
+#include "BuildingMaster.h"
 #include "Engine/Canvas.h"
 #include "CanvasItem.h"
 
@@ -21,12 +22,12 @@ void AMyRTSHUD::BeginPlay()
 void AMyRTSHUD::DrawHUD() {
 	Super::DrawHUD(); 
 
-	if (building != nullptr) {
-		DrawBuildingHealthBars(building);
+	if (owner->GetSelectedBuilding() != nullptr) {
+		DrawBuildingHealthBars(owner->GetSelectedBuilding());
 	}
 
-	if (selectedUnits.Num() > 0) {
-		DrawUnitHealthBars(selectedUnits);
+	if (owner->GetSelectedCharacters().Num() > 0) {
+		DrawUnitHealthBars(owner->GetSelectedCharacters());
 	}
 	
 	if (bStartSelecting) {
@@ -180,9 +181,9 @@ void AMyRTSHUD::DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits)
 					y = center2D.Y + 1.f;
 
 					tileItem.Position = FVector2D(x, y);
-					if (healthPercentage > 0.61)
+					if (healthPercentage > 0.6)
 						tileItem.SetColor(FLinearColor::Green);
-					else if (healthPercentage > 0.3 && healthPercentage < 0.6)
+					else if (healthPercentage > 0.3 && healthPercentage <= 0.6)
 						tileItem.SetColor(FLinearColor::Yellow);
 					else
 						tileItem.SetColor(FLinearColor::Red);
@@ -195,10 +196,12 @@ void AMyRTSHUD::DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits)
 	}
 }
 
-void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
+void AMyRTSHUD::DrawBuildingHealthBars(AActor * SelectedBuilding)
 {
+	ABuildingMaster* tempBuilding = Cast<ABuildingMaster>(SelectedBuilding);
+
 		// Select the center point of the bar as the character's location
-		FVector center = SelectedBuilding->GetActorLocation();
+		FVector center = tempBuilding->GetActorLocation();
 		// Offsets of the bar
 		FVector extent = FVector(60.f, 34.f, 50.75f);
 
@@ -209,8 +212,8 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 		float healthPercentage = 0.5f;
 		float yOffset = 10.f;
 
-		healthPercentage = SelectedBuilding->GetHealthPercentage();
-		actorExtent = SelectedBuilding->GetHeight();
+		healthPercentage = tempBuilding->GetHealthPercentage();
+		actorExtent = tempBuilding->GetHeight();
 
 		FVector pos1 = Canvas->Project(FVector(center.X, center.Y - actorExtent * 2, center.Z + extent.Z));
 		FVector pos2 = Canvas->Project(FVector(center.X, center.Y + actorExtent * 2, center.Z + extent.Z));
@@ -240,9 +243,9 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 		y = center2D.Y + 1.f;
 
 		tileItem.Position = FVector2D(x, y);
-		if (healthPercentage > 0.61)
+		if (healthPercentage > 0.6)
 			tileItem.SetColor(FLinearColor::Green);
-		else if (healthPercentage > 0.3 && healthPercentage < 0.6)
+		else if (healthPercentage > 0.3 && healthPercentage <= 0.6)
 			tileItem.SetColor(FLinearColor::Yellow);
 		else
 			tileItem.SetColor(FLinearColor::Red);
@@ -252,17 +255,7 @@ void AMyRTSHUD::DrawBuildingHealthBars(ABuildingMaster * SelectedBuilding)
 	
 }
 
-void AMyRTSHUD::SetSelectedBuilding(ABuildingMaster * SelectedBuilding)
-{
-	building = SelectedBuilding;
-}
 
-void AMyRTSHUD::SetSelectedUnits(TArray<ACharacter*> selectedUnits_)
-{
-	selectedUnits = selectedUnits_;
-}
-
-void AMyRTSHUD::ClearSelectedUnits()
-{
-	selectedUnits.Empty();
+void AMyRTSHUD::SetPlayer(II_Player* owner_) {
+	owner = owner_;
 }

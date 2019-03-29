@@ -46,6 +46,8 @@ void AMyRTSPlayerController::BeginPlay()
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
 
+	HUDPtr->SetPlayer(this);
+
 	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
@@ -361,7 +363,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			SelectedStructure->SetSelection(false);
 			SelectedStructure = nullptr;
 
-			HUDPtr->SetSelectedBuilding(SelectedStructure);
+			SetSelectedBuilding(SelectedStructure);
 
 			selectedBarracks = false;
 			selectedFactory = false;
@@ -415,7 +417,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 						selectedFactory = true;
 					}
 
-					HUDPtr->SetSelectedBuilding(SelectedStructure);
+					SetSelectedBuilding(SelectedStructure);
 					
 
 					/// Debugging
@@ -437,7 +439,6 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				else 
 				{
 					SetSelectedCharacters(HUDPtr->FoundCharacters);
-					HUDPtr->SetSelectedUnits(GetSelectedCharacters());
 
 					/// Debugging
 					for (int i = 0; i < GetSelectedCharacters().Num(); i++)

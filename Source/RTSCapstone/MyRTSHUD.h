@@ -10,7 +10,6 @@
 #include "I_Unit.h"
 #include "I_Structure.h"
 
-#include "BuildingMaster.h"
 #include "Blueprint/UserWidget.h"
 #include "Logging/LogMacros.h"
 #include "MyRTSHUD.generated.h"
@@ -62,14 +61,11 @@ public:
 		class UUserWidget* CurrentWidget;
 
 	void DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits);
-	void DrawBuildingHealthBars(ABuildingMaster* SelectedBuilding);
+	void DrawBuildingHealthBars(AActor* SelectedBuilding);
 
-	void SetSelectedBuilding(ABuildingMaster* SelectedBuilding);
-
-	void SetSelectedUnits(TArray<ACharacter*> selectedUnits_);
-	void ClearSelectedUnits();
+	void SetPlayer(II_Player* owner_);
 
 private:
-	ABuildingMaster* building;
-	TArray<ACharacter*> selectedUnits;
+
+	II_Player* owner;
 };

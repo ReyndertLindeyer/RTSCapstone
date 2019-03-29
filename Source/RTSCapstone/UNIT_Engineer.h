@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine.h"
 
 // Components
 #include "Components/SphereComponent.h"
