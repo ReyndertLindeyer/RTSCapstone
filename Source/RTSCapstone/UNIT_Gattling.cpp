@@ -352,7 +352,14 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 				if (currentTimer >= attackTimer)
 				{
 
-					Cast<II_Entity>(targetActor)->DealDamage(attackDamage);
+					AProjectile* projectileA = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), RightGunMesh->GetComponentLocation(), RightGunMesh->GetComponentRotation());
+					projectileA->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
+					projectileA->SetActorEnableCollision(false);
+
+					AProjectile* projectileB = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), LeftGunMesh->GetComponentLocation(), LeftGunMesh->GetComponentRotation());
+					projectileB->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
+					projectileB->SetActorEnableCollision(false);
+
 					audioComponentFire->Play();
 
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)

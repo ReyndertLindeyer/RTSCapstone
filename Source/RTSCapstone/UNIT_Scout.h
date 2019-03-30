@@ -69,8 +69,6 @@ private:
 
 	//Particle System Cannon
 	UParticleSystem* PSC;
-	//Particle System Missile
-	UParticleSystem* PSM;
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
 	UParticleSystem* reactionPS;

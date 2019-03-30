@@ -127,6 +127,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void BuildGhostOutpost();
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void MoveUnitsToLocation(TArray<ACharacter*> unitsToMove, FVector MoveLocation);
 
 	UFUNCTION()
 		AActor* GetPlayerActor();

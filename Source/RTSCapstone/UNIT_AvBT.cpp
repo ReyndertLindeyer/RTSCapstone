@@ -334,7 +334,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					if (!secondShot)
 					{
 
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
 						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, cannonDamage, 5000.0f, 0.0f, 100.0f, PSC, reactionPS);
 						projectile->SetActorEnableCollision(false);
 						currentTimer = cannonTimer - 0.1f;
@@ -346,7 +346,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					else 
 					{
 
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
 						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, cannonDamage, 5000.0f, 0.0f, 100.0f, PSC, reactionPS);
 						projectile->SetActorEnableCollision(false);
 						secondShot = false;

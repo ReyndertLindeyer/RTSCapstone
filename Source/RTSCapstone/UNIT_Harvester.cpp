@@ -24,7 +24,8 @@ AUNIT_Harvester::AUNIT_Harvester()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -120.0f));
+	BodyMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 	//RootComponent = BodyMesh;

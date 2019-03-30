@@ -640,6 +640,15 @@ void AMyRTSPlayerController::BuildGhostOutpost()
 	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->BuildGhostBuilding();
 }
 
+void AMyRTSPlayerController::MoveUnitsToLocation(TArray<ACharacter*> unitsToMove, FVector MoveLocation)
+{
+	for (int i = 0; i < unitsToMove.Num(); i++) {
+		//if (Cast<II_Unit*>(unitsToMove[i])) {
+			Cast<II_Unit>(unitsToMove[i])->MoveOrder(unitsToMove[i]->GetController(), MoveLocation);
+		//}
+	}
+}
+
 AActor* AMyRTSPlayerController::GetPlayerActor()
 {
 	return Cast<AActor>(this);
