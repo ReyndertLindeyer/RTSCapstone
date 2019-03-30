@@ -43,6 +43,8 @@ public:
 
 	void ghostBuilding(uint8 whatBuilding_, FVector spawnLocation);
 
+	void MultiGhostBuilding(uint8 whatBuilding_, FVector spawnLocation);
+
 	void MoveBuilding(FVector location);
 
 	ABuilding_Ghost* GetBuildingToBuild();
@@ -50,6 +52,7 @@ public:
 	void SpawnConstructionYard(FVector spawnLocation);
 
 	bool constructBuilding();
+	void MultiConstructBuilding();
 
 	void DeleteBuilding();
 
@@ -111,6 +114,10 @@ private:
 
 	UPROPERTY()
 		ABuilding_Ghost* buildingToBuild;
+
+	UPROPERTY()
+		TArray <ABuilding_Ghost*> ghostBuildingArray;
+		TArray <int32> whatBuildingArray;
 
 
 	UPROPERTY()

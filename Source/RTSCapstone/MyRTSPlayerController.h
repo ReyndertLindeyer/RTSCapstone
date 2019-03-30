@@ -10,7 +10,7 @@
 #include "UNIT_MOutpost.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
-#include "ProFow.h"
+//#include "ProFow.h"
 
 // Interfaces
 #include "I_Entity.h"
@@ -133,6 +133,14 @@ public:
 	UFUNCTION()
 		AActor* GetPlayerActor();
 
+
+
+	UFUNCTION(BlueprintCallable, Category = "Demo")
+		void AutoGhostBuilding(int32 whatBuilding, FVector location);
+
+	UFUNCTION(BlueprintCallable, Category = "Demo")
+		void AutoConstructBuilding();
+
 protected:
 
 	// DEBUGGING
@@ -175,8 +183,9 @@ protected:
 	bool constructingBuilding, placingBuilding, buildingConstructed, selectedBarracks, selectedFactory;
 
 	float buildingCountdown; //Countdown to building completion
-	UPROPERTY()
-		AProFow *m_fow;
+
+	//UPROPERTY()
+	//	AProFow *m_fow;
 
 	///////////////////////////////////
 	// DEBUG FUNCTIONS

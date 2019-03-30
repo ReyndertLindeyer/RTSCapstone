@@ -653,3 +653,13 @@ AActor* AMyRTSPlayerController::GetPlayerActor()
 {
 	return Cast<AActor>(this);
 }
+
+void AMyRTSPlayerController::AutoGhostBuilding(int32 whatBuilding, FVector location)
+{
+	buildingManagerObject->MultiGhostBuilding(whatBuilding, location);
+}
+
+void AMyRTSPlayerController::AutoConstructBuilding()
+{
+	buildingManagerObject->MultiConstructBuilding();
+}
