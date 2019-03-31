@@ -11,8 +11,19 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	isBuilding = true;
 	hasPower = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTesla_v1.devTesla_v1")).Get());
+	// Body
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Tesla_Tower/TeslaTower_v1.TeslaTower_v1'"));
+	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
+	buildingMesh->SetStaticMesh(bodyMesh);
+	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	buildingMesh->SetRelativeScale3D(FVector(5.0f));
+	buildingMesh->SetCanEverAffectNavigation(false);
 	buildingMesh->SetSimulatePhysics(false);
+
+	// PARTICLE SYSTEMS
+	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	barrelPos->SetRelativeLocation(FVector(0.0f, -2.25f, 60.0f));
+	barrelPos->SetupAttachment(buildingMesh);
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
@@ -54,6 +65,17 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 
 	if (constructed)
 	{
+		// Debug
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Debug Turret Range
+		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+
+		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
+
+		// Targeting System
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		// Detect all AActors within a Radius
 		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
 		TArray<AActor*> ignoreActors;
@@ -62,10 +84,6 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 		ignoreActors.Add(this);
 
 		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
-		// Debug Turret Range
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-
 
 		// Narrow down all the AActors to only ones with an II_Entity script
 		entitiesInRange.Empty();
@@ -80,8 +98,6 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 			}
 		}
 
-		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
-
 		// If there is no target, run the detection sequence.
 		if (targetActor == nullptr)
 		{
@@ -91,19 +107,14 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 				// Loop through them all
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					// Check if the ownership of that actor is different from the ownership of this structure
+					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
-					{
-						// If there currenty isn't an actor set
-						if (targetActor != this)
-						{
-							// Set the first actor that it can
-							targetActor = entitiesInRange[0];
-						}
+					{	
+						targetActor = entitiesInRange[i];
+						break;
 					}
 				}
 			}
-
 		}
 
 		// A target actor exists
@@ -116,15 +127,12 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 			// Target is in range
 			else
 			{
-			
 				TArray<AActor*> chainTargetActors;
 
 				if (currentAttackTimer >= attackRate)
 				{
-					
 					if (chain1 && c1TargetActor != nullptr)
-					{
-						
+					{		
 						// Add Particle start to tesla and partile end to target location
 						particleComp->SetBeamSourcePoint(0, targetActor->GetActorLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, c1TargetActor->GetActorLocation(), 0);
@@ -162,7 +170,6 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 										// And break out of the loop
 										break;
 									}
-									
 								}
 							}
 						}
@@ -197,10 +204,10 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 					else
 					{
 						// Add Particle start to tesla and partile end to target location
-						particleComp->SetBeamSourcePoint(0, GetActorLocation(), 0);
+						particleComp->SetBeamSourcePoint(0, barrelPos->GetComponentLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);
 						particleComp->ActivateSystem(true);
-						
+
 						// Directly damage the target entity
 						Cast<II_Entity>(targetActor)->DealDamage(attackDamage);
 
@@ -221,12 +228,12 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 									{
 										// Set the first chain target
 										c1TargetActor = chainTargetActors[i];
-										
+
 										// Enable the first chain sequence on next call
 										chain1 = true;
 
 										//UE_LOG(LogTemp, Warning, TEXT("CHAIN 1"));
-										
+
 										// And break the loop
 										break;
 									}
@@ -240,19 +247,14 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 						else
 							currentAttackTimer = attackRate - 0.1f;
 					}
-					
-					
-					
-
 				}
-
+				
 				if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 					targetActor = nullptr;
-
 			}
-
-
 		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		/// Attack Rate Timer
 		// Will count down regardless of whether it's combat or not.

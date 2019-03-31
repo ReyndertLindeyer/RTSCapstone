@@ -45,6 +45,13 @@ public:
 	UPROPERTY(EditAnywhere)
 		float detectRange = 3500.0f;
 
+
+	UStaticMeshComponent* TurretMesh;
+	UStaticMeshComponent* PivotMesh;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos;
+
 private:
 	uint32 range;
 	bool hasPower;

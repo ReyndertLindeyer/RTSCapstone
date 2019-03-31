@@ -56,11 +56,14 @@ void AMyRTSPlayerController::BeginPlay()
 	ChangeResources(50000);
 	ChangePower(20);
 
-
-	//if (spawnCY)
-	//buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
-
-	teamValue = 1;
+	for (TObjectIterator<AGameManager> Itr; Itr; ++Itr)
+	{
+		if (Itr->spawnCYForPlayer)
+			buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
+		
+		//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
+		//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);
+	}
 		
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 

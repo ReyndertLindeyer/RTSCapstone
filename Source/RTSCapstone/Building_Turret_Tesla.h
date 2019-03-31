@@ -44,6 +44,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		float chainRange = 150.0f;
 	
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos;
 
 		bool chain1;
 		bool chain2;
