@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<AActor*> playerList;
 
+	UPROPERTY(EditAnywhere)
+		bool assignToPlayer;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

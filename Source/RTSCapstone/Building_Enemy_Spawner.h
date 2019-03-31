@@ -37,7 +37,7 @@ public:
 		int32 buildingType;
 
 	virtual void BeginPlay() override;
-
+	
 	void SetMesh(UStaticMesh* inMesh);
 
 	virtual void DestroyEntity() override;

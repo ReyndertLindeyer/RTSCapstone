@@ -42,15 +42,15 @@ void II_Entity::InitializeEntity(II_Player* owner_, FString name_, float maxHeal
 	}
 }
 
-void II_Entity::TransferOwnership(II_Player* newOwner_)
+void II_Entity::AssignPlayer(II_Player* newOwner_)
 {
 	// Transfer Unit to new Owner
-	if (owner->GetUnits().Contains(Cast<AActor>(this)))
-		newOwner_->AddUnit(Cast<AActor>(this));
+	if (Cast<ABuildingMaster>(this))
+		newOwner_->AddBuilding(Cast<AActor>(this));
 
 	// Transfer Structure to new Owner
-	if (owner->GetBuildings().Contains(Cast<AActor>(this)))
-		newOwner_->AddBuilding(Cast<AActor>(this));
+	if (Cast<II_Unit>(this))
+		newOwner_->AddUnit(Cast<AActor>(this));
 
 	// Change Ownership
 	owner = newOwner_;

@@ -33,17 +33,21 @@ ABuilding_Refinery::ABuilding_Refinery() {
 void ABuilding_Refinery::BeginPlay()
 {
 	Super::BeginPlay();
-	if (setPlayerOwner != nullptr) {
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
-		SetName(TEXT("Refinery"));
-		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
-		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
-	}
+	
 }
 
 void ABuilding_Refinery::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("Refinery"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Refinery")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
+	}
 }
 
 void ABuilding_Refinery::InitializeRefinery()

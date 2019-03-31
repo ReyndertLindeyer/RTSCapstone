@@ -34,17 +34,69 @@ void ABuilding_VehicleFactory::BeginPlay()
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
 
+	buildingMesh->SetWorldScale3D(FVector(6));
+
+	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
+	waypointMesh->SetWorldLocation(wayPoint);
+}
+
+void ABuilding_VehicleFactory::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
 		SetName(TEXT("WarFactory"));
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("WarFactory")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
 	}
 
-	buildingMesh->SetWorldScale3D(FVector(6));
+	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
+		if (unitQueue[0] == 1) {
+			countToCompleteUnit = harvesterBuildTime;
+		}
+		else if (unitQueue[0] == 2) {
+			countToCompleteUnit = humveeTime;
+		}
+		else if (unitQueue[0] == 3) {
+			countToCompleteUnit = tankTime;
+		}
+		else if (unitQueue[0] == 4) {
+			countToCompleteUnit = artilleryTankBuildTime;
+		}
+		else if (unitQueue[0] == 5) {
+			countToCompleteUnit = heavyTankTime;
+		}
+		else if (unitQueue[0] == 6) {
+			countToCompleteUnit = outpostTime;
+		}
+		constructingUnit = true;
+	}
 
-	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
-	waypointMesh->SetWorldLocation(wayPoint);
+	if (constructingUnit) {
+		//If the structure has enough power then construct normally, if not then construct at half progress
+		if (hasPower)
+			countToCompleteUnit -= DeltaTime;
+		else
+			countToCompleteUnit -= DeltaTime / 2;
+	}
+
+	if (constructingUnit && countToCompleteUnit < 0.0f) {
+		SpawnUnit();
+	}
+
+	if (!constructingUnit && unitQueue.Num() == 0) {
+		PrimaryActorTick.bCanEverTick = false;
+	}
+
+	if (IsSelected() && waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(false);
+	}
+	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(true);
+	}
 }
 
 int32 ABuilding_VehicleFactory::AddToUnitQueue(int32 unitType)
@@ -223,53 +275,4 @@ void ABuilding_VehicleFactory::InitializeWarFactory()
 	UnitVariables = GetEntityOwner()->GetUnitConstructionDataTable()->FindRow<FUnitVariables>(FName(TEXT("OutpostCreator")), ContextString, false);
 	outpostCost = UnitVariables->Cost;
 	outpostTime = UnitVariables->BuildTime;
-}
-
-void ABuilding_VehicleFactory::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
-		if (unitQueue[0] == 1) {
-			countToCompleteUnit = harvesterBuildTime;
-		}
-		else if (unitQueue[0] == 2) {
-			countToCompleteUnit = humveeTime;
-		}
-		else if (unitQueue[0] == 3) {
-			countToCompleteUnit = tankTime;
-		}
-		else if (unitQueue[0] == 4) {
-			countToCompleteUnit = artilleryTankBuildTime;
-		}
-		else if (unitQueue[0] == 5) {
-			countToCompleteUnit = heavyTankTime;
-		}
-		else if (unitQueue[0] == 6) {
-			countToCompleteUnit = outpostTime;
-		}
-		constructingUnit = true;
-	}
-
-	if (constructingUnit) {
-		//If the structure has enough power then construct normally, if not then construct at half progress
-		if (hasPower)
-			countToCompleteUnit -= DeltaTime;
-		else
-			countToCompleteUnit -= DeltaTime / 2;
-	}
-
-	if (constructingUnit && countToCompleteUnit < 0.0f) {
-		SpawnUnit();
-	}
-
-	if (!constructingUnit && unitQueue.Num() == 0) {
-		PrimaryActorTick.bCanEverTick = false;
-	}
-
-	if (IsSelected() && waypointMesh->bHiddenInGame) {
-		waypointMesh->SetHiddenInGame(false);
-	}
-	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
-		waypointMesh->SetHiddenInGame(true);
-	}
 }

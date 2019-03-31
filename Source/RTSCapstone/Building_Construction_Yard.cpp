@@ -27,12 +27,19 @@ void ABuilding_Construction_Yard::BeginPlay()
 	constructed = true;
 	isBuilding = false;
 
-	if (setPlayerOwner != nullptr)
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Construction Yard", 20000.0f);
 }
 
 // Called every frame
 void ABuilding_Construction_Yard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (setPlayerOwner != nullptr)
+	{
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Construction Yard", 20000.0f);
+		setPlayerOwner = nullptr;
+		return;
+	}
+		
+
 }

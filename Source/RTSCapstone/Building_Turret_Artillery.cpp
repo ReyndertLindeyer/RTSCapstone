@@ -28,13 +28,7 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 void ABuilding_Turret_Artillery::BeginPlay()
 {
 	Super::BeginPlay();
-	if (setPlayerOwner != nullptr) {
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
-		SetName(TEXT("ArtilleryTurret"));
-		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), (TEXT("Context")), false)->MaxHealth);
-		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), (TEXT("Context")), false)->MaxHealth);
-	}
-
+	
 	buildingMesh->SetWorldScale3D(FVector(5));
 
 }
@@ -43,7 +37,14 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//UE_LOG(LogTemp, Warning, TEXT("TURRET IS TICKING"));
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("ArtilleryTurret"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("ArtilleryTurret")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
+	}
 
 	if (constructed)
 	{
