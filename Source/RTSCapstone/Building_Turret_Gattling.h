@@ -17,7 +17,7 @@ UCLASS()
 class RTSCAPSTONE_API ABuilding_Turret_Gattling : public ABuildingMaster
 {
 	GENERATED_BODY()
-	
+
 public:
 	ABuilding_Turret_Gattling();
 
@@ -49,7 +49,18 @@ public:
 	UPROPERTY(EditAnywhere)
 		float detectRange = 2000.0f;
 
+	UStaticMeshComponent* TurretMesh;
+	UStaticMeshComponent* PivotMesh;
+	UStaticMeshComponent* LeftGunMesh;
+	UStaticMeshComponent* RightGunMesh;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos1;
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos2;
+
 private:
 	uint32 range;
 	bool hasPower;
+	bool alternateShot;
 };

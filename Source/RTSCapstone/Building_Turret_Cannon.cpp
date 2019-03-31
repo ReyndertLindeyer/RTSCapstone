@@ -15,8 +15,30 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	isBuilding = true;
 	hasPower = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTurret_v1.devTurret_v1")).Get());
+	// Body
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/AT_Cannon/AT_Cannon_V1_UNREAL_Base.AT_Cannon_V1_UNREAL_Base'"));
+	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
+	buildingMesh->SetStaticMesh(bodyMesh);
+	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	buildingMesh->SetRelativeScale3D(FVector(5.0f));
+	buildingMesh->SetCanEverAffectNavigation(false);
 	buildingMesh->SetSimulatePhysics(false);
+
+	// Pivot
+	PivotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pivot Mesh"));
+	PivotMesh->SetupAttachment(buildingMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>PivotMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/AT_Cannon/AT_Cannon_V1_UNREAL_Turret.AT_Cannon_V1_UNREAL_Turret'"));
+	UStaticMesh* pivotMesh = PivotMeshAsset.Object;
+	PivotMesh->SetStaticMesh(pivotMesh);
+	PivotMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	PivotMesh->SetRelativeScale3D(FVector(1.0f));
+	PivotMesh->SetCanEverAffectNavigation(false);
+
+	// PARTICLE SYSTEMS
+	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
+	barrelPos->SetRelativeLocation(FVector(54.0f, -3.75f, 11.5f));
+	barrelPos->SetupAttachment(PivotMesh);
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
@@ -51,6 +73,18 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 
 	if (constructed)
 	{
+		if (targetActor != nullptr)
+		{
+			FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
+			FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
+			PivotMesh->SetWorldRotation(targetRotation);
+		}
+
+		else
+		{
+			PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		}
+
 		// Detect all AActors within a Radius
 		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
 		TArray<AActor*> ignoreActors;
@@ -88,19 +122,15 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 				// Loop through them all
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					// Check if the ownership of that actor is different from the ownership of this structure
+					// Check if the entity does not belong to the owner
 					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// If there currenty isn't an actor set
-						if (targetActor != this)
-						{
-							// Set the first actor that it can
-							targetActor = entitiesInRange[0];
-						}
+						targetActor = entitiesInRange[i];
+						break;
+
 					}
 				}
 			}
-
 		}
 
 		// A target actor exists
@@ -120,7 +150,7 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 				{
 					currentAttackTimer = 0.0f;
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 				}
