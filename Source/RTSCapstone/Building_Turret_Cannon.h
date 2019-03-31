@@ -44,6 +44,12 @@ public:
 		float attackRate = 2.25f;
 	UPROPERTY(EditAnywhere)
 		float detectRange = 2000.0f;
+
+
+	UStaticMeshComponent* PivotMesh;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* barrelPos;
 	
 private:
 	uint32 range;

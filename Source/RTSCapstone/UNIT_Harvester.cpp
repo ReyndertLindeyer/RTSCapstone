@@ -329,7 +329,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 				else
 					currentResources = 0;
 
-				UE_LOG(LogTemp, Warning, TEXT("Harvester : %f / %f "), currentResources, maxResources);
+				//UE_LOG(LogTemp, Warning, TEXT("Harvester : %f / %f "), currentResources, maxResources);
 
 				if (!audioComponentHarvest->IsPlaying())
 					audioComponentHarvest->Play();
@@ -449,7 +449,7 @@ void AUNIT_Harvester::TargetNode(AResourceNode* node)
 
 void AUNIT_Harvester::HarvestNode(AResourceNode* node)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HARVESTING"));
+	//UE_LOG(LogTemp, Warning, TEXT("HARVESTING"));
 
 	if (node != nullptr)
 	{
@@ -459,7 +459,7 @@ void AUNIT_Harvester::HarvestNode(AResourceNode* node)
 			{
 
 				currentResources += node->Harvest();
-				UE_LOG(LogTemp, Warning, TEXT("Harvester : %f / %f (Resource Node : %f"), currentResources, maxResources, node->RemainingResources());
+				//UE_LOG(LogTemp, Warning, TEXT("Harvester : %f / %f (Resource Node : %f"), currentResources, maxResources, node->RemainingResources());
 			}
 
 		}

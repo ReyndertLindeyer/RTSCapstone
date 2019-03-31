@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool assignToPlayer;
 
+	UPROPERTY(EditAnywhere)
+		bool spawnCYForPlayer;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

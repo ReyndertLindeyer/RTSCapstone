@@ -12,9 +12,70 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	spawnTime = 2;
 	isBuilding = true;
 	hasPower = true;
-
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devGattling.devGattling")).Get());
+	alternateShot = false;
+	
+	// Body
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_Base.Gattling_Turret_V1_UNREAL_Base'"));
+	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
+	buildingMesh->SetStaticMesh(bodyMesh);
+	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	buildingMesh->SetRelativeScale3D(FVector(3.0f));
+	buildingMesh->SetCanEverAffectNavigation(false);
 	buildingMesh->SetSimulatePhysics(false);
+
+	// Pivot
+	PivotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pivot Mesh"));
+	PivotMesh->SetupAttachment(buildingMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>PivotMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_Pivot.Gattling_Turret_V1_UNREAL_Pivot'"));
+	UStaticMesh* pivotMesh = PivotMeshAsset.Object;
+	PivotMesh->SetStaticMesh(pivotMesh);
+	PivotMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	PivotMesh->SetRelativeScale3D(FVector(1.0f));
+	PivotMesh->SetCanEverAffectNavigation(false);
+
+	// Turret
+	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
+	TurretMesh->SetupAttachment(PivotMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_Head.Gattling_Turret_V1_UNREAL_Head'"));
+	UStaticMesh* turretMesh = TurretMeshAsset.Object;
+	TurretMesh->SetStaticMesh(turretMesh);
+	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	TurretMesh->SetRelativeScale3D(FVector(1.0f));
+	TurretMesh->SetCanEverAffectNavigation(false);
+
+	// Gun 1
+	RightGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Gun Mesh"));
+	RightGunMesh->SetupAttachment(TurretMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>RightGunMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_R-Barrel.Gattling_Turret_V1_UNREAL_R-Barrel'"));
+	UStaticMesh* rightGunMesh = RightGunMeshAsset.Object;
+	RightGunMesh->SetStaticMesh(rightGunMesh);
+	RightGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	RightGunMesh->SetRelativeScale3D(FVector(1.0f));
+	RightGunMesh->SetCanEverAffectNavigation(false);
+
+	// GUN 2
+	LeftGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Gun Mesh"));
+	LeftGunMesh->SetupAttachment(TurretMesh);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>LeftGunMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_L-Barrel.Gattling_Turret_V1_UNREAL_L-Barrel'"));
+	UStaticMesh* leftGunMesh = LeftGunMeshAsset.Object;
+	LeftGunMesh->SetStaticMesh(leftGunMesh);
+	LeftGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	LeftGunMesh->SetRelativeScale3D(FVector(1.0f));
+	LeftGunMesh->SetCanEverAffectNavigation(false);
+
+	// PARTICLE SYSTEMS
+	barrelPos1 = CreateDefaultSubobject<USceneComponent>(TEXT("Left Barrel"));
+	barrelPos1->SetRelativeLocation(FVector(42.0f, 16.5f, 34.5f));
+	barrelPos1->SetupAttachment(LeftGunMesh);
+
+	barrelPos2 = CreateDefaultSubobject<USceneComponent>(TEXT("Right Barrel"));
+	barrelPos2->SetRelativeLocation(FVector(-42.0f, -16.5f, 34.5f));
+	barrelPos2->SetupAttachment(RightGunMesh);
+
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
@@ -48,6 +109,18 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 
 	if (constructed)
 	{
+		if (targetActor != nullptr)
+		{
+			FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
+			FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
+			PivotMesh->SetWorldRotation(targetRotation);
+		}
+
+		else
+		{
+			PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		}
+
 		// Detect all AActors within a Radius
 		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
 		TArray<AActor*> ignoreActors;
@@ -85,19 +158,15 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 				// Loop through them all
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					// Check if the ownership of that actor is different from the ownership of this structure
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() || Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+					// Check if the entity does not belong to the owner
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
-						// If there currenty isn't an actor set
-						if (targetActor != this)
-						{
-							// Set the first actor that it can
-							targetActor = entitiesInRange[0];
-						}
+						targetActor = entitiesInRange[i];
+						break;
+
 					}
 				}
 			}
-
 		}
 
 		// A target actor exists
@@ -117,9 +186,22 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 				{
 					currentAttackTimer = 0.0f;
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
-					projectile->SetActorEnableCollision(false);
+					if (alternateShot)
+					{
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos1->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
+						projectile->SetActorEnableCollision(false);
+						alternateShot = false;
+					}
+
+					else
+					{
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos2->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
+						projectile->SetActorEnableCollision(false);
+						alternateShot = true;
+					}
+					
 
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 						targetActor = nullptr;
