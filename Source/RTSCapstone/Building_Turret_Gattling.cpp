@@ -22,20 +22,13 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BulletHit.P_BulletHit'")).Get();
 
-
 	currentAttackTimer = 0.0f;
 }
 
 void ABuilding_Turret_Gattling::BeginPlay()
 {
 	Super::BeginPlay();
-	if (setPlayerOwner != nullptr) {
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
-		SetName(TEXT("GunTurret"));
-		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
-		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
-	}
-
+	
 	buildingMesh->SetWorldScale3D(FVector(5));
 }
 
@@ -43,7 +36,14 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	//UE_LOG(LogTemp, Warning, TEXT("TURRET IS TICKING"));
+	if (setPlayerOwner != nullptr) {
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
+		SetName(TEXT("GunTurret"));
+		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
+		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("GunTurret")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
+	}
 
 	if (constructed)
 	{

@@ -6,7 +6,7 @@
 // Sets default values
 AGameManager::AGameManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	playerList = TArray<AActor*>();
 
@@ -17,6 +17,8 @@ AGameManager::AGameManager()
 	static ConstructorHelpers::FObjectFinderOptional<UDataTable> tempDataTableB(TEXT("/Game/Game_Assets/DataTables/UnitVariables.UnitVariables"));
 	unitConstructionDataTable = tempDataTableB.Get();
 	*/
+
+	assignToPlayer = false;
 }
 
 // Called when the game starts or when spawned
@@ -33,7 +35,7 @@ void AGameManager::Tick(float DeltaTime)
 
 	// If the player is not intiallized
 	if (playerList[0] == nullptr)
-	{	
+	{
 		// Loop through all objects and find one that has a player controller attached to it
 		for (TObjectIterator<AMyRTSPlayerController> Itr; Itr; ++Itr)
 		{
@@ -42,15 +44,36 @@ void AGameManager::Tick(float DeltaTime)
 
 			//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
 			//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);
-			
 
-			
+
+
 		}
 
 		if (playerList[0] != nullptr)
 		{
-			/*II_Player* ally = Cast<II_Player>(playerList[2]);
-			II_Player* player = Cast<II_Player>(playerList[0]);*/
+			UE_LOG(LogTemp, Warning, TEXT("Player Assigned"));
+
+			if (playerList[1] != nullptr && assignToPlayer)
+			{
+				II_Player* ally = Cast<II_Player>(playerList[1]);
+				II_Player* player = Cast<II_Player>(playerList[0]);
+
+				for (int i = 0; i < ally->GetBuildings().Num(); i++)
+				{
+					Cast<II_Entity>(ally->GetBuildings()[i])->AssignPlayer(player);
+				}
+				ally->GetBuildings().Empty();
+
+				for (int j = 0; j < ally->GetUnits().Num(); j++)
+				{
+					Cast<II_Entity>(ally->GetUnits()[j])->AssignPlayer(player);
+				}
+				ally->GetUnits().Empty();
+
+			}
+
+			/*
+			*/
 		
 			// DEBUG -- Making all structures belonging to ally player become yours when you load in
 		/*for (int i = 0; i < Cast<II_Player>(playerList[2])->GetBuildings().Num(); i++)

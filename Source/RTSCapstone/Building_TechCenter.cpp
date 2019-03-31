@@ -23,12 +23,21 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 void ABuilding_TechCenter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	buildingMesh->SetWorldScale3D(FVector(6));
+}
+
+void ABuilding_TechCenter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
 		SetName(TEXT("TechCenter"));
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("TechCenter")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
 	}
 
-	buildingMesh->SetWorldScale3D(FVector(6));
 }

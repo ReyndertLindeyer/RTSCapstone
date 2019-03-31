@@ -34,17 +34,60 @@ void ABuilding_Barrecks::BeginPlay()
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
 
+	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
+	waypointMesh->SetWorldLocation(wayPoint);
+}
+
+void ABuilding_Barrecks::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
 		SetName(TEXT("Barracks"));
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Barracks")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Barracks")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
 	}
 
-	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
-	waypointMesh->SetWorldLocation(wayPoint);
+	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
+		if (unitQueue[0] == 1) {
+			countToCompleteUnit = rifleBuildTime;
+		}
+		else if (unitQueue[0] == 2) {
+			countToCompleteUnit = rocketBuildTime;
+		}
+		else if (unitQueue[0] == 3) {
+			countToCompleteUnit = engineerBuildTime;
+		}
+		constructingUnit = true;
+	}
 
+	if (constructingUnit) {
+		//If the structure has enough power then construct normally, if not then construct at half progress
+		if (hasPower)
+			countToCompleteUnit -= DeltaTime;
+		else
+			countToCompleteUnit -= DeltaTime / 2;
+	}
+
+	if (constructingUnit && countToCompleteUnit < 0.0f) {
+		SpawnUnit();
+	}
+
+	if (!constructingUnit && unitQueue.Num() == 0) {
+		PrimaryActorTick.bCanEverTick = false;
+	}
+
+	if (IsSelected() && waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(false);
+	}
+	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
+		waypointMesh->SetHiddenInGame(true);
+	}
 }
+
 
 int32 ABuilding_Barrecks::AddToUnitQueue(int32 unitType)
 {
@@ -166,42 +209,3 @@ void ABuilding_Barrecks::InitializeBarracks()
 	engineerBuildTime = UnitVariables->BuildTime;
 }
 
-void ABuilding_Barrecks::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
-		if (unitQueue[0] == 1) {
-			countToCompleteUnit = rifleBuildTime;
-		}
-		else if (unitQueue[0] == 2) {
-			countToCompleteUnit = rocketBuildTime;
-		}
-		else if (unitQueue[0] == 3) {
-			countToCompleteUnit = engineerBuildTime;
-		}
-		constructingUnit = true;
-	}
-
-	if (constructingUnit) {
-		//If the structure has enough power then construct normally, if not then construct at half progress
-		if(hasPower)
-			countToCompleteUnit -= DeltaTime;
-		else
-			countToCompleteUnit -= DeltaTime/2;
-	}
-
-	if (constructingUnit && countToCompleteUnit < 0.0f) {
-		SpawnUnit();
-	}
-
-	if (!constructingUnit && unitQueue.Num() == 0) {
-		PrimaryActorTick.bCanEverTick = false;
-	}
-
-	if (IsSelected() && waypointMesh->bHiddenInGame) {
-		waypointMesh->SetHiddenInGame(false);
-	}
-	else if (!IsSelected() && !waypointMesh->bHiddenInGame) {
-		waypointMesh->SetHiddenInGame(true);
-	}
-}

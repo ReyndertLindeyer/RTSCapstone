@@ -22,13 +22,20 @@ void ABuilding_PowerPlant::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void ABuilding_PowerPlant::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Placeholder", 10.0f);
 		SetName(TEXT("Powerplant"));
 		SetMaxHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Powerplant")), (TEXT("Context")), false)->MaxHealth);
 		SetCurrentHealth(GetEntityOwner()->GetBuildingDataTable()->FindRow<FBuildingVariables>(FName(TEXT("Powerplant")), (TEXT("Context")), false)->MaxHealth);
+		setPlayerOwner = nullptr;
+		return;
 	}
-
 }
 
 
