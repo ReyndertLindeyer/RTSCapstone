@@ -91,6 +91,18 @@ void AGameManager::Tick(float DeltaTime)
 		
 	}
 
+	// Win Condition
+	if (objective != nullptr)
+	{
+		// Do something?
+	}
+
+	else if (objective == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WIN CONDITION CLEARED"));
+	}
+
+
 	// Uncomment for everyone at once
 	/*for (int i = 0; i < playerList.Num(); i++)
 	{
