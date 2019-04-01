@@ -140,8 +140,8 @@ AUNIT_Gattling::AUNIT_Gattling()
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
 	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
 
-	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(70.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(70.0f);
 }
 
 // Called when the game starts or when spawned
@@ -197,6 +197,8 @@ void AUNIT_Gattling::PostInitializeComponents()
 void AUNIT_Gattling::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	isDestructable = SetDestructible;
 
 	if (targetActor != nullptr)
 	{

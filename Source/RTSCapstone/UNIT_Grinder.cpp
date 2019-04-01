@@ -47,8 +47,8 @@ AUNIT_Grinder::AUNIT_Grinder()
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
 	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
 
-	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(70.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(70.0f);
 }
 
 // Called when the game starts or when spawned
@@ -68,7 +68,7 @@ void AUNIT_Grinder::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	isDestructable = SetDestructible;
 
 	// Detect all AActors within a Radius
 	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;

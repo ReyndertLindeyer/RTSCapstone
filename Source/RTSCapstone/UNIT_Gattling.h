@@ -52,6 +52,11 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		AActor* setPlayerOwner;
+
+	UPROPERTY(EditAnywhere)
+		bool SetDestructible = true;
+
+
 	// FUNCTIONS
 public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection

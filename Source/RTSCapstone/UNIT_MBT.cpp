@@ -113,8 +113,8 @@ AUNIT_MBT::AUNIT_MBT()
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
 	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
 
-	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(70.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(70.0f);
 	//GetCapsuleComponent()->SetCapsuleSize(200, 40, false);
 }
 
@@ -171,6 +171,8 @@ void AUNIT_MBT::PostInitializeComponents()
 void AUNIT_MBT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	isDestructable = SetDestructible;
 
 	if (targetActor != nullptr)
 	{

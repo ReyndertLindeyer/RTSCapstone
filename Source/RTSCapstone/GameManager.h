@@ -8,6 +8,8 @@
 #include "Engine/DataTable.h"
 #include "UObject/ConstructorHelpers.h"
 
+#include "BuildingMaster.h"
+
 // Interface
 #include "I_Player.h"
 
@@ -30,6 +32,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		bool spawnCYForPlayer;
+
+	UPROPERTY(EditAnywhere)
+		ABuildingMaster* objective;
 
 protected:
 	// Called when the game starts or when spawned

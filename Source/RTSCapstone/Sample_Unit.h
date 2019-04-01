@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* SelectionIndicator;
 
+	UPROPERTY(EditAnywhere)
+		bool SetDestructible = true;
+
 // FUNCTIONS
 public: 	
 
