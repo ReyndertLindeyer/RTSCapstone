@@ -47,8 +47,8 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	GetCharacterMovement()->RotationRate = FRotator(0.1f);
 	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
 
-	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(70.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(70.0f);
 
 }
 
