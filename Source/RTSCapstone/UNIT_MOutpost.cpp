@@ -68,6 +68,8 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
+
 	// Detect all AActors within a Radius
 	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
 	TArray<AActor*> ignoreActors;

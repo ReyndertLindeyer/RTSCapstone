@@ -167,6 +167,8 @@ void AUNIT_Scout::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
+
 	if (targetActor != nullptr)
 	{
 

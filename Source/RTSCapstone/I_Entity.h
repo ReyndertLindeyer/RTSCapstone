@@ -44,6 +44,8 @@ public:
 	virtual void DestroyEntity();
 
 	II_Player* GetEntityOwner();
+
+	bool isDestructable;
 	
 
 private:

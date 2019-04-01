@@ -85,6 +85,8 @@ void AUNIT_Rocketeer::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	isDestructable = SetDestructible;
+
 	if (setPlayerOwner != nullptr)
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rocketeer", startingHealth);
 

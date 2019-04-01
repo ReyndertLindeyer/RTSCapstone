@@ -124,6 +124,9 @@ void ABuildingMaster::BeginPlay()
 void ABuildingMaster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	isDestructable = SetDestructible;
+
 	if (constructed == false) {
 		buildingMesh->SetWorldLocation(FMath::VInterpTo(buildingMesh->GetComponentLocation(), FVector(buildingMesh->GetComponentLocation().X, buildingMesh->GetComponentLocation().Y, tempHeight), DeltaTime, spawnTime));
 		if (buildingMesh->GetComponentLocation().Z >= tempHeight) {

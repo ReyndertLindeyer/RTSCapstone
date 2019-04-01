@@ -32,6 +32,8 @@ void ASample_Unit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
+
 }
 
 // Called to bind functionality to input

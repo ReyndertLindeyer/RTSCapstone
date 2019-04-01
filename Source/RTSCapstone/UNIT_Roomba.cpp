@@ -68,6 +68,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
 
 	// Detect all AActors within a Radius
 	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
