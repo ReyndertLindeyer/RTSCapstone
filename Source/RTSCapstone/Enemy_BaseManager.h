@@ -38,6 +38,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void RemoveBuilding(ABuilding_Enemy_Spawner* inBuilding);
+
 	UPROPERTY(EditAnywhere)
 		bool isStartingArea; //If this is next to the starting area then the level creator should tick it to true
 

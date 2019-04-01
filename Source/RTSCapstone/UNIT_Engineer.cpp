@@ -12,6 +12,7 @@ AUNIT_Engineer::AUNIT_Engineer()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -21,6 +22,7 @@ AUNIT_Engineer::AUNIT_Engineer()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0f));
+	BodyMesh->SetCanEverAffectNavigation(false);
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
@@ -59,6 +61,16 @@ AUNIT_Engineer::AUNIT_Engineer()
 	audioComponentSelect->SetupAttachment(RootComponent);
 	audioComponentOrder->SetupAttachment(RootComponent);
 	audioComponentDeath->SetupAttachment(RootComponent);
+
+	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 120.0f;
 
 }
 
@@ -120,7 +132,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 
@@ -255,11 +267,17 @@ void AUNIT_Engineer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AUNIT_Engineer::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
 }
+
+bool AUNIT_Engineer::GetSelection() {
+	return isSelected;
+}
+
 
 void AUNIT_Engineer::AttackOrder(II_Entity* target)
 {
@@ -272,17 +290,37 @@ void AUNIT_Engineer::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ENTITY OWNER FOUND"));
-
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
 		{
-			GetEntityOwner()->GetUnits().Remove(this);
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
+			}
 		}
-		
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+			}
+		}
 	}
 
-	Destroy(this);
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }

@@ -9,6 +9,7 @@ AUNIT_Scout::AUNIT_Scout()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -44,8 +45,7 @@ AUNIT_Scout::AUNIT_Scout()
 	barrelPos->SetupAttachment(TurretMesh);
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
-	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
-	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BulletHit.P_BulletHit'")).Get();
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -100,6 +100,17 @@ AUNIT_Scout::AUNIT_Scout()
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
 
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+
 }
 
 // Called when the game starts or when spawned
@@ -146,7 +157,7 @@ void AUNIT_Scout::PostInitializeComponents()
 		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
-	if (harvestCue->IsValidLowLevelFast()) {
+	if (fireCue->IsValidLowLevelFast()) {
 		audioComponentFire->SetSound(fireCue);
 	}
 }
@@ -173,14 +184,14 @@ void AUNIT_Scout::Tick(float DeltaTime)
 	{
 	case UNIT_STATE::IDLE:
 	case UNIT_STATE::SEEKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 
@@ -231,7 +242,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -249,7 +260,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 200.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
@@ -310,7 +321,11 @@ void AUNIT_Scout::Tick(float DeltaTime)
 				if (currentTimer >= attackTimer)
 				{
 
-					Cast<II_Entity>(targetActor)->DealDamage(attackDamage);
+
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
+					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
+					projectile->SetActorEnableCollision(false);
+
 					audioComponentFire->Play();
 
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
@@ -341,12 +356,16 @@ void AUNIT_Scout::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void AUNIT_Scout::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
 }
 
+bool AUNIT_Scout::GetSelection() {
+	return isSelected;
+}
 
 // Method Unused
 void AUNIT_Scout::AttackOrder(II_Entity* target)
@@ -360,12 +379,37 @@ void AUNIT_Scout::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
-			GetEntityOwner()->GetUnits().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
+			}
+		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+			}
+		}
 	}
 
-	Destroy(this);
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }

@@ -27,6 +27,8 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	selectedBarracks = false;
 	selectedFactory = false;
 
+	hasMobileOutpostSelected = false;
+
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
 
 	// Player Interface
@@ -44,13 +46,15 @@ void AMyRTSPlayerController::BeginPlay()
 	//Assign the correct HUD to the pointer
 	HUDPtr = Cast<AMyRTSHUD>(GetHUD());
 
+	HUDPtr->SetPlayer(this);
+
 	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 
 	ChangeResources(50000);
-
+	ChangePower(20);
 
 	for (TObjectIterator<AGameManager> Itr; Itr; ++Itr)
 	{
@@ -60,7 +64,6 @@ void AMyRTSPlayerController::BeginPlay()
 		//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
 		//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);
 	}
-	
 		
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
@@ -90,6 +93,12 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 			buildingCountdown -= DeltaTime;
 		else
 			buildingCountdown -= DeltaTime / 2;
+	}
+
+	if (GetSelectedCharacters().Num() == 1) {
+		if (Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])) {
+			hasMobileOutpostSelected = true;
+		}
 	}
 
 	buildingManagerObject->CheckForDestroyedBuildings();
@@ -141,13 +150,13 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 		}
 	}
 
-	else if (SelectedCharacters.Num() > 0)
+	else if (GetSelectedCharacters().Num() > 0)
 	{
 		TArray<ACharacter*> deletionArray;
 
-		for (int i = 0; i < SelectedCharacters.Num(); i++)
+		for (int i = 0; i < GetSelectedCharacters().Num(); i++)
 		{
-			II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+			II_Entity* entity = Cast<II_Entity>(GetSelectedCharacters()[i]);
 
 			// If the Entity will survive the damage
 			if (entity->GetCurrentHealth() - (entity->GetMaxHealth() / 10) > 0)
@@ -160,7 +169,7 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 			// Otherwise Destroy it
 			else
 			{
-				deletionArray.Add(SelectedCharacters[i]);
+				deletionArray.Add(GetSelectedCharacters()[i]);
 				UE_LOG(LogTemp, Warning, TEXT("Destroyed"));
 			}
 		}
@@ -169,7 +178,7 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 		{
 			for (int i = 0; i < deletionArray.Num(); i++)
 			{
-				SelectedCharacters.Remove(deletionArray[i]);
+				GetSelectedCharacters().Remove(deletionArray[i]);
 				Cast<II_Entity>(deletionArray[i])->DestroyEntity();
 			}
 		}
@@ -319,6 +328,15 @@ int32 AMyRTSPlayerController::GetUnitNumber()
 
 TArray<int32> AMyRTSPlayerController::UnitQueue()
 {
+	///Implement returning a queue of units
+	/*
+	if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+		return Cast<ABuilding_Barrecks>(SelectedStructure)->GetUnitAtStartOfQueue();
+	}
+	else if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+		return Cast<ABuilding_VehicleFactory>(SelectedStructure)->Queue;
+	}
+	*/
 	return TArray<int32>();
 }
 
@@ -348,7 +366,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			SelectedStructure->SetSelection(false);
 			SelectedStructure = nullptr;
 
-			HUDPtr->SetSelectedBuilding(SelectedStructure);
+			SetSelectedBuilding(SelectedStructure);
 
 			selectedBarracks = false;
 			selectedFactory = false;
@@ -366,7 +384,8 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			/// (though it should work 100% of the time regardless, just coding practice)
 			if (!HUDPtr->isShift) 
 			{
-				SelectedCharacters.Empty();
+
+				GetSelectedCharacters().Empty();
 			}
 		}
 	}
@@ -394,14 +413,14 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					SelectedStructure->SetSelection(true);
 
 					
-					if (Cast<ABuilding_Barrecks>(SelectedStructure)) {
+					if (Cast<ABuilding_Barrecks>(SelectedStructure) && Cast<II_Entity>(SelectedStructure)->GetEntityOwner() == this) {
 						selectedBarracks = true;
 					}
-					if (Cast<ABuilding_VehicleFactory>(SelectedStructure)) {
+					if (Cast<ABuilding_VehicleFactory>(SelectedStructure) && Cast<II_Entity>(SelectedStructure)->GetEntityOwner() == this) {
 						selectedFactory = true;
 					}
 
-					HUDPtr->SetSelectedBuilding(SelectedStructure);
+					SetSelectedBuilding(SelectedStructure);
 					
 
 					/// Debugging
@@ -422,13 +441,12 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				// Otherwise, if characters were found, select them.
 				else 
 				{
-					SelectedCharacters = HUDPtr->FoundCharacters;
-					HUDPtr->SetSelectedUnits(SelectedCharacters);
+					SetSelectedCharacters(HUDPtr->FoundCharacters);
 
 					/// Debugging
-					for (int i = 0; i < SelectedCharacters.Num(); i++)
+					for (int i = 0; i < GetSelectedCharacters().Num(); i++)
 					{
-						II_Entity* entity = Cast<II_Entity>(SelectedCharacters[i]);
+						II_Entity* entity = Cast<II_Entity>(GetSelectedCharacters()[i]);
 						if (entity->GetEntityOwner() != nullptr)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("%s (%s) : %f / %f  (%f%)"), *entity->GetName(), *entity->GetEntityOwner()->GetPlayerName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
@@ -443,6 +461,10 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				}
 
 				HUDPtr->bStartSelecting = false;
+
+				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
+					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true);
+				}
 				//HUDPtr->grabEverything = true;
 			}
 		}
@@ -484,85 +506,89 @@ void AMyRTSPlayerController::OnRightMousePressed() {
 		buildingManagerObject->DisableAllDecals();
 	}
 
-	if (SelectedCharacters.Num() > 0.0f) {
-		
-		
-		
+	if (GetSelectedCharacters().Num() > 0.0f) {
 		//Cycle through all units
-		for (int32 i = 0; i < SelectedCharacters.Num(); i++) {
-			
-			/// Disable Commands for Units that are not your own
-			if (Cast<II_Entity>(SelectedCharacters[i])->GetEntityOwner() == this)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
-				//Find location that the player right clicked on and store it
-				FHitResult hit;
-				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
-
-				//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
-				FVector MoveLocation = hit.Location + FVector(i / 2 * 500, i % 2 * 500, 0);
-
-				// If an entity is hit
-				if (Cast<II_Entity>(hit.Actor))
-				{
-					// If the Selected unit is a harvester and thie hit actor is a refinery
-					if (Cast<AUNIT_Harvester>(SelectedCharacters[i]))
-					{
-						if (Cast<ABuilding_Refinery>(hit.Actor))
-						{
-							// If the the harvester and the refinery share the same owner
-							if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() == Cast<II_Player>(this))
-							{
-								// Return to the selected refinery
-								Cast<AUNIT_Harvester>(SelectedCharacters[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
-							}
-						}
-
-						else if (Cast<AResourceNode>(hit.Actor))
-						{
-							Cast<AUNIT_Harvester>(SelectedCharacters[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
-						}
-						
-					}
-
-					else if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Enemy Entity Hit"));
-						Cast<II_Unit>(SelectedCharacters[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
-					}
-				}
-
-				else
-				{
-					//Code to make the units move	
-					Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
-				}
-
-				
+		for (int32 i = 0; i < GetSelectedCharacters().Num(); i++) {
+			if (!(i < GetSelectedCharacters().Num())) {
+				break;
 			}
 
-			/// Keep this here for if we need to command enemy units (DEBUG)
-			//UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
-			////Find location that the player right clicked on and store it
-			//FHitResult hit;
-			//GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
-			////Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
-			//FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+			if (GetSelectedCharacters()[i] != nullptr) {
 
-			////Code to make the units move
-			//Cast<II_Unit>(SelectedCharacters[i])->MoveOrder(SelectedCharacters[i]->GetController(), MoveLocation);
+				/// Disable Commands for Units that are not your own
+				if (Cast<II_Entity>(GetSelectedCharacters()[i])->GetEntityOwner() == this)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
+					//Find location that the player right clicked on and store it
+					FHitResult hit;
+					GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
 
-			
+					//Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
+					FVector MoveLocation = hit.Location + FVector(i / 2 * 500, i % 2 * 500, 0);
+
+					// If an entity is hit
+					if (Cast<II_Entity>(hit.Actor))
+					{
+						// If the Selected unit is a harvester and thie hit actor is a refinery
+						if (Cast<AUNIT_Harvester>(GetSelectedCharacters()[i]))
+						{
+							if (Cast<ABuilding_Refinery>(hit.Actor))
+							{
+								// If the the harvester and the refinery share the same owner
+								if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() == Cast<II_Player>(this))
+								{
+									// Return to the selected refinery
+									Cast<AUNIT_Harvester>(GetSelectedCharacters()[i])->ReturnToRefinery(Cast<ABuilding_Refinery>(hit.Actor));
+								}
+							}
+
+							else if (Cast<AResourceNode>(hit.Actor))
+							{
+								Cast<AUNIT_Harvester>(GetSelectedCharacters()[i])->TargetNode(Cast<AResourceNode>(hit.Actor));
+							}
+
+						}
+
+						else if (Cast<II_Entity>(hit.Actor)->GetEntityOwner() != Cast<II_Player>(this))
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Enemy Entity Hit"));
+							Cast<II_Unit>(GetSelectedCharacters()[i])->AttackOrder(Cast<II_Entity>(hit.Actor));
+						}
+					}
+
+					else
+					{
+						//Code to make the units move	
+						Cast<II_Unit>(GetSelectedCharacters()[i])->MoveOrder(GetSelectedCharacters()[i]->GetController(), MoveLocation);
+					}
+
+
+				}
+
+				/// Keep this here for if we need to command enemy units (DEBUG)
+				//UE_LOG(LogTemp, Warning, TEXT("GaveOrders"));
+				////Find location that the player right clicked on and store it
+				//FHitResult hit;
+				//GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
+
+				////Will store the location and will have units after the first line up next to the first instead of fighting to be in the same location
+				//FVector MoveLocation = hit.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+
+				////Code to make the units move
+				//Cast<II_Unit>(GetSelectedCharacters()[i])->MoveOrder(GetSelectedCharacters()[i]->GetController(), MoveLocation);
+
+
+			}
 		}
+
+		/// This functionality was rewritten and moved to OnLeftMousePressed in this class
+		/*if (HUDPtr->foundBuildings.Num() > 0.0f) {
+			for (int32 i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
+				selectedBuildings.Add(HUDPtr->foundBuildings[i]);
+			}
+		}*/
 	}
-
-	/// This functionality was rewritten and moved to OnLeftMousePressed in this class
-	/*if (HUDPtr->foundBuildings.Num() > 0.0f) {
-		for (int32 i = 0; i < HUDPtr->foundBuildings.Num(); i++) {
-			selectedBuildings.Add(HUDPtr->foundBuildings[i]);
-		}
-	}*/
 }
 
 void AMyRTSPlayerController::OnMiddleMousePressed() 
@@ -597,7 +623,46 @@ void AMyRTSPlayerController::OnRightMouseReleased() {
 	}
 }
 
+bool AMyRTSPlayerController::HasMOutpostSelected()
+{
+	return hasMobileOutpostSelected;
+}
+
+bool AMyRTSPlayerController::StartGhostOutpost()
+{
+	return Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->StartGhostBuilding();
+}
+
+void AMyRTSPlayerController::StopGhostOutpost()
+{
+	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->StopGhostBuilding();
+}
+
+void AMyRTSPlayerController::BuildGhostOutpost()
+{
+	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->BuildGhostBuilding();
+}
+
+void AMyRTSPlayerController::MoveUnitsToLocation(TArray<ACharacter*> unitsToMove, FVector MoveLocation)
+{
+	for (int i = 0; i < unitsToMove.Num(); i++) {
+		//if (Cast<II_Unit*>(unitsToMove[i])) {
+			Cast<II_Unit>(unitsToMove[i])->MoveOrder(unitsToMove[i]->GetController(), MoveLocation);
+		//}
+	}
+}
+
 AActor* AMyRTSPlayerController::GetPlayerActor()
 {
 	return Cast<AActor>(this);
+}
+
+void AMyRTSPlayerController::AutoGhostBuilding(int32 whatBuilding, FVector location)
+{
+	buildingManagerObject->MultiGhostBuilding(whatBuilding, location);
+}
+
+void AMyRTSPlayerController::AutoConstructBuilding()
+{
+	buildingManagerObject->MultiConstructBuilding();
 }

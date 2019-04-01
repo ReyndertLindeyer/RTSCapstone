@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Engine.h"
 
 // Components
 #include "Components/SphereComponent.h"
 #include "ResourceNode.h"
+#include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
+#include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
 
 #include "Components/AudioComponent.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
@@ -46,6 +49,8 @@ public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
 	virtual void SetSelection(bool state) override;
 
+	virtual bool GetSelection() override;
+
 	// OVERRIDE CLASS [II_Unit] -- Handles Attack Orders
 	virtual void AttackOrder(II_Entity* target) override;
 
@@ -64,6 +69,8 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool isSelected;
 
 	bool returning;
 

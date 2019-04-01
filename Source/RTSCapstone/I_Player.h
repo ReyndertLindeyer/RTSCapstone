@@ -8,6 +8,7 @@
 // ARRAYS
 //#include "I_Unit.h"
 //#include "BuildingMaster.h"
+#include "GameFramework/Character.h"
 #include "UObject/ConstructorHelpers.h"
 
 #include "Engine/DataTable.h"
@@ -70,9 +71,11 @@ public:
 
 	void AddUnit(AActor* unitReference);
 	TArray<AActor*> GetUnits();
+	void RemoveUnitAtIndex(int32 index);
 
 	void AddBuilding(AActor* buildingReference);
 	TArray<AActor*> GetBuildings();
+	void RemoveBuildingAtIndex(int32 index);
 
 	//Adds the amount given
 	void ChangeResources(int amount); 
@@ -87,7 +90,15 @@ public:
 	UDataTable* GetUnitConstructionDataTable();
 	void SetBuildingDataTable(UDataTable* inTable);
 	void SetUnitConstructionDataTable(UDataTable* inTable);
-	int teamValue;
+
+	int32 teamValue;
+
+	TArray<ACharacter*> GetSelectedCharacters();
+	void SetSelectedCharacters(TArray<ACharacter*> inArray);
+	void RemoveSelectedCharacterAtIndex(int32 index);
+
+	void SetSelectedBuilding(AActor* inBuilding);
+	AActor* GetSelectedBuilding();
 
 private:
 	// Variables
@@ -95,10 +106,15 @@ private:
 	TArray<AActor*> BuildingList;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UDataTable* buildingDataTable;
+	class UDataTable* buildingDataTable;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UDataTable* unitConstructionDataTable;
+	class UDataTable* unitConstructionDataTable;
+
+	TArray<ACharacter*> SelectedCharacters = TArray<ACharacter*>();
+
+	//Selected building
+	AActor* selectedBuilding;
 
 	FString PlayerName;
 	

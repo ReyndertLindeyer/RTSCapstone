@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine.h"
 
 // Components
 #include "Components/SphereComponent.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
+#include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
 
 #include "Components/AudioComponent.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
@@ -48,6 +51,8 @@ public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
 	virtual void SetSelection(bool state) override;
 
+	virtual bool GetSelection() override;
+
 	// OVERRIDE CLASS [II_Unit] -- Handles Attack Orders
 	virtual void AttackOrder(II_Entity* target) override;
 
@@ -59,6 +64,8 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool isSelected;
 
 	//The particle system that will be the projectile
 	UParticleSystem* PS;
@@ -89,7 +96,7 @@ public:
 	TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 22.0f;
+		float attackDamage = 20.0f;
 	UPROPERTY(EditAnywhere)
 		float startingHealth = 250.0f;
 	UPROPERTY(EditAnywhere)

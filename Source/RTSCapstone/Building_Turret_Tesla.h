@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BuildingMaster.h"
-#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "Building_Turret_Tesla.generated.h"
 
 /**

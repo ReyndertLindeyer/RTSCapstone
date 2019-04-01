@@ -7,10 +7,12 @@
 #include "Engine/StaticMesh.h"
 
 //All of the units
+#include "UNIT_Scout.h"
 #include "UNIT_AvBT.h"
 #include "UNIT_MBT.h"
 #include "UNIT_MArtillery.h"
 #include "UNIT_Harvester.h"
+#include "UNIT_MOutpost.h"
 
 #include "Building_VehicleFactory.generated.h"
 

@@ -12,6 +12,7 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -100,7 +101,18 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	audioComponentIdle->SetupAttachment(RootComponent);
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
-	audioComponentDeccelerate->SetupAttachment(RootComponent);
+	audioComponentDeccelerate->SetupAttachment(RootComponent); 
+	
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -147,7 +159,7 @@ void AUNIT_MArtillery::PostInitializeComponents()
 		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
-	if (harvestCue->IsValidLowLevelFast()) {
+	if (fireCue->IsValidLowLevelFast()) {
 		audioComponentFire->SetSound(fireCue);
 	}
 }
@@ -231,7 +243,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -311,7 +323,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 				{
 					currentTimer = 0.0f;
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 					audioComponentFire->Play();
@@ -343,10 +355,16 @@ void AUNIT_MArtillery::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AUNIT_MArtillery::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
+}
+
+bool AUNIT_MArtillery::GetSelection()
+{
+	return isSelected;
 }
 
 // Method Never Called
@@ -358,14 +376,41 @@ void AUNIT_MArtillery::AttackOrder(II_Entity* target)
 void AUNIT_MArtillery::DestroyEntity()
 {
 	audioComponentDeath->Play();
+	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
-			GetEntityOwner()->GetUnits().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
+			}
+		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+			}
+		}
 	}
-	Destroy(this);
+
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }
 

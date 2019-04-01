@@ -51,6 +51,24 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 	}
 }
 
+void UBuildingManagerObject::MultiGhostBuilding(uint8 whatBuilding_, FVector spawnLocation)
+{
+	UWorld* const World = this->GetWorld();
+	if (World)
+	{
+		ABuilding_Ghost* temp = World->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+		if ((whatBuilding_ - 1) > 5)
+			temp->SetMesh(buildingMeshArray[(whatBuilding_ - 1)], 4);
+		else if ((whatBuilding_ - 1) == 3 || (whatBuilding_ - 1) == 4)
+			temp->SetMesh(buildingMeshArray[(whatBuilding_ - 1)], 5);
+		else
+			temp->SetMesh(buildingMeshArray[(whatBuilding_ - 1)], 2);
+
+		whatBuildingArray.Add(whatBuilding_ - 1);
+		ghostBuildingArray.Add(temp);
+	}
+}
+
 void UBuildingManagerObject::MoveBuilding(FVector location)
 {
 	buildingToBuild->SetActorLocation(location);
@@ -235,6 +253,59 @@ bool UBuildingManagerObject::constructBuilding()
 		return true;
 	}
 	return false;
+}
+
+void UBuildingManagerObject::MultiConstructBuilding()
+{
+	UWorld* const World = this->GetWorld();
+	ABuildingMaster* building;
+	for (int i = 0; i < whatBuildingArray.Num(); i++) {
+
+		if (whatBuildingArray[i] == 0) {
+			building = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 1) {
+			building = World->SpawnActor<ABuilding_Refinery>(ABuilding_Refinery::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 2) {
+			building = World->SpawnActor<ABuilding_Barrecks>(ABuilding_Barrecks::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 3) {
+			building = World->SpawnActor<ABuilding_VehicleFactory>(ABuilding_VehicleFactory::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 4) {
+			building = World->SpawnActor<ABuilding_TechCenter>(ABuilding_TechCenter::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 5) {
+			building = World->SpawnActor<ABuilding_Superweapon>(ABuilding_Superweapon::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 6) {
+			building = World->SpawnActor<ABuilding_Turret_Gattling>(ABuilding_Turret_Gattling::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 7) {
+			building = World->SpawnActor<ABuilding_Turret_Cannon>(ABuilding_Turret_Cannon::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else if (whatBuildingArray[i] == 8) {
+			building = World->SpawnActor<ABuilding_Turret_Artillery>(ABuilding_Turret_Artillery::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		else {
+			building = World->SpawnActor<ABuilding_Turret_Tesla>(ABuilding_Turret_Tesla::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		}
+		building->InitializeEntity(thePlayer, namesArray[whatBuildingArray[i]].ToString(), buildingMaxHealth[whatBuildingArray[i]]);
+		building->SetOwningEntity(thePlayer);
+
+		building->constructAtLocation(thePlayer);
+
+		building->GetBuildingMesh()->SetMaterial(0, regularMaterial);
+
+		masterArray.Add(building);
+
+		//thePlayer->AddBuilding(Cast<AActor>(building));
+
+		ghostBuildingArray[i]->Destroy();
+		ghostBuildingArray[i] = nullptr;
+		building = nullptr;
+	}
 }
 
 void UBuildingManagerObject::DeleteBuilding()

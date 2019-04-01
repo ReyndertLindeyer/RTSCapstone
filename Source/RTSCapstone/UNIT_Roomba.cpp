@@ -14,6 +14,7 @@ AUNIT_Roomba::AUNIT_Roomba()
 
 
 	RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -35,6 +36,17 @@ AUNIT_Roomba::AUNIT_Roomba()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -117,7 +129,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
 					{
 						targetActor = entitiesInRange[0];
 					}
@@ -226,7 +238,12 @@ void AUNIT_Roomba::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AUNIT_Roomba::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
+}
+
+bool AUNIT_Roomba::GetSelection() {
+	return isSelected;
 }
 
 
@@ -241,13 +258,38 @@ void AUNIT_Roomba::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
-			GetEntityOwner()->GetUnits().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
+			}
+		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+			}
+		}
 	}
 
-	Destroy(this);
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }
 

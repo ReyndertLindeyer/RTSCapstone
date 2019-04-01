@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine.h"
 
 // Components
 #include "Components/SphereComponent.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
+#include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
 
 #include "Components/AudioComponent.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"
@@ -49,6 +52,8 @@ public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
 	virtual void SetSelection(bool state) override;
 
+	virtual bool GetSelection() override;
+
 	// OVERRIDE CLASS [II_Unit] -- Handles Attack Orders
 	virtual void AttackOrder(II_Entity* target) override;
 
@@ -60,6 +65,8 @@ public:
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool isSelected;
 
 	//Particle System Cannon
 	UParticleSystem* PSC;
@@ -110,7 +117,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float cannonRange = 1800.0f;
 	UPROPERTY(EditAnywhere)
-		float cannonDamage = 15.0f;
+		float cannonDamage = 26.0f;
 	UPROPERTY(EditAnywhere)
 		float cannonTimer = 3.0f;
 

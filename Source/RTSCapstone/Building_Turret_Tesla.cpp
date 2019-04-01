@@ -30,7 +30,7 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 
 	particleSystem = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Lightning.P_Lightning'")).Get();
 
-	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSCA"));
 	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
 	particleComp->SetTemplate(particleSystem);
 	particleComp->bAutoActivate = false;

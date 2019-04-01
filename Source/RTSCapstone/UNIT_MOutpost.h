@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine.h"
 
 // Components
 #include "Components/SphereComponent.h"
+#include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
+#include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
 
 // Interface
 #include "I_Unit.h"
@@ -13,6 +16,9 @@
 
 // Meshes
 #include "Components/StaticMeshComponent.h"
+
+#include "Building_Ghost.h"
+#include "Building_Outpost.h"
 
 #include "GameFramework/Character.h"
 #include "UNIT_MOutpost.generated.h"
@@ -39,15 +45,26 @@ public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
 	virtual void SetSelection(bool state) override;
 
+	virtual bool GetSelection() override;
+
 	// OVERRIDE CLASS [II_Unit] -- Handles Attack Orders
 	virtual void AttackOrder(II_Entity* target) override;
 
 	// OVERIDE CLASS [II_Entity] -- Handles any calls on death
 	virtual void DestroyEntity() override;
 
+
 private:
 	float currentTimer;
 	float targetTimer = 3.0f;
+
+	bool isSelected;
+
+	bool hasRoom;
+
+	UStaticMesh* BuildingAsset;
+
+	ABuilding_Ghost* buildingGhost;
 
 public:
 	TArray<AActor*> entitiesInRange;
@@ -58,6 +75,10 @@ public:
 		float detectRange = 500.0f;
 	UPROPERTY(EditAnywhere)
 		float attackRange = 250.0f;
+
+	bool StartGhostBuilding();
+	void StopGhostBuilding();
+	void BuildGhostBuilding();
 
 public:
 	// Sets default values for this character's properties

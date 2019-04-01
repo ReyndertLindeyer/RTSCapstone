@@ -2,6 +2,7 @@
 
 #include "UNIT_Rocketeer.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 
@@ -12,6 +13,7 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -64,6 +66,17 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
+
+	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 120.0f;
 
 }
 
@@ -165,7 +178,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && GetEntityOwner()->teamValue != Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue)
 					{
 						targetActor = entitiesInRange[0];
 					}
@@ -181,7 +194,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	{
 		// Ignore Combat until unit reaches destination
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 120.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
@@ -248,7 +261,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 
 					UE_LOG(LogTemp, Warning, TEXT("%f target health"), Cast<II_Entity>(targetActor)->GetCurrentHealth());
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), GetActorRotation());
 					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, attackDamage, 500.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 
@@ -281,10 +294,15 @@ void AUNIT_Rocketeer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AUNIT_Rocketeer::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
-	if (state) {
+	if (state && !audioComponentSelect->IsPlaying()) {
 		audioComponentSelect->Play();
 	}
+}
+
+bool AUNIT_Rocketeer::GetSelection() {
+	return isSelected;
 }
 
 // This Function is no longer called
@@ -299,13 +317,38 @@ void AUNIT_Rocketeer::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
-			GetEntityOwner()->GetUnits().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
+			}
+		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+			}
+		}
 	}
 
-	Destroy(this);
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }
 

@@ -7,9 +7,10 @@
 #include "BuildingMaster.h"
 #include "Building_PowerPlant.h"
 #include "Building_Barrecks.h"
+#include "UNIT_MOutpost.h"
 #include "BuildingManagerObject.h"
 #include "MyRTSHUD.h"
-#include "ProFow.h"
+//#include "ProFow.h"
 
 // Interfaces
 #include "I_Entity.h"
@@ -116,15 +117,36 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		void UpdateScreenSize();
 
+	//Functions for the Outpost
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool HasMOutpostSelected();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		bool StartGhostOutpost();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void StopGhostOutpost();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void BuildGhostOutpost();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void MoveUnitsToLocation(TArray<ACharacter*> unitsToMove, FVector MoveLocation);
 
 	UFUNCTION()
 		AActor* GetPlayerActor();
+
+
+
+	UFUNCTION(BlueprintCallable, Category = "Demo")
+		void AutoGhostBuilding(int32 whatBuilding, FVector location);
+
+	UFUNCTION(BlueprintCallable, Category = "Demo")
+		void AutoConstructBuilding();
 
 protected:
 
 	// DEBUGGING
 	bool spawnCY = false;
 
+	bool hasMobileOutpostSelected;
 
 	/// Renamed the functions for clarity.
 	UFUNCTION()
@@ -146,9 +168,6 @@ protected:
 		void OnMiddleMouseReleased();
 
 	UPROPERTY()
-		TArray<ACharacter*> SelectedCharacters = TArray<ACharacter*>();
-
-	UPROPERTY()
 		ABuildingMaster* SelectedStructure;
 		/// TScriptInterface<II_Structure> SelectedStructure;  -- Leave this here for future reference
 
@@ -164,8 +183,9 @@ protected:
 	bool constructingBuilding, placingBuilding, buildingConstructed, selectedBarracks, selectedFactory;
 
 	float buildingCountdown; //Countdown to building completion
-	UPROPERTY()
-		AProFow *m_fow;
+
+	//UPROPERTY()
+	//	AProFow *m_fow;
 
 	///////////////////////////////////
 	// DEBUG FUNCTIONS

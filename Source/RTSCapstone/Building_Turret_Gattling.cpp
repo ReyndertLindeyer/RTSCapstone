@@ -91,6 +91,7 @@ void ABuilding_Turret_Gattling::BeginPlay()
 	Super::BeginPlay();
 	
 	buildingMesh->SetWorldScale3D(FVector(5));
+
 }
 
 void ABuilding_Turret_Gattling::Tick(float DeltaTime)

@@ -30,6 +30,8 @@ protected:
 
 	int32 numOfBuildingCollisions, radius;
 
+	AActor* ignoreActor;
+
 	UFUNCTION()
 		virtual void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
@@ -42,6 +44,8 @@ public:
 	bool GetIsInRadius();
 
 	void SetIsInRadius(bool isIn);
+
+	void SetIgnoreActor(AActor* inActor);
 
 	UStaticMeshComponent* GetBuildingMesh();
 

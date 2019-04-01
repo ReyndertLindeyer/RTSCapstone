@@ -207,7 +207,7 @@ void ABuilding_VehicleFactory::SpawnUnit()
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Harvester", 200.0f);
 	}
 	else if (unitQueue[0] == 1) {
-		holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
+		holder = World->SpawnActor<AUNIT_Scout>(AUNIT_Scout::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Humvee", 200.0f);
 	}
 	else  if (unitQueue[0] == 2) {
@@ -223,7 +223,7 @@ void ABuilding_VehicleFactory::SpawnUnit()
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "HeavyTank", 200.0f);
 	}
 	else {
-	holder = World->SpawnActor<AUNIT_MBT>(AUNIT_MBT::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
+	holder = World->SpawnActor<AUNIT_MOutpost>(AUNIT_MOutpost::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Outpost", 200.0f);
 	}
 	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);

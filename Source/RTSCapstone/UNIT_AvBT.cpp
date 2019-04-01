@@ -12,6 +12,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 	
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -107,6 +108,17 @@ AUNIT_AvBT::AUNIT_AvBT()
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 }
 
 // Called when the game starts or when spawned
@@ -152,7 +164,7 @@ void AUNIT_AvBT::PostInitializeComponents()
 		audioComponentDeath->SetSound(deccelerateCue);
 	}
 
-	if (harvestCue->IsValidLowLevelFast()) {
+	if (fireCue->IsValidLowLevelFast()) {
 		audioComponentFire->SetSound(fireCue);
 	}
 }
@@ -181,16 +193,16 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
 	case UNIT_STATE::SEEKING:
 		//UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
 		//UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
 		//UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 
@@ -241,7 +253,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -322,7 +334,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					if (!secondShot)
 					{
 
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
 						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, cannonDamage, 5000.0f, 0.0f, 100.0f, PSC, reactionPS);
 						projectile->SetActorEnableCollision(false);
 						currentTimer = cannonTimer - 0.1f;
@@ -334,7 +346,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					else 
 					{
 
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
 						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, cannonDamage, 5000.0f, 0.0f, 100.0f, PSC, reactionPS);
 						projectile->SetActorEnableCollision(false);
 						secondShot = false;
@@ -370,11 +382,17 @@ void AUNIT_AvBT::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void AUNIT_AvBT::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 	if (state) {
 		audioComponentSelect->Play();
 	}
 }
+
+bool AUNIT_AvBT::GetSelection() {
+	return isSelected;
+}
+
 
 
 // Method Unused
@@ -389,13 +407,38 @@ void AUNIT_AvBT::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
-			GetEntityOwner()->GetUnits().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i] == this)
+					GetEntityOwner()->RemoveUnitAtIndex(i);
+			}
+		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i] == this)
+					GetEntityOwner()->RemoveBuildingAtIndex(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+			}
+		}
 	}
 
-	Destroy(this);
+
+	if (!UObject::IsValidLowLevel()) return;
+
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
 }
 

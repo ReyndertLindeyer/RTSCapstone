@@ -12,6 +12,7 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
+	isSelected = false;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -21,14 +22,33 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -60.0f));
+	BodyMesh->SetCanEverAffectNavigation(false);
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BuildingMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Placeholder_Construction_Yard.Placeholder_Construction_Yard'"));
+	BuildingAsset = BuildingMeshAsset.Object;
+
+	buildingGhost = nullptr;
+
+	hasRoom = false;
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
+
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
+
+	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -205,8 +225,14 @@ void AUNIT_MOutpost::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AUNIT_MOutpost::SetSelection(bool state)
 {
+	isSelected = state;
 	SelectionIndicator->SetVisibility(state);
 }
+
+bool AUNIT_MOutpost::GetSelection() {
+	return isSelected;
+}
+
 
 // Function is Never Called
 void AUNIT_MOutpost::AttackOrder(II_Entity* target)
@@ -214,18 +240,87 @@ void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 	targetActor = target->GetActor();
 }
 
+bool AUNIT_MOutpost::StartGhostBuilding() {
+	/*
+	UE_LOG(LogTemp, Warning, TEXT("StartGhostBuilding"));
+	if (buildingGhost != nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("CheckGhost")); 
+		buildingGhost->SetActorLocation(GetActorLocation());
+		return buildingGhost->GetIsOverlapping();
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("MakeGhost"));
+		buildingGhost = GetWorld()->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		buildingGhost->SetIgnoreActor(this);
+		buildingGhost->SetMesh(BuildingAsset, 6);
+
+		return buildingGhost->GetIsOverlapping();
+	}
+	*/
+	return false;
+}
+
+void AUNIT_MOutpost::StopGhostBuilding()
+{
+	/*
+	UE_LOG(LogTemp, Warning, TEXT("StopGhost"));
+	if (buildingGhost != nullptr) {
+		buildingGhost->Destroy();
+		buildingGhost = nullptr;
+	}
+	*/
+}
+
+void AUNIT_MOutpost::BuildGhostBuilding()
+{
+	/*/
+	UE_LOG(LogTemp, Warning, TEXT("BuildGhost"));
+	if (buildingGhost != nullptr) {
+		buildingGhost->Destroy();
+		buildingGhost = nullptr;
+	}
+	*/
+	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+	tempBuilding->InitializeEntity(GetEntityOwner(), "Outpost", 1000);
+	tempBuilding->constructAtLocation(GetEntityOwner());
+	DestroyEntity();
+}
+
 void AUNIT_MOutpost::DestroyEntity()
 {
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
-			GetEntityOwner()->GetUnits().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
+				if (GetEntityOwner()->GetUnits()[i])
+					GetEntityOwner()->GetUnits().RemoveAt(i);
+			}
+		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
-			GetEntityOwner()->GetBuildings().Remove(this);
+		{
+			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
+				if (GetEntityOwner()->GetBuildings()[i])
+					GetEntityOwner()->GetBuildings().RemoveAt(i);
+			}
+		}
+
+		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
+		{
+			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
+				if (GetEntityOwner()->GetSelectedCharacters()[i])
+					GetEntityOwner()->GetSelectedCharacters().RemoveAt(i);
+			}
+		}
 	}
 
-	Destroy(this);
-}
+	if (!UObject::IsValidLowLevel()) return;
 
+	this->K2_DestroyActor();
+
+	//GC
+	GEngine->ForceGarbageCollection();
+}

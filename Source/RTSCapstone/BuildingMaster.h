@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "MyRTSAIController.h"
@@ -12,6 +13,7 @@
 #include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 
 #include "Engine/DataTable.h"
 
@@ -59,6 +61,10 @@ protected:
 	void InitializeStructure(II_Player* player, FString name, float health);
 
 	bool selected, isBuilding; //isBuilding means is the building under construction
+
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* dustParticleComp;
 
 	//Whether or not the building's radius should be on
 	bool buildRadiusActive;
