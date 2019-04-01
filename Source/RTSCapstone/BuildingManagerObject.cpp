@@ -64,6 +64,28 @@ void UBuildingManagerObject::MultiGhostBuilding(uint8 whatBuilding_, FVector spa
 		else
 			temp->SetMesh(buildingMeshArray[(whatBuilding_ - 1)], 2);
 
+		if (whatBuilding_ == 1) {
+			temp->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(5, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(6, canBuildIndicator);
+		}
+
+		if (whatBuilding_ == 2) {
+			temp->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+		}
+
+		if (whatBuilding_ == 3) {
+			temp->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			temp->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+		}
+
+		temp->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
+
 		whatBuildingArray.Add(whatBuilding_ - 1);
 		ghostBuildingArray.Add(temp);
 	}
@@ -260,7 +282,7 @@ void UBuildingManagerObject::MultiConstructBuilding()
 	UWorld* const World = this->GetWorld();
 	ABuildingMaster* building;
 	for (int i = 0; i < whatBuildingArray.Num(); i++) {
-
+		building = nullptr;
 		if (whatBuildingArray[i] == 0) {
 			building = World->SpawnActor<ABuilding_PowerPlant>(ABuilding_PowerPlant::StaticClass(), ghostBuildingArray[i]->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 		}

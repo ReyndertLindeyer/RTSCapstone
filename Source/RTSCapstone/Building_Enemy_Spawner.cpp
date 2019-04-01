@@ -17,6 +17,11 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 
 	buildingType = 1;
 	buildingMesh->SetWorldScale3D(FVector(6));
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object->GeneratedClass;
+	}
 }
 
 

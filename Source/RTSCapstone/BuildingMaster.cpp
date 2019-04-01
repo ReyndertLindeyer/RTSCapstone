@@ -183,6 +183,8 @@ void ABuildingMaster::DestroyEntity()
 		}
 	}
 
+	GetWorld()->SpawnActor<AExplosiveActor>(ExplosionBlueprint, buildingMesh->RelativeLocation, FRotator(0.0f, 0.0f, 0.0f));
+
 
 	if (!UObject::IsValidLowLevel()) return;
 

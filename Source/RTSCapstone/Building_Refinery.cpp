@@ -27,6 +27,11 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	harvestPt->SetRelativeLocation(FVector(0.0f, 400.0f, 10.0f));
 
 	isOccupied = false;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object->GeneratedClass;
+	}
 	
 }
 

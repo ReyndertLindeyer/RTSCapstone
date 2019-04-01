@@ -39,12 +39,13 @@ AUNIT_Grinder::AUNIT_Grinder()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
+	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
 	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
 
 	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);

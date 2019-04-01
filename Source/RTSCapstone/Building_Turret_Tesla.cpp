@@ -40,6 +40,11 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 
 	chain1 = false;
 	chain2 = false;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object->GeneratedClass;
+	}
 }
 
 void ABuilding_Turret_Tesla::BeginPlay()

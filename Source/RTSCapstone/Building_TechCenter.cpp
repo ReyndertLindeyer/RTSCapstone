@@ -17,6 +17,11 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object->GeneratedClass;
+	}
 }
 
 // Called when the game starts or when spawned

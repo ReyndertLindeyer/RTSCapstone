@@ -118,7 +118,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 
 	ignoreActors.Add(this);
 
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+	//UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
 
 
 	switch (unitState)

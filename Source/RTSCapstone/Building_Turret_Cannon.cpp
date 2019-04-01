@@ -49,6 +49,11 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 
 
 	currentAttackTimer = 0.0f;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object->GeneratedClass;
+	}
 }
 
 void ABuilding_Turret_Cannon::BeginPlay()
@@ -75,14 +80,14 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 	{
 		if (targetActor != nullptr)
 		{
-			FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-			FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-			PivotMesh->SetWorldRotation(targetRotation);
+			//FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
+			//FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
+			//PivotMesh->SetWorldRotation(targetRotation);
 		}
 
 		else
 		{
-			PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+			//PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
 		}
 
 		// Detect all AActors within a Radius
@@ -95,7 +100,7 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
 
 		// Debug Turret Range
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 
 
 		// Narrow down all the AActors to only ones with an II_Entity script
@@ -144,7 +149,7 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 			else
 			{
 				// Rotate towards the target 
-				//RootComponent->SetRelativeRotation((targetActor->GetActorLocation() - RootComponent->GetComponentLocation()).Rotation());
+				RootComponent->SetRelativeRotation((targetActor->GetActorLocation() - RootComponent->GetComponentLocation()).Rotation());
 
 				if (currentAttackTimer >= attackRate)
 				{

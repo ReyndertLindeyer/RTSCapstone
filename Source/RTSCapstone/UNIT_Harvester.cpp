@@ -25,7 +25,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -120.0f));
-	BodyMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+	BodyMesh->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 	//RootComponent = BodyMesh;
@@ -39,7 +39,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	unitState = UNIT_STATE::IDLE;
 
 	currentResources = 0.0f;
-	maxResources = 500.0f;
+	maxResources = 200.0f;
 
 
 	//Load our Sound Cue for the sound we created in the editor
@@ -162,7 +162,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	case UNIT_STATE::IDLE:
 		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
 	case UNIT_STATE::SEEKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
 		break;
