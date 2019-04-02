@@ -102,17 +102,6 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent); 
-	
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
-
-	GetCapsuleComponent()->SetCapsuleRadius(140.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
 
 }
 
@@ -125,6 +114,14 @@ void AUNIT_MArtillery::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Mobile Artillery", startingHealth);
 
 	SpawnDefaultController();
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 void AUNIT_MArtillery::PostInitializeComponents()

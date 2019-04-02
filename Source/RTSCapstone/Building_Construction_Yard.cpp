@@ -19,9 +19,9 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> ItemBlueprint(TEXT("Blueprint'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
 	if (ItemBlueprint.Object) {
-		ExplosionBlueprint = (UClass*)ItemBlueprint.Object->GeneratedClass;
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
 }
 

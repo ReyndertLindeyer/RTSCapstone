@@ -67,20 +67,6 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
-	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
-
-
-	bUseControllerRotationYaw = false;
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 60.0f;
-	GetCharacterMovement()->NavAgentProps.AgentHeight = 125.0f;
-
 
 }
 
@@ -93,7 +79,16 @@ void AUNIT_Rifleman::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rifleman", startingHealth);
 
 	SpawnDefaultController();
-	
+
+
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 void AUNIT_Rifleman::PostInitializeComponents()

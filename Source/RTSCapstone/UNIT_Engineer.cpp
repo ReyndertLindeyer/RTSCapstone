@@ -62,16 +62,6 @@ AUNIT_Engineer::AUNIT_Engineer()
 	audioComponentOrder->SetupAttachment(RootComponent);
 	audioComponentDeath->SetupAttachment(RootComponent);
 
-	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
-
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 120.0f;
-
 }
 
 // Called when the game starts or when spawned
@@ -83,6 +73,14 @@ void AUNIT_Engineer::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Engineer", startingHealth);
 
 	SpawnDefaultController();
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 void AUNIT_Engineer::PostInitializeComponents()
