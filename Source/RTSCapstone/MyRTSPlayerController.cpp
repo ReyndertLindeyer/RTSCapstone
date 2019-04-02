@@ -666,3 +666,11 @@ void AMyRTSPlayerController::AutoConstructBuilding()
 {
 	buildingManagerObject->MultiConstructBuilding();
 }
+
+void AMyRTSPlayerController::AutoDestroyBuilding(TArray<ABuildingMaster*> inList) {
+	for (int i = 0; i < inList.Num(); i++) {
+		inList[i]->DealDamage(inList[i]->GetMaxHealth());
+	}
+	buildingManagerObject->ghostBuildingArray.Empty();
+	buildingManagerObject->whatBuildingArray.Empty();
+}

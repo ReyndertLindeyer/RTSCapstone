@@ -198,7 +198,8 @@ void AMyRTSHUD::DrawUnitHealthBars(TArray<ACharacter*> SelectedUnits)
 
 void AMyRTSHUD::DrawBuildingHealthBars(AActor * SelectedBuilding)
 {
-	ABuildingMaster* tempBuilding = Cast<ABuildingMaster>(SelectedBuilding);
+	if (SelectedBuilding != nullptr) {
+		ABuildingMaster* tempBuilding = Cast<ABuildingMaster>(SelectedBuilding);
 
 		// Select the center point of the bar as the character's location
 		FVector center = tempBuilding->GetActorLocation();
@@ -252,7 +253,7 @@ void AMyRTSHUD::DrawBuildingHealthBars(AActor * SelectedBuilding)
 
 		tileItem.Size = FVector2D(barWidth * healthPercentage, barHeight);
 		Canvas->DrawItem(tileItem);
-	
+	}
 }
 
 

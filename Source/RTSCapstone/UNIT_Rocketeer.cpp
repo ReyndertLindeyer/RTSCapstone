@@ -67,17 +67,6 @@ AUNIT_Rocketeer::AUNIT_Rocketeer()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
-	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
-
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 120.0f;
-
 }
 
 // Called when the game starts or when spawned
@@ -91,6 +80,14 @@ void AUNIT_Rocketeer::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rocketeer", startingHealth);
 
 	SpawnDefaultController();
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 
 }
 
@@ -134,14 +131,14 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 	{
 	case UNIT_STATE::IDLE:
 	case UNIT_STATE::SEEKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 

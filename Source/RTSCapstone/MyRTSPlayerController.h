@@ -141,6 +141,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Demo")
 		void AutoConstructBuilding();
 
+	UFUNCTION(BlueprintCallable, Category = "Demo")
+		void AutoDestroyBuilding(TArray<ABuildingMaster*> inList);
+
 protected:
 
 	// DEBUGGING

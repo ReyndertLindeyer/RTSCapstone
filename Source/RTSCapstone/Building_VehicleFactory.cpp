@@ -27,6 +27,11 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 void ABuilding_VehicleFactory::BeginPlay()

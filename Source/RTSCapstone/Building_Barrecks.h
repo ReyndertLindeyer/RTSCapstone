@@ -37,6 +37,7 @@ public:
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 	void InitializeBarracks();
 
+	virtual bool constructAtLocation(II_Player* player) override;
 
 protected:
 	virtual void BeginPlay() override;

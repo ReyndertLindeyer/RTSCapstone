@@ -77,6 +77,10 @@ public:
 
 	void SetPlayer(II_Player* inPlayer);
 
+	UPROPERTY()
+		TArray <ABuilding_Ghost*> ghostBuildingArray;
+	TArray <int32> whatBuildingArray;
+
 private:
 	UPROPERTY()
 		UMaterialInterface* canBuildIndicator;
@@ -114,10 +118,6 @@ private:
 
 	UPROPERTY()
 		ABuilding_Ghost* buildingToBuild;
-
-	UPROPERTY()
-		TArray <ABuilding_Ghost*> ghostBuildingArray;
-		TArray <int32> whatBuildingArray;
 
 
 	UPROPERTY()

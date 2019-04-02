@@ -39,7 +39,11 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	currentAttackTimer = 0.0f;
 
 	chain1 = false;
-	chain2 = false;
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 void ABuilding_Turret_Tesla::BeginPlay()

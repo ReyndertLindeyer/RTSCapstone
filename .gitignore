@@ -95,6 +95,9 @@ Content/Game_Assets/Sounds/*
 #Destructable Meshes
 Content/Game_Assets/Props/*
 
+#Destructable Meshes
+Content/Game_Assets/VideogameFX/*
+
 Content/Hand_Painted_Starter_Kit/*
 Content/WaterMaterials*
 SP_Textures/Barracks/Game/Game_Assets/Models/Barracks_Model/Barracks.FBX

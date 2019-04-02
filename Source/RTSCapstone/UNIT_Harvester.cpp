@@ -39,7 +39,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	unitState = UNIT_STATE::IDLE;
 
 	currentResources = 0.0f;
-	maxResources = 500.0f;
+	maxResources = 200.0f;
 
 
 	//Load our Sound Cue for the sound we created in the editor
@@ -91,17 +91,6 @@ AUNIT_Harvester::AUNIT_Harvester()
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
 	audioComponentHarvest->SetupAttachment(RootComponent);
-
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
-
-	GetCapsuleComponent()->SetCapsuleRadius(70.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(70.0f);
 }
 
 // Called when the game starts or when spawned
@@ -113,6 +102,14 @@ void AUNIT_Harvester::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Harvester", startingHealth);
 	
 	SpawnDefaultController();
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 void AUNIT_Harvester::PostInitializeComponents()
@@ -164,7 +161,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	case UNIT_STATE::IDLE:
 		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
 	case UNIT_STATE::SEEKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
 		break;

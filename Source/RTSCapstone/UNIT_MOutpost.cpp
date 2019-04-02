@@ -38,18 +38,6 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
-
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 140.0f;
-
-	GetCapsuleComponent()->SetCapsuleRadius(70.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(70.0f);
-
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +49,14 @@ void AUNIT_MOutpost::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Mobile Outpost", startingHealth);
 
 	SpawnDefaultController();
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(1.0f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 // Called every frame
@@ -84,14 +80,14 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 	{
 	case UNIT_STATE::IDLE:
 	case UNIT_STATE::SEEKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 

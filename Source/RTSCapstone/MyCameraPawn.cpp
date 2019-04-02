@@ -33,13 +33,14 @@ AMyCameraPawn::AMyCameraPawn()
 	OurCameraSpringArm->TargetArmLength = 4000.f;
 	OurCameraSpringArm->bEnableCameraLag = false;
 	OurCameraSpringArm->bDoCollisionTest = false;
-	OurCameraSpringArm->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	OurCameraSpringArm->AttachTo(RootComponent);
 
 	//Create the camara and attach it to the spring arm
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
-	OurCamera->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
+	//OurCamera->AttachToComponent(OurCameraSpringArm, FAttachmentTransformRules::KeepWorldTransform, USpringArmComponent::SocketName);
+	OurCamera->AttachTo(OurCameraSpringArm, USpringArmComponent::SocketName);
 
-	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
+	//RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
 
 	//Take control of the default Player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;

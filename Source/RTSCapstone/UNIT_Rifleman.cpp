@@ -67,18 +67,6 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
-	GetCapsuleComponent()->SetCapsuleRadius(120.0f, true);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
-
-	GetCharacterMovement()->SetAvoidanceEnabled(true);
-	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
-	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.1f);
-	GetCharacterMovement()->NavAgentProps.AgentRadius = 60.0f;
-	GetCharacterMovement()->NavAgentProps.AgentHeight = 125.0f;
-
 
 }
 
@@ -93,7 +81,16 @@ void AUNIT_Rifleman::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rifleman", startingHealth);
 
 	SpawnDefaultController();
-	
+
+
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->SetAvoidanceEnabled(true);
+	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
+	GetCharacterMovement()->SetRVOAvoidanceWeight(0.5f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 }
 
 void AUNIT_Rifleman::PostInitializeComponents()
@@ -135,14 +132,14 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	{
 	case UNIT_STATE::IDLE:
 	case UNIT_STATE::SEEKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::ATTACKING:
-		DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 
@@ -196,6 +193,38 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::MOVING)
 	{
 		// Ignore Combat until unit reaches destination
+
+		FHitResult* rayCastOne = new FHitResult();
+		FHitResult* rayCastTwo = new FHitResult();
+
+		FVector StartTrace = BodyMesh->GetComponentLocation();
+
+		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
+
+
+		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
+
+
+
+		FVector EndTraceOne = ((ForwardVectorOne * 200) + StartTrace);
+		//EndTraceOne = FVector((EndTraceOne.X + 60), (EndTraceOne.Y + 60), (EndTraceOne.Z + BodyMesh->GetForwardVector().Z * 60));
+		//EndTraceOne = EndTraceOne.RotateAngleAxis(30, (EndTraceOne - (BodyMesh->RelativeLocation.X, BodyMesh->RelativeLocation.Y + 60, BodyMesh->RelativeLocation.Z)));
+
+
+		FVector EndTraceTwo = ((ForwardVectorTwo * 200) + StartTrace);
+		//EndTraceTwo = FVector((EndTraceTwo.X - 60 ), (EndTraceTwo.Y - 60), (EndTraceTwo.Z - BodyMesh->GetForwardVector().Z * 60));
+		//EndTraceOne = EndTraceTwo.RotateAngleAxis(30, (EndTraceTwo - (BodyMesh->RelativeLocation.X, BodyMesh->RelativeLocation.Y - 60, BodyMesh->RelativeLocation.Z)));
+
+		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+			DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		}
+
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+			DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		}
+
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 120.0f)
 		{

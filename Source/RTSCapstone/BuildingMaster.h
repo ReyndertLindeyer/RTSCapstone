@@ -14,6 +14,7 @@
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "ExplosiveActor.h"
 
 #include "Engine/DataTable.h"
 
@@ -93,6 +94,8 @@ protected:
 
 	float tempHeight;
 
+	TSubclassOf<class AExplosiveActor> ExplosionBlueprint;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -102,5 +105,5 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool constructed; //Is the building constructed, and has it been placed in the world
 		
-	bool constructAtLocation(II_Player* player);
+	virtual bool constructAtLocation(II_Player* player);
 };

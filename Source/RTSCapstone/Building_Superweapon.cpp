@@ -30,6 +30,11 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	// Change to true for debugging
 	isReady = true;
 	currentTimer = 0.0f;
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 void ABuilding_Superweapon::BeginPlay()

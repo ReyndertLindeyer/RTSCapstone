@@ -27,6 +27,11 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 void ABuilding_Barrecks::BeginPlay()
@@ -212,3 +217,13 @@ void ABuilding_Barrecks::InitializeBarracks()
 	engineerBuildTime = UnitVariables->BuildTime;
 }
 
+bool ABuilding_Barrecks::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 200));
+
+
+	return false;
+}

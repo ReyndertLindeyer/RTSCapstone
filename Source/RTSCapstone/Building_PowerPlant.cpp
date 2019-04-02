@@ -16,6 +16,11 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(10, buildRadius, buildRadius);
 
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
+
 }
 
 void ABuilding_PowerPlant::BeginPlay()
