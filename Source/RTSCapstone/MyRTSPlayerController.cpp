@@ -27,6 +27,9 @@ AMyRTSPlayerController::AMyRTSPlayerController() {
 	selectedBarracks = false;
 	selectedFactory = false;
 
+	isConYardDestroyed = false;
+	triggerEnd = false;
+
 	hasMobileOutpostSelected = false;
 
 	buildingManagerObject = CreateDefaultSubobject<UBuildingManagerObject>(TEXT("buildingManagerObject"));
@@ -53,8 +56,10 @@ void AMyRTSPlayerController::BeginPlay()
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 
-	ChangeResources(50000);
-	ChangePower(20);
+	InitResources(5000);
+	ChangePower(40);
+
+	SetHasDestroyedObjective(false);
 
 	for (TObjectIterator<AGameManager> Itr; Itr; ++Itr)
 	{
@@ -99,6 +104,10 @@ void AMyRTSPlayerController::Tick(float DeltaTime)
 		if (Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])) {
 			hasMobileOutpostSelected = true;
 		}
+	}
+
+	if (buildingManagerObject->IsConstructionYardDestroyed()) {
+		isConYardDestroyed = true;
 	}
 
 	buildingManagerObject->CheckForDestroyedBuildings();
@@ -673,4 +682,28 @@ void AMyRTSPlayerController::AutoDestroyBuilding(TArray<ABuildingMaster*> inList
 	}
 	buildingManagerObject->ghostBuildingArray.Empty();
 	buildingManagerObject->whatBuildingArray.Empty();
+}
+
+bool AMyRTSPlayerController::HasDestroyedObjective()
+{
+	return GetHasDestroyedObjective();
+}
+
+bool AMyRTSPlayerController::ConstructionYardDestroyed()
+{
+	return triggerEnd;
+}
+
+
+void AMyRTSPlayerController::SetTriggerEnd() {
+	triggerEnd = true;
+}
+
+bool AMyRTSPlayerController::ConYardGone() {
+	return isConYardDestroyed;
+}
+
+TArray<int32> AMyRTSPlayerController::Statistics()
+{
+	return GetStatistics();
 }

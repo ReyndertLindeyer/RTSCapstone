@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GameManager.h"
-#include "MyRTSPlayerController.h"
 
 // Sets default values
 AGameManager::AGameManager()
@@ -94,14 +93,35 @@ void AGameManager::Tick(float DeltaTime)
 	// Win Condition
 	if (objective != nullptr)
 	{
-		// Do something?
 	}
 
 	else if (objective == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("WIN CONDITION CLEARED"));
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
+		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
+		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
+		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
+		Cast<II_Player>(playerList[0])->SetStatistics(statistics);
+		Cast<II_Player>(playerList[0])->SetHasDestroyedObjective(true);
 	}
 
+	if (Cast<AMyRTSPlayerController>(playerList[0])->ConYardGone()) {
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
+		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
+		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
+		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
+		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
+		Cast<II_Player>(playerList[0])->SetStatistics(statistics);
+		Cast<AMyRTSPlayerController>(playerList[0])->SetTriggerEnd();
+	}
 
 	// Uncomment for everyone at once
 	/*for (int i = 0; i < playerList.Num(); i++)

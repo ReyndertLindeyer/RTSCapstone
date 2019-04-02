@@ -12,6 +12,7 @@
 
 // Interface
 #include "I_Player.h"
+#include "MyRTSPlayerController.h"
 
 #include "GameManager.generated.h"
 
@@ -40,6 +41,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	TArray<int32> statistics;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	//class UDataTable* buildingDataTable;

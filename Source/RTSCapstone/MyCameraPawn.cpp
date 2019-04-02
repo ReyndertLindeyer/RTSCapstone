@@ -92,12 +92,19 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 200.0f) {
 		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 200.0f, -zoom);
 	}
-	if (zoom == -1 && OurCameraSpringArm->TargetArmLength < 5000.0f) {
+	if (zoom == -1 && OurCameraSpringArm->TargetArmLength < 10000.0f) {
 		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 200.0f, zoom);
 	}
 
+	FVector moveVec;
+
 	//6 is a magic number that can be replaced by making the sensitivity higher
-	FVector moveVec = FVector(MovementInput.X * cameraSensitivity * 6, MovementInput.Y * cameraSensitivity * 6, 0.0);
+	if (OurCameraSpringArm->TargetArmLength > 1000) {
+		moveVec = FVector(MovementInput.X * cameraSensitivity * 6, MovementInput.Y * cameraSensitivity * 6, 0.0);
+	}
+	else {
+		moveVec = FVector(MovementInput.X * cameraSensitivity * 6 * (OurCameraSpringArm->TargetArmLength / 1000.0f), MovementInput.Y * cameraSensitivity * 6 * (OurCameraSpringArm->TargetArmLength / 1000.0f), 0.0);
+	}
 
 	//Get the mouse's position and use that to move the camera
 	rtsPC->GetMousePosition(mousePos.X, mousePos.Y);

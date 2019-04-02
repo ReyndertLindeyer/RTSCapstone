@@ -77,6 +77,8 @@ public:
 
 	void SetPlayer(II_Player* inPlayer);
 
+	bool IsConstructionYardDestroyed();
+
 	UPROPERTY()
 		TArray <ABuilding_Ghost*> ghostBuildingArray;
 	TArray <int32> whatBuildingArray;

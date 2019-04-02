@@ -7,7 +7,6 @@
 
 // ARRAYS
 //#include "I_Unit.h"
-//#include "BuildingMaster.h"
 #include "GameFramework/Character.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -78,6 +77,7 @@ public:
 	void RemoveBuildingAtIndex(int32 index);
 
 	//Adds the amount given
+	void InitResources(int amount);
 	void ChangeResources(int amount); 
 	int GetResourceAmount();
 
@@ -100,6 +100,19 @@ public:
 	void SetSelectedBuilding(AActor* inBuilding);
 	AActor* GetSelectedBuilding();
 
+	int32 GetTotalResourcesCollected();
+	int32 GetTotalBuildingsConstructed();
+	int32 GetTotalUnitsConstructed();
+	int32 GetTotalUnitsLost();
+	int32 GetTotalStructuresLost();
+
+	void SetHasDestroyedObjective(bool inBool);
+	void SetStatistics(TArray<int32> inArray);
+
+
+	bool GetHasDestroyedObjective();
+	TArray<int32> GetStatistics();
+
 private:
 	// Variables
 	TArray<AActor*> UnitList;
@@ -120,4 +133,9 @@ private:
 	
 	int Resources, power;
 
+	int32 totalResourcesCollected, totalBuildingsConstructed, totalUnitsConstructed, totalUnitsLost, totalStructuresLost;
+
+	bool hasDestroyedObjective;
+
+	TArray<int32> statistics;
 };

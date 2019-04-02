@@ -144,6 +144,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Demo")
 		void AutoDestroyBuilding(TArray<ABuildingMaster*> inList);
 
+
+	UFUNCTION(BlueprintCallable, Category = "EndGame")
+		bool HasDestroyedObjective();
+
+	UFUNCTION(BlueprintCallable, Category = "EndGame")
+		bool ConstructionYardDestroyed();
+
+	void SetTriggerEnd();
+	bool ConYardGone();
+
+	UFUNCTION(BlueprintCallable, Category = "EndGame")
+		TArray<int32> Statistics();
+
 protected:
 
 	// DEBUGGING
@@ -183,7 +196,7 @@ protected:
 	UPROPERTY()
 		UBuildingManagerObject* buildingManagerObject;
 
-	bool constructingBuilding, placingBuilding, buildingConstructed, selectedBarracks, selectedFactory;
+	bool constructingBuilding, placingBuilding, buildingConstructed, selectedBarracks, selectedFactory, isConYardDestroyed, triggerEnd;
 
 	float buildingCountdown; //Countdown to building completion
 

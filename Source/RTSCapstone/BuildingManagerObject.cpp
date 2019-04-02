@@ -122,9 +122,49 @@ void UBuildingManagerObject::MoveBuilding(FVector location)
 
 	if (buildingToBuild->GetIsInRadius() && !buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != canBuildIndicator) {
 		buildingToBuild->GetBuildingMesh()->SetMaterial(0, canBuildIndicator);
+
+		if (whatBuilding == 0) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(5, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(6, canBuildIndicator);
+		}
+
+		if (whatBuilding == 1) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+		}
+
+		if (whatBuilding == 2) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+		}
 	}
 	else if (!buildingToBuild->GetIsInRadius() || buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != cantBuildIndicator) {
 		buildingToBuild->GetBuildingMesh()->SetMaterial(0, cantBuildIndicator);
+
+		if (whatBuilding == 0) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(5, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(6, cantBuildIndicator);
+		}
+
+		if (whatBuilding == 1) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, cantBuildIndicator);
+		}
+
+		if (whatBuilding == 2) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, cantBuildIndicator);
+		}
 	}
 }
 
@@ -411,7 +451,7 @@ bool UBuildingManagerObject::IsRefineryBuilt()
 		return true;
 	}
 	//return false; Disabled for testing
-	return true;
+	return false;
 }
 
 void UBuildingManagerObject::SetPlayer(II_Player* inPlayer)
@@ -492,4 +532,14 @@ void UBuildingManagerObject::SetPlayer(II_Player* inPlayer)
 	buildingConstructionTimes.Add(buildingVariables->BuildTime);
 	buildingPowerConsumption.Add(buildingVariables->PowerConsumption);
 	buildingMaxHealth.Add(buildingVariables->MaxHealth);
+}
+
+
+bool UBuildingManagerObject::IsConstructionYardDestroyed() {
+	if (constructionYard != nullptr) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
