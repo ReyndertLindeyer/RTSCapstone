@@ -120,6 +120,8 @@ void AUNIT_AvBT::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideTargeting = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -175,7 +177,6 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	
 	if (targetActor != nullptr)
 	{
-
 		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
 		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
 		TurretMesh->SetWorldRotation(targetRotation);
@@ -188,21 +189,21 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 
 	switch (unitState)
 	{
-	case UNIT_STATE::IDLE:
-		//UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
-	case UNIT_STATE::SEEKING:
-		//UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
-		break;
-	case UNIT_STATE::ATTACKING:
-		//UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
-		break;
-	case UNIT_STATE::MOVING:
-		//UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
-		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
-		break;
+		case UNIT_STATE::IDLE:
+			//UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
+		case UNIT_STATE::SEEKING:
+			//UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
+			DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+			DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
+			break;
+		case UNIT_STATE::ATTACKING:
+			//UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
+			DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
+			break;
+		case UNIT_STATE::MOVING:
+			//UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
+			DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+			break;
 	}
 
 	if (unitState != UNIT_STATE::MOVING)
@@ -252,7 +253,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -274,6 +275,9 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			
+			if (overrideTargeting)
+				overrideTargeting = false;
 		}
 
 	}
@@ -333,7 +337,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					if (!secondShot)
 					{
 
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos2->GetComponentLocation(), TurretMesh->GetComponentRotation());
 						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, cannonDamage, 5000.0f, 0.0f, 100.0f, PSC, reactionPS);
 						projectile->SetActorEnableCollision(false);
 						currentTimer = cannonTimer - 0.1f;
@@ -345,7 +349,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 					else 
 					{
 
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
+						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos1->GetComponentLocation(), TurretMesh->GetComponentRotation());
 						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, cannonDamage, 5000.0f, 0.0f, 100.0f, PSC, reactionPS);
 						projectile->SetActorEnableCollision(false);
 						secondShot = false;

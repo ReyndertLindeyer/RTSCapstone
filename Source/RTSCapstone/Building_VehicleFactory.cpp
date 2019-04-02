@@ -281,3 +281,14 @@ void ABuilding_VehicleFactory::InitializeWarFactory()
 	outpostCost = UnitVariables->Cost;
 	outpostTime = UnitVariables->BuildTime;
 }
+
+bool ABuilding_VehicleFactory::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 405));
+
+
+	return false;
+}

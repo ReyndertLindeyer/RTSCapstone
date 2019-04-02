@@ -87,3 +87,14 @@ void ABuilding_Superweapon::SetHasPower(bool inBool)
 {
 	//Disable attack functions
 }
+
+bool ABuilding_Superweapon::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 700));
+
+
+	return false;
+}

@@ -21,4 +21,5 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual bool constructAtLocation(II_Player* player) override;
 };

@@ -85,8 +85,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackTimer = 0.25f;
 
-	bool secondShot = false;
-
 	//######################################################
 
 public:

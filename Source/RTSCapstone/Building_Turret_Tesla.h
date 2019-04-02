@@ -19,6 +19,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual bool constructAtLocation(II_Player* player) override;
 
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 

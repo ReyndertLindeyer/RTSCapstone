@@ -52,4 +52,5 @@ public:
 	FVector targetMoveDestination;
 
 	UNIT_STATE unitState;
+	bool overrideTargeting;
 };

@@ -44,10 +44,10 @@ public:
 	void SetHasPower(bool inBool); //Sets the boolean for if the structure has enough power
 	void InitializeWarFactory();
 
+	virtual bool constructAtLocation(II_Player* player) override;
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaTime) override;
 
 	bool constructingUnit, hasPower; //Variables for if the building is constructing any units, and if the building has enough power

@@ -77,8 +77,8 @@ AUNIT_Gattling::AUNIT_Gattling()
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
-	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
-
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BulletHit.P_BulletHit'")).Get();
+	
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
@@ -272,7 +272,7 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -350,14 +350,24 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 
 				if (currentTimer >= attackTimer)
 				{
+					if (alternateShot)
+					{
+						AProjectile* projectileA = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos2->GetComponentLocation(), RightGunMesh->GetComponentRotation());
+						projectileA->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
+						projectileA->SetActorEnableCollision(false);
+						alternateShot = false;
+					}
 
-					AProjectile* projectileA = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), RightGunMesh->GetComponentLocation(), RightGunMesh->GetComponentRotation());
-					projectileA->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
-					projectileA->SetActorEnableCollision(false);
+					else
+					{
+						AProjectile* projectileB = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos1->GetComponentLocation(), LeftGunMesh->GetComponentRotation());
+						projectileB->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
+						projectileB->SetActorEnableCollision(false);
+						alternateShot = true;
+					}
+					
 
-					AProjectile* projectileB = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), LeftGunMesh->GetComponentLocation(), LeftGunMesh->GetComponentRotation());
-					projectileB->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
-					projectileB->SetActorEnableCollision(false);
+					
 
 					audioComponentFire->Play();
 
