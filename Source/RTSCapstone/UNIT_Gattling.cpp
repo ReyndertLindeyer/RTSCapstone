@@ -195,6 +195,8 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
+
 	if (targetActor != nullptr)
 	{
 

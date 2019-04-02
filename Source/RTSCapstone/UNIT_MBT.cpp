@@ -168,6 +168,8 @@ void AUNIT_MBT::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
+
 	if (targetActor != nullptr)
 	{
 		

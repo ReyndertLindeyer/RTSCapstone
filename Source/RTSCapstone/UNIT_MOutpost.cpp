@@ -38,7 +38,6 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
-
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +63,8 @@ void AUNIT_MOutpost::BeginPlay()
 void AUNIT_MOutpost::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	isDestructable = SetDestructible;
 
 	// Detect all AActors within a Radius
 	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;

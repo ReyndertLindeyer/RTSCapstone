@@ -166,6 +166,8 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	isDestructable = SetDestructible;
+
 	if (targetActor != nullptr)
 	{
 

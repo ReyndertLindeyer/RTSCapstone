@@ -59,29 +59,33 @@ void II_Entity::AssignPlayer(II_Player* newOwner_)
 
 int II_Entity::DealDamage(float amount)
 {	
-	
-	// Kills the target
-	if (currentHealth - amount <= 0)
+	if (isDestructable)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s : 0 / %f  (%f%)"), *GetName(), GetMaxHealth(), GetHealthPercentage());
-
-		if (currentHealth - amount < 0)
+		// Kills the target
+		if (currentHealth - amount <= 0)
 		{
-			float overkillAmount = -(currentHealth - amount);
-			UE_LOG(LogTemp, Warning, TEXT("*OVERKILL* (%f)"), overkillAmount);
+			UE_LOG(LogTemp, Warning, TEXT("%s : 0 / %f  (%f%)"), *GetName(), GetMaxHealth(), GetHealthPercentage());
+
+			if (currentHealth - amount < 0)
+			{
+				float overkillAmount = -(currentHealth - amount);
+				UE_LOG(LogTemp, Warning, TEXT("*OVERKILL* (%f)"), overkillAmount);
+			}
+
+			DestroyEntity();
+			return 1;
 		}
 
-		DestroyEntity();
-		return 1;
+		// Doesn't kill the target
+		else
+		{
+			currentHealth -= amount;
+			UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *GetName(), GetCurrentHealth(), GetMaxHealth(), GetHealthPercentage());
+			return 0;
+		}
 	}
-	
-	// Doesn't kill the target
-	else 
-	{
-		currentHealth -= amount;
-		UE_LOG(LogTemp, Warning, TEXT("%s : %f / %f  (%f%)"), *GetName(), GetCurrentHealth(), GetMaxHealth(), GetHealthPercentage());
-		return 0;
-	}
+
+	return -1;
 }
 
 FString II_Entity::GetName() 

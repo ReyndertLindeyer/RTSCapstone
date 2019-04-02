@@ -25,7 +25,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -120.0f));
-	BodyMesh->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	BodyMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // Don't change this.  The issue is with the model, not the code.
 	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 	//RootComponent = BodyMesh;
@@ -153,6 +153,8 @@ void AUNIT_Harvester::PostInitializeComponents()
 void AUNIT_Harvester::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	isDestructable = SetDestructible;
 
 	switch (unitState)
 	{
@@ -297,9 +299,10 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	// Depositing
 	if (unitState == UNIT_STATE::INTERACTING)
 	{
-		FVector targetLocation = targetRefinery->harvestPt->GetComponentLocation();
-		//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
-
+		FVector targetLocation = FVector(0);
+		if (targetRefinery != nullptr)
+			 targetLocation = targetRefinery->harvestPt->GetComponentLocation();
+	
 		if (currentResources <= 0)
 		{
 			unitState = UNIT_STATE::IDLE;
@@ -357,8 +360,6 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			
 		}
 
-		
-
 		if (targetNode == nullptr)
 			unitState = UNIT_STATE::IDLE;
 
@@ -407,6 +408,8 @@ void AUNIT_Harvester::ReturnToRefinery()
 		{
 			if (Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]))
 			{
+				
+
 				if (targetRefinery == nullptr)
 					targetRefinery = Cast<ABuilding_Refinery>(GetEntityOwner()->GetBuildings()[i]);
 

@@ -99,7 +99,6 @@ AUNIT_Scout::AUNIT_Scout()
 	audioComponentAccelerate->SetupAttachment(RootComponent);
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
-
 }
 
 // Called when the game starts or when spawned
@@ -162,6 +161,8 @@ void AUNIT_Scout::PostInitializeComponents()
 void AUNIT_Scout::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	isDestructable = SetDestructible;
 
 	if (targetActor != nullptr)
 	{

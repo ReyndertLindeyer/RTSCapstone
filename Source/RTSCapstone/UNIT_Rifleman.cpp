@@ -75,6 +75,8 @@ void AUNIT_Rifleman::BeginPlay()
 {
 	Super::BeginPlay();
 
+	isDestructable = SetDestructible;
+
 	if (setPlayerOwner != nullptr)
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Rifleman", startingHealth);
 
