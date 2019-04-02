@@ -17,6 +17,7 @@ void II_Unit::MoveOrder(AController* controller, FVector destination)
 	SetDestination(controller, destination);
 	unitState = UNIT_STATE::MOVING;
 	targetActor = nullptr;
+	overrideTargeting = true;
 }
 
 

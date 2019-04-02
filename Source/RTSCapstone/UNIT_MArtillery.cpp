@@ -170,7 +170,6 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 
 	if (targetActor != nullptr)
 	{
-
 		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
 		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
 		TurretMesh->SetWorldRotation(targetRotation);
@@ -242,7 +241,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 				/// Check if entities are hostile
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -322,7 +321,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 				{
 					currentTimer = 0.0f;
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), TurretMesh->GetComponentRotation());
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 					audioComponentFire->Play();

@@ -239,7 +239,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
 						targetActor = entitiesInRange[i];
@@ -344,7 +344,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 				{
 
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), TurretMesh->GetComponentRotation());
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
 					projectile->SetActorEnableCollision(false);
 

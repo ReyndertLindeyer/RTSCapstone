@@ -31,6 +31,9 @@ public:
 		bool assignToPlayer;
 
 	UPROPERTY(EditAnywhere)
+		AActor* playerToAssign;
+
+	UPROPERTY(EditAnywhere)
 		bool spawnCYForPlayer;
 
 	UPROPERTY(EditAnywhere)

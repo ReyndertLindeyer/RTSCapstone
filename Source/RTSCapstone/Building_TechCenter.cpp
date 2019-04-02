@@ -46,3 +46,14 @@ void ABuilding_TechCenter::Tick(float DeltaTime)
 	}
 
 }
+
+bool ABuilding_TechCenter::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 725));
+
+
+	return false;
+}

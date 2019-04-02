@@ -56,3 +56,14 @@ void ABuilding_PowerPlant::Upgrade()
 	buildingMesh->SetSimulatePhysics(false);
 	*/
 }
+
+bool ABuilding_PowerPlant::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 550));
+
+
+	return false;
+}

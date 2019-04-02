@@ -16,12 +16,11 @@ UBuildingManagerObject::UBuildingManagerObject()
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
 	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/OrbitalCannon_Model/Orbital_Cannon.Orbital_Cannon")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devGattling.devGattling")).Get()); 
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTurret_v1.devTurret_v1")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTesla_v1.devTesla_v1")).Get());
-
-
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL.Gattling_Turret_V1_UNREAL")).Get()); 
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/AT_Cannon/AT_Cannon_V1_UNREAL.AT_Cannon_V1_UNREAL")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Artillery_Platform/Artillery_Platform_V1_UNREAL.Artillery_Platform_V1_UNREAL")).Get());
+	buildingMeshArray.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Tesla_Tower/TeslaTower_v1.TeslaTower_v1")).Get());
+	
 	//canBuildIndicator = CreateDefaultSubobject<UMaterialInterface>(TEXT("GreenBuildingGhost"));
 	canBuildIndicator = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/GreenBuildingGhost")).Get();
 
@@ -190,7 +189,7 @@ bool UBuildingManagerObject::constructBuilding()
 
 		if (building->IsA(ABuilding_Refinery::StaticClass())) {
 			refineryArray.Add((ABuilding_Refinery*)building);
-			Cast<ABuilding_Refinery>(building)->InitializeRefinery();
+			//Cast<ABuilding_Refinery>(building)->InitializeRefinery();
 		}
 
 		if (building->IsA(ABuilding_TechCenter::StaticClass())) {
