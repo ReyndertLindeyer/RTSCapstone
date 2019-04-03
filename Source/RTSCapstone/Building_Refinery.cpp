@@ -27,7 +27,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	harvestPt->SetRelativeLocation(FVector(0.0f, 400.0f, 10.0f));
 
 	isOccupied = false;
-
+	
 	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
@@ -38,6 +38,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 void ABuilding_Refinery::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -53,13 +54,30 @@ void ABuilding_Refinery::Tick(float DeltaTime)
 		setPlayerOwner = nullptr;
 		return;
 	}
+
+	
+	
+	if (constructed && canSpawnHarvester)
+	{	
+		InitializeRefinery();
+		canSpawnHarvester = false;
+	}
 }
 
 void ABuilding_Refinery::InitializeRefinery()
 {
 	FActorSpawnParameters SpawnInfo;
-	//AActor* MyActor = GWorld->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), harvestPt->GetRelativeTransform(), FRotator::ZeroRotator, SpawnInfo);
 	AActor* spawnedHarvy = GetWorld()->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), harvestPt->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(spawnedHarvy)->InitializeEntity(GetEntityOwner(), "Harvester", 2000.0f);
+}
 
+bool ABuilding_Refinery::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 825));
+
+
+	return false;
 }

@@ -38,9 +38,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* BodyMesh;
 	
-	UStaticMeshComponent* PivotMesh;
-	UStaticMeshComponent* LeftGunMesh;
-	UStaticMeshComponent* RightGunMesh;
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* PivotMesh;
+	
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* LeftGunMesh;
+	
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* RightGunMesh;
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* barrelPos1;
@@ -125,12 +130,12 @@ public:
 	UPROPERTY(EditAnywhere)
 		float attackRange = 1300.0f;
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 2.5f;
+		float attackDamage = 1.25f;
 	UPROPERTY(EditAnywhere)
 		float attackTimer = 0.125f;
 
 
-	bool secondShot = false;
+	bool alternateShot = false;
 
 	//######################################################
 

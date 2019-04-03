@@ -222,7 +222,7 @@ bool ABuilding_Barrecks::constructAtLocation(II_Player* player)
 	dustParticleComp->SetWorldLocation(this->GetActorLocation());
 	dustParticleComp->ActivateSystem();
 	tempHeight = RootComponent->GetComponentLocation().Z;
-	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 200));
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 360));
 
 
 	return false;

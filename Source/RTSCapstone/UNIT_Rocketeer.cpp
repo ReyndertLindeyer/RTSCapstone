@@ -261,7 +261,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 					UE_LOG(LogTemp, Warning, TEXT("%f target health"), Cast<II_Entity>(targetActor)->GetCurrentHealth());
 
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetActorLocation(), GetActorRotation());
-					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, attackDamage, 500.0f, 0.0f, 100.0f, PS, reactionPS);
+					projectile->InitializeProjectile(PROJECTILE_TYPE::MISSILE, targetLocation, attackDamage, 2000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 
 					audioComponentFire->Play();

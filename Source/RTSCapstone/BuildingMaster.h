@@ -16,6 +16,9 @@
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "ExplosiveActor.h"
 
+#include "Components/AudioComponent.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+
 #include "Engine/DataTable.h"
 
 // INTERFACE
@@ -56,6 +59,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool SetDestructible = true;
 
+	void PostInitializeComponents();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -69,6 +74,13 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UParticleSystemComponent* dustParticleComp;
+
+
+	USoundCue* selectCue;
+	USoundCue* buildCue;
+
+	UAudioComponent* audioComponentSelect;
+	UAudioComponent* audioComponentBuild;
 
 	//Whether or not the building's radius should be on
 	bool buildRadiusActive;

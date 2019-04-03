@@ -30,11 +30,14 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+	virtual bool constructAtLocation(II_Player* player) override;
 
 	void InitializeRefinery();
+	
 
 	bool isOccupied;
 
 private:
 	bool canSpawnHarvester;
+
 };

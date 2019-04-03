@@ -164,7 +164,7 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 					currentAttackTimer = 0.0f;
 
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 500.0f, 0.0f, 100.0f, PS, reactionPS);
+					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 4000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 				}
 
@@ -190,4 +190,15 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 void ABuilding_Turret_Artillery::SetHasPower(bool inBool)
 {
 	//Disable attack functions
+}
+
+bool ABuilding_Turret_Artillery::constructAtLocation(II_Player* player)
+{
+	dustParticleComp->SetWorldLocation(this->GetActorLocation());
+	dustParticleComp->ActivateSystem();
+	tempHeight = RootComponent->GetComponentLocation().Z;
+	buildingMesh->SetWorldLocation(FVector(RootComponent->GetComponentLocation().X, RootComponent->GetComponentLocation().Y, RootComponent->GetComponentLocation().Z - 390));
+
+
+	return false;
 }

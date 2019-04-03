@@ -249,7 +249,7 @@ void AUNIT_MBT::Tick(float DeltaTime)
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
 					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner() && Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue != GetEntityOwner()->teamValue)
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
 					{
 
 						UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
@@ -331,7 +331,7 @@ void AUNIT_MBT::Tick(float DeltaTime)
 				{
 					currentTimer = 0.0f;
 
-					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), TurretMesh->GetComponentLocation(), TurretMesh->GetComponentRotation());
+					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), TurretMesh->GetComponentRotation());
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
 					audioComponentFire->Play();
