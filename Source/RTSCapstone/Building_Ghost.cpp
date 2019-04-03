@@ -45,17 +45,19 @@ void ABuilding_Ghost::Tick(float DeltaTime)
 
 	for (int i = 0; i < outActors.Num(); i++) {
 		if (Cast<ABuildingMaster>(outActors[i])) {
-			float distance = (outActors[i]->GetRootComponent()->GetComponentLocation() - RootComponent->GetComponentLocation()).Size();
+			if (Cast<ABuildingMaster>(outActors[i])->GetEntityOwner() == thePlayer) {
+				float distance = (outActors[i]->GetRootComponent()->GetComponentLocation() - RootComponent->GetComponentLocation()).Size();
 
-			//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
-			if (distance < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
-				isInRadius = true;
-				break;
-				//UE_LOG(LogTemp, Warning, TEXT("inside radius"));
-			}
-			else {
-				isInRadius = false;
-				//UE_LOG(LogTemp, Warning, TEXT("outside radius"));
+				//if (FVector::Distance(this->GetActorLocation(), outActors[i]->GetActorLocation()) < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
+				if (distance < Cast<ABuildingMaster>(outActors[i])->GetConstructionRadius() * 2) {
+					isInRadius = true;
+					break;
+					//UE_LOG(LogTemp, Warning, TEXT("inside radius"));
+				}
+				else {
+					isInRadius = false;
+					//UE_LOG(LogTemp, Warning, TEXT("outside radius"));
+				}
 			}
 		}
 	}
