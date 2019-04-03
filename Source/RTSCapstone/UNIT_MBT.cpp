@@ -172,35 +172,35 @@ void AUNIT_MBT::Tick(float DeltaTime)
 
 	if (targetActor != nullptr)
 	{
+		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+		Dir.Normalize();
 		
-		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-		TurretMesh->SetWorldRotation(targetRotation);
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
 	}
 
 	else
 	{
-		TurretMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
 	}
 
 	switch (unitState)
 	{
-	case UNIT_STATE::IDLE:
-		//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
-	case UNIT_STATE::SEEKING:
-		//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
-		break;
-	case UNIT_STATE::ATTACKING:
-		//UE_LOG(LogTemp, Warning, TEXT("ATTACKING"));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
-		break;
-	case UNIT_STATE::MOVING:
-		//UE_LOG(LogTemp, Warning, TEXT("MOVING"));
-		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
-		break;
-	}
+		case UNIT_STATE::IDLE:
+			//UE_LOG(LogTemp, Warning, TEXT("IDLE"));
+		case UNIT_STATE::SEEKING:
+			//UE_LOG(LogTemp, Warning, TEXT("SEEKING"));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+			break;
+		case UNIT_STATE::ATTACKING:
+			//UE_LOG(LogTemp, Warning, TEXT("ATTACKING"));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+			break;
+		case UNIT_STATE::MOVING:
+			//UE_LOG(LogTemp, Warning, TEXT("MOVING"));
+			//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+			break;
+		}
 
 	if (unitState != UNIT_STATE::MOVING)
 	{

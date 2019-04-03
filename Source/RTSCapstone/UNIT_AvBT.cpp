@@ -177,14 +177,15 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	
 	if (targetActor != nullptr)
 	{
-		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-		TurretMesh->SetWorldRotation(targetRotation);
+		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+		Dir.Normalize();
+
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
 	}
 
 	else
 	{
-		TurretMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
 	}
 
 	switch (unitState)
@@ -193,16 +194,16 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 			//UE_LOG(LogTemp, Warning, TEXT("AVBT IDLE"));
 		case UNIT_STATE::SEEKING:
 			//UE_LOG(LogTemp, Warning, TEXT("AVBT SEEKING"));
-			DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-			DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 			break;
 		case UNIT_STATE::ATTACKING:
 			//UE_LOG(LogTemp, Warning, TEXT("AVBT ATTACKING"));
-			DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), cannonRange, 24, FColor(255, 0, 0));
 			break;
 		case UNIT_STATE::MOVING:
 			//UE_LOG(LogTemp, Warning, TEXT("AVBT MOVING"));
-			DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+			//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 			break;
 	}
 
