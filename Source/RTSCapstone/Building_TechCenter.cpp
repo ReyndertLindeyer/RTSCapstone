@@ -10,6 +10,8 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	buildRadius = 500;
 	isBuilding = true;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Tech_Centre_-_Select_Cue"));
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 

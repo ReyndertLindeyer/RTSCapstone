@@ -12,6 +12,8 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	isBuilding = true;
 	canSpawnHarvester = true;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Refinery_-_Select_Cue"));
+
 	this->Tags.Add(FName("Refinery"));
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Refinery_Model/Resource_Refinery.Resource_Refinery")).Get());
 	buildingMesh->SetSimulatePhysics(false);

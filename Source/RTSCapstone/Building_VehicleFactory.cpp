@@ -10,6 +10,8 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	isBuilding = true;
 	hasPower = true;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Vehicle_Factory_-_Select_Cue"));
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 
