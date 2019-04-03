@@ -114,18 +114,6 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 
 	if (constructed)
 	{
-		if (targetActor != nullptr)
-		{
-			//FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-			//FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-			//PivotMesh->SetWorldRotation(targetRotation);
-		}
-
-		else
-		{
-			//PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
-		}
-
 		// Detect all AActors within a Radius
 		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
 		TArray<AActor*> ignoreActors;
@@ -152,11 +140,12 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 			}
 		}
 
-		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
-
 		// If there is no target, run the detection sequence.
 		if (targetActor == nullptr)
 		{
+			// Rotate back to default
+			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
+
 			// If one ore more actors are detected within range
 			if (entitiesInRange.Num() > 0)
 			{
@@ -184,9 +173,13 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 			// Target is in range
 			else
 			{
-				// Rotate towards the target 
-				PivotMesh->SetRelativeRotation((targetActor->GetActorLocation() - PivotMesh->GetComponentLocation()).Rotation() + FRotator(0, -90, 0));
+				// Rotate towards target
+				FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+				Dir.Normalize();
 
+				PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+
+				// Attack Target
 				if (currentAttackTimer >= attackRate)
 				{
 					currentAttackTimer = 0.0f;

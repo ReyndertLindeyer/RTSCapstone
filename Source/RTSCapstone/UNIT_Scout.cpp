@@ -166,15 +166,15 @@ void AUNIT_Scout::Tick(float DeltaTime)
 
 	if (targetActor != nullptr)
 	{
+		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+		Dir.Normalize();
 
-		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-		TurretMesh->SetWorldRotation(targetRotation);
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
 	}
 
 	else
 	{
-		TurretMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
 	}
 
 	switch (unitState)

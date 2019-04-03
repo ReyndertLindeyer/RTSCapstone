@@ -55,7 +55,7 @@ void AProjectile::Tick(float DeltaTime)
 		*/
 
 		if (!reachedTarget) {
-			UE_LOG(LogTemp, Warning, TEXT("PROJECTILE AT TARGET!"));
+			//UE_LOG(LogTemp, Warning, TEXT("PROJECTILE AT TARGET!"));
 
 			// Go Boom
 			// Detect all AActors within a Radius

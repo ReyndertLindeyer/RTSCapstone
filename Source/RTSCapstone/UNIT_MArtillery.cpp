@@ -170,14 +170,15 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 
 	if (targetActor != nullptr)
 	{
-		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-		TurretMesh->SetWorldRotation(targetRotation);
+		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+		Dir.Normalize();
+
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
 	}
 
 	else
 	{
-		TurretMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
 	}
 
 	switch (unitState)

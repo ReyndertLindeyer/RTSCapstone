@@ -199,15 +199,15 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 
 	if (targetActor != nullptr)
 	{
+		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+		Dir.Normalize();
 
-		FVector targetLocation = targetActor->GetActorLocation() - GetActorLocation();
-		FRotator targetRotation = FRotationMatrix::MakeFromX(targetLocation).Rotator();
-		PivotMesh->SetWorldRotation(targetRotation);
+		PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
 	}
 
 	else
 	{
-		PivotMesh->SetWorldRotation(RootComponent->GetComponentRotation());
+		PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
 	}
 
 	switch (unitState)
