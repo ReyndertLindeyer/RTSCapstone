@@ -47,5 +47,9 @@ public:
 	void KillMe();
 
 private:
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* spawnPt;
+
 	FVector waypoint; 
 };
