@@ -103,26 +103,7 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 		}
 
 		// If there is no target, run the detection sequence.
-		if (!targetActor->IsValidLowLevel())
-		{
-			// If one ore more actors are detected within range
-			if (entitiesInRange.Num() > 0)
-			{
-				// Loop through them all
-				for (int i = 0; i < entitiesInRange.Num(); i++)
-				{
-					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
-					{	
-						targetActor = entitiesInRange[i];
-						break;
-					}
-				}
-			}
-		}
-
-		// A target actor exists
-		else
+		if (targetActor != nullptr)
 		{
 			// If the target is out of range, reset the targetActor reference
 			if (FVector::Dist(GetActorLocation(), targetActor->GetActorLocation()) > detectRange)
@@ -136,12 +117,12 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 				if (currentAttackTimer >= attackRate)
 				{
 					if (chain1 && c1TargetActor != nullptr)
-					{		
+					{
 						// Add Particle start to tesla and partile end to target location
 						particleComp->SetBeamSourcePoint(0, targetActor->GetActorLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, c1TargetActor->GetActorLocation(), 0);
 						particleComp->ActivateSystem(true);
-						
+
 						// Directly damage the target entity
 						Cast<II_Entity>(c1TargetActor)->DealDamage(attackDamage);
 
@@ -162,10 +143,10 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 									{
 										// Set the second chain target
 										c2TargetActor = chainTargetActors[i];
-										
+
 										// Enable the second chain sequence on next call
 										chain2 = true;
-										
+
 										// Disable the first chain sequence to prevent recalling
 										chain1 = false;
 
@@ -184,14 +165,14 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 						else
 							currentAttackTimer = attackRate - 0.1f;
 					}
-					
+
 					else if (chain2 && c2TargetActor != nullptr)
 					{
 						// Add Particle start to tesla and partile end to target location
 						particleComp->SetBeamSourcePoint(0, c1TargetActor->GetActorLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, c2TargetActor->GetActorLocation(), 0);
 						particleComp->ActivateSystem(true);
-						
+
 						// Directly damage the target entity
 						Cast<II_Entity>(c2TargetActor)->DealDamage(attackDamage);
 
@@ -252,9 +233,27 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 							currentAttackTimer = attackRate - 0.1f;
 					}
 				}
-				
+
 				if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 					targetActor = nullptr;
+			}
+		}
+
+		else
+		{
+			// If one ore more actors are detected within range
+			if (entitiesInRange.Num() > 0)
+			{
+				// Loop through them all
+				for (int i = 0; i < entitiesInRange.Num(); i++)
+				{
+					// Check if the entity does not belong to the owner
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					{
+						targetActor = entitiesInRange[i];
+						break;
+					}
+				}
 			}
 		}
 

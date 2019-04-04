@@ -199,12 +199,15 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 
-	if (targetActor->IsValidLowLevel())
+	if (targetActor != nullptr)
 	{
-		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
-		Dir.Normalize();
+		if (targetActor->IsValidLowLevel())
+		{
+			FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+			Dir.Normalize();
 
-		PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+		}
 	}
 
 	else

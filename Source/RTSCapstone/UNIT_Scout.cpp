@@ -112,7 +112,6 @@ void AUNIT_Scout::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("ERROR BEFORE/AFTER"));
 
 	overrideAI = false;
-	targetActor = nullptr;
 
 	SpawnDefaultController();
 
@@ -172,15 +171,18 @@ void AUNIT_Scout::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	isDestructable = SetDestructible;
-
-	if (targetActor->IsValidLowLevel())
+	
+	if (targetActor != nullptr)
 	{
-		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
-		Dir.Normalize();
+		if (targetActor->IsValidLowLevel())
+		{
+			FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+			Dir.Normalize();
 
-		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+			TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+		}
 	}
-
+	
 	else
 	{
 		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));

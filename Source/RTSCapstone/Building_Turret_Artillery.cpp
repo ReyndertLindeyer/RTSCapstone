@@ -101,30 +101,7 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
 
 		// If there is no target, run the detection sequence.
-		if (!targetActor->IsValidLowLevel())
-		{
-			// Rotate back to default
-			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
-
-			// If one ore more actors are detected within range
-			if (entitiesInRange.Num() > 0)
-			{
-				// Loop through them all
-				for (int i = 0; i < entitiesInRange.Num(); i++)
-				{
-					// Check if the entity does not belong to the owner
-					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
-					{
-						targetActor = entitiesInRange[i];
-						break;
-
-					}
-				}
-			}
-		}
-
-		// A target actor exists
-		else
+		if (targetActor != nullptr)
 		{
 			// If the target is out of range, reset the targetActor reference
 			if (FVector::Dist(GetActorLocation(), targetActor->GetActorLocation()) > detectRange)
@@ -151,10 +128,29 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 
 				if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 					targetActor = nullptr;
-
 			}
+		}
 
+		else
+		{
+			// Rotate back to default
+			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
 
+			// If one ore more actors are detected within range
+			if (entitiesInRange.Num() > 0)
+			{
+				// Loop through them all
+				for (int i = 0; i < entitiesInRange.Num(); i++)
+				{
+					// Check if the entity does not belong to the owner
+					if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+					{
+						targetActor = entitiesInRange[i];
+						break;
+
+					}
+				}
+			}
 		}
 
 		/// Attack Rate Timer

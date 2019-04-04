@@ -141,7 +141,54 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 		}
 
 		// If there is no target, run the detection sequence.
-		if (!targetActor->IsValidLowLevel())
+		if (targetActor != nullptr)
+		{
+			if (targetActor->IsValidLowLevel())
+			{
+				// If the target is out of range, reset the targetActor reference
+				if (FVector::Dist(GetActorLocation(), targetActor->GetActorLocation()) > detectRange)
+					targetActor = nullptr;
+
+				// Target is in range
+				else
+				{
+					// Rotate towards target
+					FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+					Dir.Normalize();
+
+					PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+
+					// Attack Target
+					if (currentAttackTimer >= attackRate)
+					{
+						currentAttackTimer = 0.0f;
+
+						if (alternateShot)
+						{
+							AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos1->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
+							projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
+							projectile->SetActorEnableCollision(false);
+							alternateShot = false;
+						}
+
+						else
+						{
+							AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos2->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
+							projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
+							projectile->SetActorEnableCollision(false);
+							alternateShot = true;
+						}
+
+
+						if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
+							targetActor = nullptr;
+					}
+
+				}
+			}
+		}
+
+		else
 		{
 			// Rotate back to default
 			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
@@ -163,52 +210,6 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 			}
 		}
 
-		// A target actor exists
-		else
-		{
-			// If the target is out of range, reset the targetActor reference
-			if (FVector::Dist(GetActorLocation(), targetActor->GetActorLocation()) > detectRange)
-				targetActor = nullptr;
-
-			// Target is in range
-			else
-			{
-				// Rotate towards target
-				FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
-				Dir.Normalize();
-
-				PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
-
-				// Attack Target
-				if (currentAttackTimer >= attackRate)
-				{
-					currentAttackTimer = 0.0f;
-
-					if (alternateShot)
-					{
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos1->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
-						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
-						projectile->SetActorEnableCollision(false);
-						alternateShot = false;
-					}
-
-					else
-					{
-						AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos2->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
-						projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 1.0f, PS, reactionPS);
-						projectile->SetActorEnableCollision(false);
-						alternateShot = true;
-					}
-					
-
-					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
-						targetActor = nullptr;
-				}
-
-			}
-
-
-		}
 
 		/// Attack Rate Timer
 		// Will count down regardless of whether it's combat or not.

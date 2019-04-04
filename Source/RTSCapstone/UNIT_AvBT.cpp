@@ -175,12 +175,15 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 	
-	if (targetActor->IsValidLowLevel())
+	if (targetActor != nullptr)
 	{
-		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
-		Dir.Normalize();
+		if (targetActor->IsValidLowLevel())
+		{
+			FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+			Dir.Normalize();
 
-		TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+			TurretMesh->SetWorldRotation(FMath::Lerp(TurretMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));
+		}
 	}
 
 	else
