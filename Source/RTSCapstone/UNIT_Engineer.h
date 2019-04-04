@@ -92,7 +92,7 @@ public:
 	TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
-		float startingHealth = 150.0f;
+		float startingHealth = 250.0f;
 	UPROPERTY(EditAnywhere)
 		float detectRange = 500.0f;
 	UPROPERTY(EditAnywhere)

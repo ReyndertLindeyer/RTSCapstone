@@ -42,7 +42,7 @@ public:
 	float currentAttackTimer;
 
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 75.0f;
+		float attackDamage = 450.0f;
 	//UPROPERTY(EditAnywhere)
 	//	float startingHealth = 225.0f;
 	UPROPERTY(EditAnywhere)

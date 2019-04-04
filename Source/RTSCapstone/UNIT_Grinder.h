@@ -79,16 +79,16 @@ public:
 		TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
-		float startingHealth = 1500.0f;
+		float startingHealth = 1250.0f;
 	UPROPERTY(EditAnywhere)
 		float detectRange = 1500.0f;
 
 	UPROPERTY(EditAnywhere)
 		float attackRange = 500.0f;
 	UPROPERTY(EditAnywhere)
-		float attackDamage = 5.0f;
+		float attackDamage = 10.0f;
 	UPROPERTY(EditAnywhere)
-		float attackTimer = 0.25f;
+		float attackTimer = 0.1f;
 
 	//######################################################
 

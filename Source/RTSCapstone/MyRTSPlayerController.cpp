@@ -66,8 +66,9 @@ void AMyRTSPlayerController::BeginPlay()
 		if (Itr->spawnCYForPlayer)
 			buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
 		
-		if (Itr->scriptedEventList[0] != nullptr)
-			scriptedEvent = Itr->scriptedEventList[0];
+		if (Itr->scriptedEventList.Num() > 0)
+			if (Itr->scriptedEventList[0] != nullptr)
+				scriptedEvent = Itr->scriptedEventList[0];
 
 		//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
 		//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);

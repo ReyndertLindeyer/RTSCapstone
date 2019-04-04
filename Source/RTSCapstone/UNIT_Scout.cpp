@@ -109,9 +109,16 @@ void AUNIT_Scout::BeginPlay()
 	if (setPlayerOwner != nullptr)
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Humvee", startingHealth);
 
-	SpawnDefaultController();
+	UE_LOG(LogTemp, Warning, TEXT("ERROR BEFORE/AFTER"));
 
 	overrideAI = false;
+	targetActor = nullptr;
+
+	SpawnDefaultController();
+
+	
+
+	
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
