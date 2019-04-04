@@ -10,8 +10,9 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	isBuilding = true;
 	hasPower = true;
 
-	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devFactory_v1.devFactory_v1")).Get());
+	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/VehicleFactory_Model/Vehicle_factory.Vehicle_factory")).Get());
 	buildingMesh->SetSimulatePhysics(false);
+	buildingMesh->SetRelativeScale3D(FVector(6.0f));
 
 	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
 	waypointMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Waypoint.Waypoint")).Get());
@@ -38,8 +39,6 @@ void ABuilding_VehicleFactory::BeginPlay()
 {
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
-
-	buildingMesh->SetWorldScale3D(FVector(6));
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
@@ -231,7 +230,7 @@ void ABuilding_VehicleFactory::SpawnUnit()
 	holder = World->SpawnActor<AUNIT_MOutpost>(AUNIT_MOutpost::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Outpost", 200.0f);
 	}
-	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
+	Cast<II_Unit>(holder)->SetDestination(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 

@@ -81,6 +81,8 @@ void AUNIT_Rocketeer::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
@@ -197,6 +199,7 @@ void AUNIT_Rocketeer::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -290,6 +293,10 @@ void AUNIT_Rocketeer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
+void AUNIT_Rocketeer::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_Rocketeer::SetSelection(bool state)
 {

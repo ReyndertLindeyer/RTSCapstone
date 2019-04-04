@@ -7,7 +7,7 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	PrimaryActorTick.bCanEverTick = true;
 	team = 1;
 	spawnTime = 0;
-	buildRadius = 10000;
+	buildRadius = 1200;
 	isBuilding = false;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ConstructionYard_Model/Construction_Yard.Construction_Yard")).Get());

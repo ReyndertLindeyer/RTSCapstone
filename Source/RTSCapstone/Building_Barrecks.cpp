@@ -178,7 +178,7 @@ void ABuilding_Barrecks::SpawnUnit()
 		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 350.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
 	}
-	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
+	Cast<II_Unit>(holder)->SetDestination(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 

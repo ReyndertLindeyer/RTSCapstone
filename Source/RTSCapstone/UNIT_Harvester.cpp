@@ -21,10 +21,10 @@ AUNIT_Harvester::AUNIT_Harvester()
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/yeetHarvyDev.yeetHarvyDev'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/Harvester/Harvester.Harvester'"));
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -120.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	BodyMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // Don't change this.  The issue is with the model, not the code.
 	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
@@ -102,6 +102,8 @@ void AUNIT_Harvester::BeginPlay()
 		InitializeEntity(Cast<II_Player>(setPlayerOwner), "Harvester", startingHealth);
 	
 	SpawnDefaultController();
+
+	overrideAI = false;
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
@@ -255,6 +257,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -483,6 +486,10 @@ void AUNIT_Harvester::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
+void AUNIT_Harvester::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_Harvester::SetSelection(bool state)
 {

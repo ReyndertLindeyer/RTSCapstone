@@ -16,6 +16,7 @@
 #include "I_Entity.h"
 #include "I_Player.h"
 
+#include "I_ScriptedEvent.h"
 
 
 
@@ -32,6 +33,9 @@ class RTSCAPSTONE_API AMyRTSPlayerController : public APlayerController, public 
 	
 public:
 	AMyRTSPlayerController();
+
+	UPROPERTY(EditAnywhere)
+		AActor* scriptedEvent;
 
 	virtual void BeginPlay() override;
 

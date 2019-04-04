@@ -26,6 +26,9 @@ public:
 	AGameManager();
 
 	UPROPERTY(EditAnywhere)
+		TArray<AActor*> scriptedEventList;
+
+	UPROPERTY(EditAnywhere)
 		TArray<AActor*> playerList;
 
 	UPROPERTY(EditAnywhere)

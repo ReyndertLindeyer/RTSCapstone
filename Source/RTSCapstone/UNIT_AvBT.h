@@ -110,10 +110,13 @@ private:
 		UAudioComponent* audioComponentDeccelerate;
 
 public:
-	TArray<AActor*> entitiesInRange;
 
-	
-	
+	UPROPERTY()
+		AActor* targetActor;
+
+	UPROPERTY()
+		TArray<AActor*> entitiesInRange;
+
 	UPROPERTY(EditAnywhere)
 		float startingHealth = 1500.0f;
 	UPROPERTY(EditAnywhere)
@@ -148,4 +151,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void ResetTarget() override;
 };

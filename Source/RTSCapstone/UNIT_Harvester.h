@@ -105,9 +105,18 @@ private:
 		UAudioComponent* audioComponentHarvest;
 
 public:
-	TArray<AActor*> entitiesInRange;
-	AResourceNode* targetNode;
-	ABuilding_Refinery* targetRefinery;
+
+	UPROPERTY()
+		AActor* targetActor;
+
+	UPROPERTY()
+		TArray<AActor*> entitiesInRange;
+	
+	UPROPERTY()
+		AResourceNode* targetNode;
+	
+	UPROPERTY()
+		ABuilding_Refinery* targetRefinery;
 
 	float currentResources, maxResources;
 
@@ -132,5 +141,5 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void ResetTarget() override;
 };

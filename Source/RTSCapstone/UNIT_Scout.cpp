@@ -111,6 +111,8 @@ void AUNIT_Scout::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -164,7 +166,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 
-	if (targetActor != nullptr)
+	if (targetActor->IsValidLowLevel())
 	{
 		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
 		Dir.Normalize();
@@ -286,6 +288,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -374,6 +377,11 @@ void AUNIT_Scout::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AUNIT_Scout::ResetTarget()
+{
+	targetActor = nullptr;
 }
 
 void AUNIT_Scout::SetSelection(bool state)

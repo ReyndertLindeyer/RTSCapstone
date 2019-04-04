@@ -115,6 +115,8 @@ void AUNIT_MArtillery::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -168,7 +170,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 
-	if (targetActor != nullptr)
+	if (targetActor->IsValidLowLevel())
 	{
 		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
 		Dir.Normalize();
@@ -264,6 +266,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -327,8 +330,9 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 					projectile->SetActorEnableCollision(false);
 					audioComponentFire->Play();
 
-					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
-						targetActor = nullptr;
+					if (targetActor != nullptr)
+						if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
+							targetActor = nullptr;
 				}
 			}
 		}
@@ -351,6 +355,10 @@ void AUNIT_MArtillery::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+void AUNIT_MArtillery::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_MArtillery::SetSelection(bool state)
 {

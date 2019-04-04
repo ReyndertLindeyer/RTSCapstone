@@ -33,8 +33,13 @@ public:
 		AActor* setPlayerOwner;
 
 	// AI STUFF
-	AActor* targetActor;
-	TArray<AActor*> entitiesInRange;
+
+	UPROPERTY()
+		AActor* targetActor;
+	
+	UPROPERTY()
+		TArray<AActor*> entitiesInRange;
+
 	float currentAttackTimer;
 
 	UPROPERTY(EditAnywhere)
@@ -46,9 +51,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		float detectRange = 3500.0f;
 
-
-	UStaticMeshComponent* TurretMesh;
-	UStaticMeshComponent* PivotMesh;
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* PivotMesh;
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* barrelPos;

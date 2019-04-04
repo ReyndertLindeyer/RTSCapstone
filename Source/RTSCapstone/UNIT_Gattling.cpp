@@ -143,6 +143,8 @@ void AUNIT_Gattling::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -197,7 +199,7 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 
-	if (targetActor != nullptr)
+	if (targetActor->IsValidLowLevel())
 	{
 		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
 		Dir.Normalize();
@@ -225,27 +227,24 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 		break;
 	}
 
-	if (unitState != UNIT_STATE::MOVING)
+	// Detect all AActors within a Radius
+	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+	TArray<AActor*> ignoreActors;
+	TArray<AActor*> outActors;
+
+	ignoreActors.Add(this);
+
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+
+	// Narrow down all the AActors to only ones with an II_Entity script
+	entitiesInRange.Empty();
+	for (int i = 0; i < outActors.Num(); i++)
 	{
-		// Detect all AActors within a Radius
-		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-		TArray<AActor*> ignoreActors;
-		TArray<AActor*> outActors;
-
-		ignoreActors.Add(this);
-
-		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
-		// Narrow down all the AActors to only ones with an II_Entity script
-		entitiesInRange.Empty();
-		for (int i = 0; i < outActors.Num(); i++)
+		if (Cast<II_Entity>(outActors[i]))
 		{
-			if (Cast<II_Entity>(outActors[i]))
+			if (!entitiesInRange.Contains(outActors[i]))
 			{
-				if (!entitiesInRange.Contains(outActors[i]))
-				{
-					entitiesInRange.Add(outActors[i]);
-				}
+				entitiesInRange.Add(outActors[i]);
 			}
 		}
 	}
@@ -288,12 +287,22 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
-		// Ignore Combat until unit reaches destination
+		// if the unit encounters an enemy while moving
+		if (targetActor != nullptr)
+		{
+			// If the AI wasn't issued a player command, automatically engage the target
+			if (!overrideAI)
+			{
+				unitState = UNIT_STATE::ATTACKING;
+			}
+		}
+
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -398,6 +407,10 @@ void AUNIT_Gattling::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 }
 
 
+void AUNIT_Gattling::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_Gattling::SetSelection(bool state)
 {

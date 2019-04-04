@@ -14,7 +14,7 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	hasPower = true;
 
 	// Body
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Artillery_Platform/Artillery_Platform_V1_UNREAL_Base.Artillery_Platform_V1_UNREAL_Base'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Artillery_Platform/ArtilleryCannon_Cylinder001.ArtilleryCannon_Cylinder001'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	buildingMesh->SetStaticMesh(bodyMesh);
 	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
@@ -26,28 +26,17 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	PivotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pivot Mesh"));
 	PivotMesh->SetupAttachment(buildingMesh);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>PivotMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Artillery_Platform/Artillery_Platform_V1_UNREAL_Pivot.Artillery_Platform_V1_UNREAL_Pivot'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>PivotMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Artillery_Platform/ArtilleryCannon_Cylinder002.ArtilleryCannon_Cylinder002'"));
 	UStaticMesh* pivotMesh = PivotMeshAsset.Object;
 	PivotMesh->SetStaticMesh(pivotMesh);
 	PivotMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	PivotMesh->SetRelativeScale3D(FVector(1.0f));
 	PivotMesh->SetCanEverAffectNavigation(false);
 
-	// Turret
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
-	TurretMesh->SetupAttachment(PivotMesh);
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Artillery_Platform/Artillery_Platform_V1_UNREAL_Cannon.Artillery_Platform_V1_UNREAL_Cannon'"));
-	UStaticMesh* turretMesh = TurretMeshAsset.Object;
-	TurretMesh->SetStaticMesh(turretMesh);
-	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	TurretMesh->SetRelativeScale3D(FVector(1.0f));
-	TurretMesh->SetCanEverAffectNavigation(false);
-
 	// PARTICLE SYSTEMS
 	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));
-	barrelPos->SetRelativeLocation(FVector(22.5f, -1.34f, 39.0f));
-	barrelPos->SetupAttachment(TurretMesh);
+	barrelPos->SetRelativeLocation(FVector(-26.0f, 0.0f, 74.5f));
+	barrelPos->SetupAttachment(PivotMesh);
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
@@ -66,9 +55,6 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 void ABuilding_Turret_Artillery::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	buildingMesh->SetWorldScale3D(FVector(5));
-
 }
 
 void ABuilding_Turret_Artillery::Tick(float DeltaTime)
@@ -115,7 +101,7 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
 
 		// If there is no target, run the detection sequence.
-		if (targetActor == nullptr)
+		if (!targetActor->IsValidLowLevel())
 		{
 			// Rotate back to default
 			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));
@@ -148,7 +134,7 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 			else
 			{
 				// Rotate towards target
-				FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
+				FVector Dir = -(targetActor->GetActorLocation() - GetActorLocation());
 				Dir.Normalize();
 
 				PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), Dir.Rotation(), 0.05f));

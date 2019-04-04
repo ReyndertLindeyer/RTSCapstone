@@ -141,7 +141,7 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 		}
 
 		// If there is no target, run the detection sequence.
-		if (targetActor == nullptr)
+		if (!targetActor->IsValidLowLevel())
 		{
 			// Rotate back to default
 			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));

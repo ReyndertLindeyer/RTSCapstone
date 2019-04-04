@@ -103,7 +103,7 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 		}
 
 		// If there is no target, run the detection sequence.
-		if (targetActor == nullptr)
+		if (!targetActor->IsValidLowLevel())
 		{
 			// If one ore more actors are detected within range
 			if (entitiesInRange.Num() > 0)

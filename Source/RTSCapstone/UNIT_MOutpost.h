@@ -70,6 +70,10 @@ private:
 	ABuilding_Ghost* buildingGhost;
 
 public:
+
+	UPROPERTY()
+		AActor* targetActor;
+
 	TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
@@ -97,5 +101,5 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void ResetTarget() override;
 };

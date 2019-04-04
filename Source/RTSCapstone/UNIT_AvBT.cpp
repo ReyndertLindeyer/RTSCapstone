@@ -120,7 +120,7 @@ void AUNIT_AvBT::BeginPlay()
 
 	SpawnDefaultController();
 
-	overrideTargeting = false;
+	overrideAI = false;
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
@@ -175,7 +175,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 	
-	if (targetActor != nullptr)
+	if (targetActor->IsValidLowLevel())
 	{
 		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
 		Dir.Normalize();
@@ -276,9 +276,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
-			
-			if (overrideTargeting)
-				overrideTargeting = false;
+			overrideAI = false;
 		}
 
 	}
@@ -397,6 +395,10 @@ bool AUNIT_AvBT::GetSelection() {
 	return isSelected;
 }
 
+void AUNIT_AvBT::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 
 // Method Unused

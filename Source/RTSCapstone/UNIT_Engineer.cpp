@@ -74,6 +74,8 @@ void AUNIT_Engineer::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 200.0f;
@@ -184,6 +186,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -264,6 +267,10 @@ void AUNIT_Engineer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void AUNIT_Engineer::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_Engineer::SetSelection(bool state)
 {

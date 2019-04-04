@@ -116,6 +116,8 @@ void AUNIT_MBT::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -170,7 +172,7 @@ void AUNIT_MBT::Tick(float DeltaTime)
 
 	isDestructable = SetDestructible;
 
-	if (targetActor != nullptr)
+	if (targetActor->IsValidLowLevel())
 	{
 		FVector Dir = (targetActor->GetActorLocation() - GetActorLocation());
 		Dir.Normalize();
@@ -273,6 +275,7 @@ void AUNIT_MBT::Tick(float DeltaTime)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+			overrideAI = false;
 		}
 
 	}
@@ -360,6 +363,11 @@ void AUNIT_MBT::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AUNIT_MBT::ResetTarget()
+{
+	targetActor = nullptr;
+}
+
 
 void AUNIT_MBT::SetSelection(bool state)
 {
@@ -385,6 +393,7 @@ void AUNIT_MBT::AttackOrder(II_Entity* target)
 void AUNIT_MBT::DestroyEntity()
 {
 	audioComponentDeath->Play();
+
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
@@ -416,6 +425,8 @@ void AUNIT_MBT::DestroyEntity()
 
 
 	if (!UObject::IsValidLowLevel()) return;
+
+	if (UObject::IsPendingKill()) return;
 
 	this->K2_DestroyActor();
 

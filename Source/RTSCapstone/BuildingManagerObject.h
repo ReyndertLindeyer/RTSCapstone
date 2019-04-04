@@ -83,6 +83,11 @@ public:
 		TArray <ABuilding_Ghost*> ghostBuildingArray;
 	TArray <int32> whatBuildingArray;
 
+	UPROPERTY()
+		TArray <ABuilding_Refinery*> refineryArray;
+	UPROPERTY()
+		TArray <ABuilding_TechCenter*> techCenterArray;
+
 private:
 	UPROPERTY()
 		UMaterialInterface* canBuildIndicator;
@@ -107,10 +112,7 @@ private:
 	UPROPERTY()
 		TArray<int32> buildingMaxHealth;
 
-	UPROPERTY()
-		TArray <ABuilding_Refinery*> refineryArray;
-	UPROPERTY()
-		TArray <ABuilding_TechCenter*> techCenterArray;
+	
 	UPROPERTY()
 		ABuilding_Construction_Yard* constructionYard;
 	UPROPERTY()

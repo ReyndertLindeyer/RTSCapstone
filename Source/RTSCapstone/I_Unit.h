@@ -48,9 +48,10 @@ public:
 	virtual bool GetSelection();
 	virtual void AttackOrder(II_Entity* target);
 	
-	AActor* targetActor;
+	virtual void ResetTarget();
+
 	FVector targetMoveDestination;
 
 	UNIT_STATE unitState;
-	bool overrideTargeting;
+	bool overrideAI;
 };

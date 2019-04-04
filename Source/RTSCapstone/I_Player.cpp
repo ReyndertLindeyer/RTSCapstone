@@ -13,11 +13,11 @@ II_Player* II_Player::GetPlayerReference()
 
 void II_Player::AddUnit(AActor* unitReference)
 {
-	// Not sure why, but TArray isn't detecting any functions.
-	/// I might be missing a header file that needs to be included,
-	/// but I thought CoreMinimal would allow TArray functions to be called
-	UnitList.Add(unitReference); 
-	totalUnitsConstructed++;
+	if (unitReference != nullptr)
+	{
+		UnitList.Add(unitReference);
+		totalUnitsConstructed++;
+	}		
 }
 
 TArray<AActor*> II_Player::GetUnits()
@@ -33,9 +33,11 @@ void II_Player::RemoveUnitAtIndex(int32 index)
 
 void II_Player::AddBuilding(AActor* buildingReference)
 {
-	// Same problem occurs as the AddUnit function
-	BuildingList.Add(buildingReference);
-	totalBuildingsConstructed++;
+	if (buildingReference != nullptr)
+	{
+		BuildingList.Add(buildingReference);
+		totalBuildingsConstructed++;
+	}
 }
 
 TArray<AActor*> II_Player::GetBuildings()

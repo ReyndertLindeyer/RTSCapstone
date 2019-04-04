@@ -16,10 +16,14 @@ void II_Unit::MoveOrder(AController* controller, FVector destination)
 {
 	SetDestination(controller, destination);
 	unitState = UNIT_STATE::MOVING;
-	targetActor = nullptr;
-	overrideTargeting = true;
+	ResetTarget();
+	overrideAI = true;
 }
 
+void II_Unit::ResetTarget() 
+{
+	// Virtual Function
+}
 
 void II_Unit::SetSelection(bool state)
 {

@@ -27,11 +27,18 @@ public:
 		AActor* setPlayerOwner;
 
 	// AI STUFF
-	AActor* targetActor;
-	AActor* c1TargetActor;
-	AActor* c2TargetActor;
+	UPROPERTY()
+		AActor* targetActor;
 	
-	TArray<AActor*> entitiesInRange;
+	UPROPERTY()
+		AActor* c1TargetActor;
+	
+	UPROPERTY()
+		AActor* c2TargetActor;
+	
+	UPROPERTY()
+		TArray<AActor*> entitiesInRange;
+	
 	float currentAttackTimer;
 
 	UPROPERTY(EditAnywhere)

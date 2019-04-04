@@ -56,7 +56,7 @@ void AMyRTSPlayerController::BeginPlay()
 	FHitResult hit;
 	GetHitResultAtScreenPosition(FVector2D(temp1 / 2, temp2 / 2), ECollisionChannel::ECC_Visibility, false, hit);
 
-	InitResources(5000);
+	InitResources(50000);
 	ChangePower(40);
 
 	SetHasDestroyedObjective(false);
@@ -66,10 +66,13 @@ void AMyRTSPlayerController::BeginPlay()
 		if (Itr->spawnCYForPlayer)
 			buildingManagerObject->SpawnConstructionYard(Cast<AActor>(this)->GetActorLocation());
 		
+		if (Itr->scriptedEventList[0] != nullptr)
+			scriptedEvent = Itr->scriptedEventList[0];
+
 		//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
 		//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);
 	}
-		
+	
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
 
@@ -136,6 +139,7 @@ void AMyRTSPlayerController::SetupInputComponent() {
 
 void AMyRTSPlayerController::DEBUG_DamageSelected()
 {
+	/*
 	if (SelectedStructure != nullptr)
 	{
 		
@@ -192,6 +196,23 @@ void AMyRTSPlayerController::DEBUG_DamageSelected()
 			}
 		}
 	}
+	*/
+
+	if (scriptedEvent != nullptr)
+	{
+		/// Leave these params for the future.  They're a fun idea, but couldn't get them
+		/// 100% working for the showcase
+		/*SE_PARAMS* params = new SE_PARAMS;
+		params->BuildParams(Cast<II_Player>(Itr->playerList[0]));*/
+
+		II_ScriptedEvent* s_event = Cast<II_ScriptedEvent>(scriptedEvent);
+
+		if (s_event != nullptr)
+			s_event->TriggerEvent(Cast<II_Player>(this));
+		else
+			UE_LOG(LogTemp, Warning, TEXT("No Scripted Event"));
+	}
+
 }
 
 

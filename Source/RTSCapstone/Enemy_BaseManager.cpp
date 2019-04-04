@@ -13,11 +13,11 @@ AEnemy_BaseManager::AEnemy_BaseManager()
 	baseSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	baseSphere->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Engine/BasicShapes/Sphere.Sphere")).Get());
 
-	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Refinery.Placeholder_Refinery")).Get());
-	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Barracks.Placeholder_Barracks")).Get());
-	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
-	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Power_Plant.Placeholder_Power_Plant")).Get());
+	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
+	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
+	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
+	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
+	baseMeshes.Add(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
 
 	//baseRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	//baseRadiusSphere->SetSphereRadius(40);

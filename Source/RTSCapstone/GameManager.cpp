@@ -87,7 +87,7 @@ void AGameManager::Tick(float DeltaTime)
 		Cast<II_Player>(playerList[0])->SetHasDestroyedObjective(true);
 	}
 
-	if (Cast<AMyRTSPlayerController>(playerList[0])->ConYardGone()) {
+	if (Cast<AMyRTSPlayerController>(playerList[0])->GetUnits().Num() == 0 && Cast<AMyRTSPlayerController>(playerList[0])->GetBuildings().Num()) {
 		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
 		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
 		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
@@ -98,6 +98,26 @@ void AGameManager::Tick(float DeltaTime)
 		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
 		Cast<II_Player>(playerList[0])->SetStatistics(statistics);
 		Cast<AMyRTSPlayerController>(playerList[0])->SetTriggerEnd();
+	}
+
+	for (int i = 0; i < scriptedEventList.Num(); i++)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Script Event Exists!"));
+		if (scriptedEventList[i] != nullptr)
+		{
+			if (Cast<II_ScriptedEvent>(scriptedEventList[i]) != nullptr)
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("Scripted Event is waiting for call"));
+
+				if (Cast<II_ScriptedEvent>(scriptedEventList[i])->triggerActors.Num() == 0)
+				{
+					//UE_LOG(LogTemp, Warning, TEXT("Trigger Event Called"));
+					Cast<II_ScriptedEvent>(scriptedEventList[i])->TriggerEvent(Cast<II_Player>(playerList[0]));
+					scriptedEventList.RemoveAt(i);
+					break;
+				}
+			}
+		}		
 	}
 
 	// Uncomment for everyone at once

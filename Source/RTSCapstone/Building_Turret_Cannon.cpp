@@ -107,7 +107,7 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
 
 		// If there is no target, run the detection sequence.
-		if (targetActor == nullptr)
+		if (!targetActor->IsValidLowLevel())
 		{
 			// Rotate back to default
 			PivotMesh->SetWorldRotation(FMath::Lerp(PivotMesh->GetComponentRotation(), RootComponent->GetComponentRotation(), 0.025f));

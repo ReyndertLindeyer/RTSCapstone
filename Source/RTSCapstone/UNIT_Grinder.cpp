@@ -50,6 +50,8 @@ void AUNIT_Grinder::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -232,6 +234,10 @@ void AUNIT_Grinder::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
+void AUNIT_Grinder::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 
 void AUNIT_Grinder::SetSelection(bool state)

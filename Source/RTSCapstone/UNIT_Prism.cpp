@@ -50,6 +50,8 @@ void AUNIT_Prism::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->SetAvoidanceEnabled(true);
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 800.0f;
@@ -174,6 +176,7 @@ void AUNIT_Prism::Tick(float DeltaTime)
 			else
 			{
 				unitState = UNIT_STATE::ATTACKING;
+				overrideAI = false;
 			}
 		}
 	}
@@ -232,7 +235,10 @@ void AUNIT_Prism::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-
+void AUNIT_Prism::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_Prism::SetSelection(bool state)
 {

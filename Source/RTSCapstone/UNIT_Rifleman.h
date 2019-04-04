@@ -95,7 +95,12 @@ private:
 		UAudioComponent* audioComponentDeath;
 
 public:
-	TArray<AActor*> entitiesInRange;
+
+	UPROPERTY()
+		AActor* targetActor;
+
+	UPROPERTY()
+		TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
 		float attackDamage = 7.0f;
@@ -118,5 +123,5 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void ResetTarget() override;
 };

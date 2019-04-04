@@ -82,6 +82,7 @@ void AUNIT_Rifleman::BeginPlay()
 
 	SpawnDefaultController();
 
+	overrideAI = false;
 
 
 	bUseControllerRotationYaw = false;
@@ -257,6 +258,7 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 			else
 			{
 				unitState = UNIT_STATE::ATTACKING;
+				overrideAI = false;
 			}
 		}
 	}
@@ -320,6 +322,10 @@ void AUNIT_Rifleman::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void AUNIT_Rifleman::ResetTarget()
+{
+	targetActor = nullptr;
+}
 
 void AUNIT_Rifleman::SetSelection(bool state)
 {
