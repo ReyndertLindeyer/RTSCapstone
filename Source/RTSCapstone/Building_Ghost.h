@@ -40,6 +40,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	II_Player* thePlayer;
+
 	bool GetIsOverlapping();
 	bool GetIsInRadius();
 

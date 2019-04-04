@@ -48,6 +48,41 @@ ABuildingMaster::ABuildingMaster()
 	sightRadius = 300;
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
+
+
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/ConstYard_-_Select_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> build(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Buildings_-_Plant_and_Build_Cue"));
+
+	//Store a reference to the Cue asset
+	selectCue = select.Object;
+	buildCue = build.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentSelect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentOne"));
+	audioComponentBuild = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentTwo"));
+
+	//Stop sound from playing when it's created
+	audioComponentSelect->bAutoActivate = false;
+	audioComponentBuild->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentSelect->SetupAttachment(RootComponent);
+	audioComponentBuild->SetupAttachment(RootComponent);
+}
+
+
+void ABuildingMaster::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (selectCue->IsValidLowLevelFast()) {
+		audioComponentSelect->SetSound(selectCue);
+	}
+
+	if (buildCue->IsValidLowLevelFast()) {
+		audioComponentBuild->SetSound(buildCue);
+	}
 }
 
 void ABuildingMaster::EnableBuildDecal()
@@ -81,6 +116,8 @@ float ABuildingMaster::GetSightRadius()
 
 void ABuildingMaster::SetSelection(bool selectionType)
 {
+	if(selectionType == true)
+		audioComponentSelect->Play();
 	selectedDecal->SetVisibility(selectionType);
 	selected = selectionType;
 }
@@ -144,6 +181,7 @@ UStaticMeshComponent * ABuildingMaster::GetBuildingMesh()
 
 bool ABuildingMaster::constructAtLocation(II_Player* player)
 {
+	audioComponentBuild->Play();
 	dustParticleComp->SetWorldLocation(this->GetActorLocation());
 	dustParticleComp->ActivateSystem();
 	tempHeight = RootComponent->GetComponentLocation().Z;

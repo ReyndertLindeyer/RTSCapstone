@@ -30,7 +30,7 @@ AMyCameraPawn::AMyCameraPawn()
 
 	//Swet the location of the spring arm as 50 units above the root and looking 60 degrees down
 	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(-60.0f, 0.0f, 0.0f));
-	OurCameraSpringArm->TargetArmLength = 4000.f;
+	OurCameraSpringArm->TargetArmLength = 8000.f;
 	OurCameraSpringArm->bEnableCameraLag = false;
 	OurCameraSpringArm->bDoCollisionTest = false;
 	OurCameraSpringArm->AttachTo(RootComponent);
@@ -89,21 +89,31 @@ void AMyCameraPawn::Tick(float DeltaTime)
 	}
 
 	//Zoom controls
-	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 200.0f) {
-		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 200.0f, -zoom);
+	if (zoom == 1 && OurCameraSpringArm->TargetArmLength > 300.0f) {
+		if(OurCameraSpringArm->TargetArmLength > 1000.0f)
+			OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 500.0f, -zoom);
+		else if (OurCameraSpringArm->TargetArmLength > 5000.0f)
+			OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 700.0f, -zoom);
+		else
+			OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength + 300.0f, -zoom);
 	}
 	if (zoom == -1 && OurCameraSpringArm->TargetArmLength < 10000.0f) {
-		OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 200.0f, zoom);
+		if (OurCameraSpringArm->TargetArmLength > 1000.0f)
+			OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 500.0f, zoom);
+		else if (OurCameraSpringArm->TargetArmLength > 5000.0f)
+			OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 700.0f, zoom);
+		else
+			OurCameraSpringArm->TargetArmLength = FMath::Lerp<float>(OurCameraSpringArm->TargetArmLength, OurCameraSpringArm->TargetArmLength - 300.0f, zoom);
 	}
 
 	FVector moveVec;
 
 	//6 is a magic number that can be replaced by making the sensitivity higher
 	if (OurCameraSpringArm->TargetArmLength > 1000) {
-		moveVec = FVector(MovementInput.X * cameraSensitivity * 6, MovementInput.Y * cameraSensitivity * 6, 0.0);
+		moveVec = FVector(MovementInput.X * cameraSensitivity * 7, MovementInput.Y * cameraSensitivity * 7, 0.0);
 	}
 	else {
-		moveVec = FVector(MovementInput.X * cameraSensitivity * 6 * (OurCameraSpringArm->TargetArmLength / 1000.0f), MovementInput.Y * cameraSensitivity * 6 * (OurCameraSpringArm->TargetArmLength / 1000.0f), 0.0);
+		moveVec = FVector(MovementInput.X * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 1.5), MovementInput.Y * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 1.5), 0.0);
 	}
 
 	//Get the mouse's position and use that to move the camera
