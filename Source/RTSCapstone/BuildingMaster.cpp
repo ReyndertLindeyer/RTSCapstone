@@ -9,6 +9,8 @@ ABuildingMaster::ABuildingMaster()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SetDestructible = true;
+
 	ConstructorHelpers::FObjectFinderOptional<UParticleSystem> DustPS(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingDust.P_BuildingDust'"));
 	dustParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
 	dustParticleComp->SetTemplate(DustPS.Get());

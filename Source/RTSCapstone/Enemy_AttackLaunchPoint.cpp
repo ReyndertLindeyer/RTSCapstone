@@ -138,50 +138,6 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 
 		tempArray.Empty();
 
-		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Gattling::StaticClass(), tempArray);
-		if (tempArray.Num() > 0) {
-			for (int i = 0; i < tempArray.Num(); i++) {
-				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
-					tempActor = tempArray[i];
-				}
-			}
-		}
-
-		tempArray.Empty();
-
-		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Cannon::StaticClass(), tempArray);
-		if (tempArray.Num() > 0) {
-			for (int i = 0; i < tempArray.Num(); i++) {
-				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
-					tempActor = tempArray[i];
-				}
-			}
-		}
-
-		tempArray.Empty();
-
-		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Artillery::StaticClass(), tempArray);
-		if (tempArray.Num() > 0) {
-			for (int i = 0; i < tempArray.Num(); i++) {
-				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
-					tempActor = tempArray[i];
-				}
-			}
-		}
-
-		tempArray.Empty();
-
-		UGameplayStatics::GetAllActorsOfClass(this->GetWorld(), ABuilding_Turret_Tesla::StaticClass(), tempArray);
-		if (tempArray.Num() > 0) {
-			for (int i = 0; i < tempArray.Num(); i++) {
-				if (FVector::Dist(this->GetActorLocation(), tempArray[i]->GetActorLocation()) < closestBuilding) {
-					tempActor = tempArray[i];
-				}
-			}
-		}
-
-		tempArray.Empty();
-
 		if (tempActor != nullptr) {
 			for (int i = 0; i < basicArrayA.Num(); i++) {
 				basicArrayA[i]->MoveOrder(basicArrayA[i]->GetController(), tempActor->GetActorLocation());

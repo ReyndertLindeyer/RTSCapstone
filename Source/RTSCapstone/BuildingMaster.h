@@ -57,7 +57,7 @@ public:
 	void DestroyEntity() override;
 
 	UPROPERTY(EditAnywhere)
-		bool SetDestructible = true;
+		bool SetDestructible;
 
 	void PostInitializeComponents();
 
@@ -72,7 +72,7 @@ protected:
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		UParticleSystemComponent* dustParticleComp;
 
 
@@ -89,13 +89,13 @@ protected:
 
 	uint32 team, spawnTime;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		UStaticMeshComponent* buildingMesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		class UDecalComponent * selectedDecal; //Decal to show the building is selected
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		class UDecalComponent * decal; //Decal to show the buildings construction radius
 
 	UMaterialInstanceDynamic* DynamicMaterialInstA;

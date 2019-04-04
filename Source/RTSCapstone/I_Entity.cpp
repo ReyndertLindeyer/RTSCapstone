@@ -84,6 +84,10 @@ int II_Entity::DealDamage(float amount)
 			return 0;
 		}
 	}
+	else {
+
+		UE_LOG(LogTemp, Warning, TEXT("I'm imortal"));
+	}
 
 	return -1;
 }

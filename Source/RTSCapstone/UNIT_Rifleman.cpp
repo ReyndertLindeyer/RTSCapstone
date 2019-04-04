@@ -194,7 +194,7 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::MOVING)
 	{
 		// Ignore Combat until unit reaches destination
-
+		/*
 		FHitResult* rayCastOne = new FHitResult();
 		FHitResult* rayCastTwo = new FHitResult();
 
@@ -225,7 +225,7 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
 			DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		}
-
+		*/
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 120.0f)
 		{
