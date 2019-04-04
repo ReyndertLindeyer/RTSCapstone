@@ -47,6 +47,8 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 2);
 
 		EnableAllDecals();
+
+		buildingToBuild->thePlayer = thePlayer;
 	}
 }
 
