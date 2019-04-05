@@ -44,13 +44,15 @@ public:
 	void MoveOrder(AController* controller, FVector destination);		// Overrides AI Decision Making
 
 
-	virtual void SetSelection(bool state);
+	virtual void SetSelection(bool state, II_Player* inPlayer);
 	virtual bool GetSelection();
 	virtual void AttackOrder(II_Entity* target);
 	
 	virtual void ResetTarget();
 
 	FVector targetMoveDestination;
+
+	TArray<II_Player*> selectingPlayerArray;
 
 	UNIT_STATE unitState;
 	bool overrideAI;

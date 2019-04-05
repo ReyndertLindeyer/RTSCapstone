@@ -45,7 +45,7 @@ public:
 	float GetConstructionRadius();
 	float GetSightRadius();
 
-	void SetSelection(bool selectionType);
+	void SetSelection(bool selectionType, II_Player* inPlayer);
 
 	bool IsSelected();
 
@@ -71,6 +71,7 @@ protected:
 
 	bool selected, isBuilding; //isBuilding means is the building under construction
 
+	TArray<II_Player*> selectingPlayerArray;
 
 	UPROPERTY()
 		UParticleSystemComponent* dustParticleComp;

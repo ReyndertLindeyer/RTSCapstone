@@ -232,7 +232,7 @@ void ABuilding_VehicleFactory::SpawnUnit()
 	holder = World->SpawnActor<AUNIT_MOutpost>(AUNIT_MOutpost::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Outpost", 1750.0f);
 	}
-	Cast<II_Unit>(holder)->SetDestination(holder->GetController(), wayPoint);
+	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 

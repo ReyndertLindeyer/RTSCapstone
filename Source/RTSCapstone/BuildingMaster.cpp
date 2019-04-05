@@ -116,10 +116,24 @@ float ABuildingMaster::GetSightRadius()
 	return sightRadius;
 }
 
-void ABuildingMaster::SetSelection(bool selectionType)
+void ABuildingMaster::SetSelection(bool selectionType, II_Player* inPlayer)
 {
-	if(selectionType == true)
+	if (selectionType == true) {
 		audioComponentSelect->Play();
+	}
+
+	if (!selectingPlayerArray.Contains(inPlayer) && selectionType == true) {
+		selectingPlayerArray.Add(inPlayer);
+	}
+	else if (selectingPlayerArray.Contains(inPlayer) && selectionType == false) {
+		for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+			if (selectingPlayerArray[i] == inPlayer) {
+				selectingPlayerArray.RemoveAt(i);
+				break;
+			}
+		}
+	}
+
 	selectedDecal->SetVisibility(selectionType);
 	selected = selectionType;
 }
@@ -203,20 +217,13 @@ void ABuildingMaster::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I have died"));
-		if (GetEntityOwner()->GetUnits().Contains(this))
-		{
-			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
-				if (GetEntityOwner()->GetUnits()[i] == this)
-					GetEntityOwner()->RemoveUnitAtIndex(i);
-			}
-		}
-
 		if (GetEntityOwner()->GetBuildings().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
-				if (GetEntityOwner()->GetBuildings()[i] == this)
+				if (GetEntityOwner()->GetBuildings()[i] == this) {
 					GetEntityOwner()->RemoveBuildingAtIndex(i);
+					break;
+				}
 			}
 		}
 
@@ -224,7 +231,17 @@ void ABuildingMaster::DestroyEntity()
 		{
 			GetEntityOwner()->SetSelectedBuilding(nullptr);
 		}
+		
+		if (selectingPlayerArray.Num() > 0) {
+			for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+				if (selectingPlayerArray[i] != GetEntityOwner()) {
+					selectingPlayerArray[i]->SetSelectedBuilding(nullptr);
+				}
+			}
+		}
 	}
+
+	
 
 	GetWorld()->SpawnActor<AExplosiveActor>(ExplosionBlueprint, buildingMesh->RelativeLocation, FRotator(0.0f, 0.0f, 0.0f));
 

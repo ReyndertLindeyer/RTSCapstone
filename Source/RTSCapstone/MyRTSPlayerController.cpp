@@ -394,7 +394,7 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 		// If there is a selected structure, deselect it
 		if (SelectedStructure != nullptr)
 		{
-			SelectedStructure->SetSelection(false);
+			SelectedStructure->SetSelection(false, this);
 			SelectedStructure = nullptr;
 
 			SetSelectedBuilding(SelectedStructure);
@@ -415,6 +415,9 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			/// (though it should work 100% of the time regardless, just coding practice)
 			if (!HUDPtr->isShift) 
 			{
+				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
+					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(false, this);
+				}
 
 				GetSelectedCharacters().Empty();
 			}
@@ -441,7 +444,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				if (Cast<ABuildingMaster>(hit.Actor))
 				{
 					SelectedStructure = Cast<ABuildingMaster>(hit.Actor);
-					SelectedStructure->SetSelection(true);
+					SelectedStructure->SetSelection(true, this);
 
 					
 					if (Cast<ABuilding_Barrecks>(SelectedStructure) && Cast<II_Entity>(SelectedStructure)->GetEntityOwner() == this) {
@@ -494,7 +497,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 				HUDPtr->bStartSelecting = false;
 
 				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
-					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true);
+					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true, this);
 				}
 				//HUDPtr->grabEverything = true;
 			}

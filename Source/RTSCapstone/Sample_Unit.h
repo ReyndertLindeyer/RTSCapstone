@@ -53,7 +53,6 @@ public:
 	//virtual AController* GetUnitController() override;
 
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
-	virtual void SetSelection(bool state) override;
 
 protected:
 	// Called when the game starts or when spawned
