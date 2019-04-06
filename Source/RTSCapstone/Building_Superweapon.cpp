@@ -16,6 +16,8 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	SetHitRadius(500);
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/OrbitalCannon_Model/Orbital_Cannon.Orbital_Cannon")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 

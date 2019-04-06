@@ -16,6 +16,8 @@ AUNIT_Roomba::AUNIT_Roomba()
 	RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	SetHitRadius(160);
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetRelativeScale3D(FVector(3.0f));
@@ -167,7 +169,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				SetDestination(GetController(), moveDestination);
 			}
@@ -193,7 +195,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				unitState = UNIT_STATE::SEEKING;
 			}

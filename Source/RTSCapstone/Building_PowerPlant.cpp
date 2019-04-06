@@ -10,6 +10,8 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	SetHitRadius(400);
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Power_Plant_-_Select_Cue"));
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/PowerPlant_Model/PowerPlant.PowerPlant")).Get());

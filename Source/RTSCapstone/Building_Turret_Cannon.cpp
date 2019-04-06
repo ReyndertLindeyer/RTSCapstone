@@ -15,6 +15,8 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	isBuilding = true;
 	hasPower = true;
 
+	SetHitRadius(140);
+
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/AT_Cannon/AT_Cannon_V1_UNREAL_Base.AT_Cannon_V1_UNREAL_Base'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;

@@ -16,6 +16,8 @@ AUNIT_Grinder::AUNIT_Grinder()
 	RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	SetHitRadius(160);
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetRelativeScale3D(FVector(3.0f));
@@ -143,9 +145,50 @@ void AUNIT_Grinder::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
-		// Ignore Combat until unit reaches destination
+		// if the unit encounters an enemy while moving
+		if (targetActor != nullptr)
+		{
+			// If the AI wasn't issued a player command, automatically engage the target
+			if (!overrideAI)
+			{
+				unitState = UNIT_STATE::ATTACKING;
+			}
+		}
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		FHitResult* rayCastOne = new FHitResult();
+		FHitResult* rayCastTwo = new FHitResult();
+
+		FVector StartTrace = RootComponent->GetComponentLocation() + (RootComponent->GetForwardVector() * 120);
+
+		FVector ForwardVectorOne = RootComponent->GetForwardVector();
+		FVector ForwardVectorTwo = RootComponent->GetForwardVector();
+
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(100, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-100, FVector(0.0, 0.0, 1.0));
+
+		FVector EndTraceOne = ((ForwardVectorOne * 120) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 120) + StartTrace);
+
+		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastOne->GetActor())) {
+				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 7, push.Y / 7, push.Z) + (RootComponent->GetRightVector() * 2);
+				rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+			}
+		}
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 7, push.Y / 7, push.Z) + (-RootComponent->GetRightVector() * 2);
+				rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+			}
+		}
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 80.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;

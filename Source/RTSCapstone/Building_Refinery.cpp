@@ -12,6 +12,8 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	isBuilding = true;
 	canSpawnHarvester = true;
 
+	SetHitRadius(400);
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Refinery_-_Select_Cue"));
 
 	this->Tags.Add(FName("Refinery"));

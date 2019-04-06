@@ -14,6 +14,8 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	SetHitRadius(160);
+
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -288,7 +290,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				SetDestination(GetController(), moveDestination);
 			}
@@ -314,7 +316,7 @@ void AUNIT_MArtillery::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				unitState = UNIT_STATE::SEEKING;
 			}

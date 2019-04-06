@@ -10,6 +10,8 @@ ABuilding_PlanetaryCannon::ABuilding_PlanetaryCannon() {
 	buildRadius = 500;
 	isBuilding = true;
 
+	SetHitRadius(1300);
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Planetery_Cannon_Model/PlanetaryCannon_v1.PlanetaryCannon_v1'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	buildingMesh->SetStaticMesh(bodyMesh);

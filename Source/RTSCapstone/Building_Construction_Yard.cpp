@@ -10,6 +10,8 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	buildRadius = 1200;
 	isBuilding = false;
 
+	SetHitRadius(600);
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ConstructionYard_Model/Construction_Yard.Construction_Yard")).Get());
 	RootComponent = buildingMesh;
 	buildingMesh->SetSimulatePhysics(false);

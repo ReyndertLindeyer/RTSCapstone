@@ -13,6 +13,8 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	isBuilding = true;
 	hasPower = true;
 
+	SetHitRadius(140);
+
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Artillery_Platform/ArtilleryCannon_Cylinder001.ArtilleryCannon_Cylinder001'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;

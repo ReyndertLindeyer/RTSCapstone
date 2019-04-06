@@ -13,6 +13,8 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	isBuilding = true;
 	hasPower = true;
 	alternateShot = false;
+
+	SetHitRadius(20);
 	
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_Base.Gattling_Turret_V1_UNREAL_Base'"));

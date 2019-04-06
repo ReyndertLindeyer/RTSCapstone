@@ -11,6 +11,8 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	isBuilding = true;
 	hasPower = true;
 
+	SetHitRadius(10);
+
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Tesla_Tower/TeslaTower_v1.TeslaTower_v1'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;

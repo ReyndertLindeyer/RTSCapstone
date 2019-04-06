@@ -11,6 +11,8 @@ AUNIT_Scout::AUNIT_Scout()
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	SetHitRadius(160);
+
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -267,30 +269,38 @@ void AUNIT_Scout::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::MOVING)
 	{
 		// Ignore Combat until unit reaches destination
-
 		FHitResult* rayCastOne = new FHitResult();
 		FHitResult* rayCastTwo = new FHitResult();
 
-		FVector StartTrace = BodyMesh->GetComponentLocation();
+		FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 300);
 
 		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
 		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
 
-		FVector EndTraceOne = ((ForwardVectorOne * 400) + StartTrace);
-		EndTraceOne = FVector(EndTraceOne.X, (EndTraceOne.Y + 60), EndTraceOne.Z);
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(135, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-135, FVector(0.0, 0.0, 1.0));
 
-
-		FVector EndTraceTwo = ((ForwardVectorTwo * 400) + StartTrace);
-		EndTraceTwo = FVector(EndTraceTwo.X, (EndTraceTwo.Y - 60), EndTraceTwo.Z);
+		FVector EndTraceOne = ((ForwardVectorOne * 170) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 170) + StartTrace);
 
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
-			//DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+			if (Cast<II_Unit>(rayCastOne->GetActor())) {
+				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+				rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+			}
 		}
 
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
-			//DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
+				rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+			}
 		}
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 200.0f)
@@ -316,7 +326,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				SetDestination(GetController(), moveDestination);
 			}
@@ -342,7 +352,7 @@ void AUNIT_Scout::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				unitState = UNIT_STATE::SEEKING;
 			}
@@ -359,6 +369,8 @@ void AUNIT_Scout::Tick(float DeltaTime)
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), TurretMesh->GetComponentRotation());
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetLocation, attackDamage, 5000.0f, 0.0f, 1.0f, PSC, reactionPS);
 					projectile->SetActorEnableCollision(false);
+
+					currentTimer = 0.0f;
 
 					audioComponentFire->Play();
 

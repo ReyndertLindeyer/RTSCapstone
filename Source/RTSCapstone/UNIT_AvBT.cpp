@@ -12,7 +12,9 @@ AUNIT_AvBT::AUNIT_AvBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
-	isSelected = false;
+	isSelected = false; 
+	
+	SetHitRadius(160);
 	
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -298,7 +300,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
-			if (FVector::Dist(GetActorLocation(), targetLocation) > cannonRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > cannonRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				SetDestination(GetController(), moveDestination);
 			}
@@ -324,7 +326,7 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > cannonRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > cannonRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				unitState = UNIT_STATE::SEEKING;
 			}

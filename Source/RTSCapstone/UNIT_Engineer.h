@@ -88,6 +88,8 @@ public:
 
 	UPROPERTY()
 		AActor* targetActor;
+	UPROPERTY()
+		TArray <AActor*> actorsToHeal;
 
 	TArray<AActor*> entitiesInRange;
 

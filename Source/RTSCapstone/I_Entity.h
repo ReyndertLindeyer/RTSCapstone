@@ -40,6 +40,11 @@ public:
 	void SetName(FString name_);
 	void SetOwningEntity(II_Player* owner_);
 
+	void SetHitRadius(uint32 inNum);
+	uint32 GetHitRadius();
+
+	void SetIsBeingHealed(bool inBool);
+	bool GetIsBeingHealed();
 	
 	virtual void DestroyEntity();
 
@@ -54,5 +59,10 @@ private:
 		FString name;
 		float currentHealth;
 		float maxHealth;
+
+		//Distance from entity's origin to the edge so that units can hit it
+		uint32 hitRadius;
 	
+		//Is being healed by an engineer
+		bool isBeingHealed;
 };
