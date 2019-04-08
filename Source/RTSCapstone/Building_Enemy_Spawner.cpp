@@ -10,6 +10,8 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 	myManager = nullptr;
 
 	SetHitRadius(230);
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/ConstYard_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
 	buildingMesh->SetSimulatePhysics(false);

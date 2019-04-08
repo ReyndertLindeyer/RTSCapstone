@@ -53,11 +53,9 @@ ABuildingMaster::ABuildingMaster()
 
 
 	//Load our Sound Cue for the sound we created in the editor
-	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/ConstYard_-_Select_Cue"));
 	static ConstructorHelpers::FObjectFinder<USoundCue> build(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Buildings_-_Plant_and_Build_Cue"));
 
 	//Store a reference to the Cue asset
-	selectCue = select.Object;
 	buildCue = build.Object;
 
 	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters

@@ -17,6 +17,8 @@ AUNIT_MBT::AUNIT_MBT()
 
 	SetHitRadius(160);
 
+	movingStage = 0;
+
 	// BODY
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
@@ -242,6 +244,14 @@ void AUNIT_MBT::Tick(float DeltaTime)
 	{
 		SetDestination(GetController(), GetActorLocation());
 
+		if (movingStage == 2 && !audioComponentDrive->IsPlaying()) {
+			audioComponentDeccelerate->Play();
+			movingStage = 0;
+		}
+		if (!audioComponentIdle->IsPlaying() && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentIdle->Play();
+		}
+
 		if (entitiesInRange.Num() > 0)
 		{
 			/// Check if entities are hostile
@@ -315,6 +325,15 @@ void AUNIT_MBT::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
+		}
+
+		if (movingStage == 0 && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentAccelerate->Play();
+			movingStage++;
+		}
+		if (movingStage != 0 && !audioComponentAccelerate->IsPlaying()) {
+			audioComponentDrive->Play();
+			movingStage++;
 		}
 
 	}

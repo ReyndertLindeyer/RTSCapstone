@@ -17,6 +17,24 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 
 	SetHitRadius(140);
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Tech_Centre_-_Select_Cue"));
+	selectCue = select.Object;
+
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Basic_Tank_Sounds_V1/Basic_Tank_-_Fire_Cue"));
+
+	//Store a reference to the Cue asset
+	fireCue = fire.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentFire = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentThree"));
+
+	//Stop sound from playing when it's created
+	audioComponentFire->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentFire->SetupAttachment(RootComponent);
+
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/AT_Cannon/AT_Cannon_V1_UNREAL_Base.AT_Cannon_V1_UNREAL_Base'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
@@ -55,6 +73,16 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
+}
+
+
+void ABuilding_Turret_Cannon::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (fireCue->IsValidLowLevelFast()) {
+		audioComponentFire->SetSound(fireCue);
 	}
 }
 
@@ -151,6 +179,7 @@ void ABuilding_Turret_Cannon::Tick(float DeltaTime)
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
 					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 5000.0f, 0.0f, 100.0f, PS, reactionPS);
 					projectile->SetActorEnableCollision(false);
+					audioComponentFire->Play();
 				}
 
 				if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)

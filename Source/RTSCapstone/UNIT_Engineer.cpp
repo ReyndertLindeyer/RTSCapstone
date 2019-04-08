@@ -64,6 +64,12 @@ AUNIT_Engineer::AUNIT_Engineer()
 	audioComponentOrder->SetupAttachment(RootComponent);
 	audioComponentDeath->SetupAttachment(RootComponent);
 
+	healingPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_HealingArea.P_HealingArea'")).Get(); 
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetupAttachment(RootComponent);
+	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 10.0));
+	particleComp->SetTemplate(healingPS);
+	particleComp->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -184,19 +190,25 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			//{
 				// Do Nothing?
 			//}
-			
 			for (int i = 0; i < entitiesInRange.Num(); i++)
 			{
 				if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() == GetEntityOwner() && GetEntityOwner()->teamValue == Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue)
 				{
 					if (!Cast<II_Entity>(entitiesInRange[i])->GetIsBeingHealed()) {
-						Cast<II_Entity>(entitiesInRange[i])->SetIsBeingHealed(true);
-						if (Cast<II_Entity>(entitiesInRange[i])->GetCurrentHealth() < Cast<II_Entity>(entitiesInRange[i])->GetMaxHealth() - 10) {
-							Cast<II_Entity>(entitiesInRange[i])->SetCurrentHealth(Cast<II_Entity>(entitiesInRange[i])->GetCurrentHealth() + 10);
-							UE_LOG(LogTemp, Warning, TEXT("Healed Someone"));
+						if (Cast<II_Entity>(entitiesInRange[i])->GetCurrentHealth() <= Cast<II_Entity>(entitiesInRange[i])->GetMaxHealth() - 10) {
+							Cast<II_Entity>(entitiesInRange[i])->SetIsBeingHealed(true);
+							Cast<II_Entity>(entitiesInRange[i])->SetCurrentHealth(Cast<II_Entity>(entitiesInRange[i])->GetCurrentHealth() + (20 * DeltaTime));
+							actorsToHeal.Add(entitiesInRange[i]);
+							if (!particleComp->bIsActive) {
+								particleComp->ActivateSystem(true);
+							}
 						}
-						actorsToHeal.Add(entitiesInRange[i]);
 					}
+				}
+			}
+			if (actorsToHeal.Num() == 0) {
+				if (particleComp->bIsActive) {
+					particleComp->ActivateSystem(false);
 				}
 			}
 		}
@@ -246,6 +258,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
 		}
+		particleComp->ActivateSystem(false);
 
 	}
 

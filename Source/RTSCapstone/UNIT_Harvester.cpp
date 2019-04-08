@@ -20,6 +20,8 @@ AUNIT_Harvester::AUNIT_Harvester()
 
 	SetHitRadius(160);
 
+	movingStage = 0;
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 
@@ -135,7 +137,7 @@ void AUNIT_Harvester::PostInitializeComponents()
 	if (idleCue->IsValidLowLevelFast()) {
 		audioComponentIdle->SetSound(idleCue);
 	}
-	
+
 	if (accelerateCue->IsValidLowLevelFast()) {
 		audioComponentSelect->SetSound(accelerateCue);
 	}
@@ -217,6 +219,14 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 
 		SetDestination(GetController(), GetActorLocation());
 
+		if (movingStage == 2 && !audioComponentDrive->IsPlaying()) {
+			audioComponentDeccelerate->Play();
+			movingStage = 0;
+		}
+		if (!audioComponentIdle->IsPlaying() && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentIdle->Play();
+		}
+
 		if (entitiesInRange.Num() > 0)
 		{
 			/// Check if entities are hostile
@@ -293,6 +303,15 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 				push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
 				rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
 			}
+		}
+
+		if (movingStage == 0 && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentAccelerate->Play();
+			movingStage++;
+		}
+		if (movingStage != 0 && !audioComponentAccelerate->IsPlaying()) {
+			audioComponentDrive->Play();
+			movingStage++;
 		}
 
 

@@ -13,6 +13,8 @@ AUNIT_AvBT::AUNIT_AvBT()
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false; 
+
+	movingStage = 0;
 	
 	SetHitRadius(160);
 	
@@ -244,6 +246,14 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	{
 		SetDestination(GetController(), GetActorLocation());
 
+		if (movingStage == 2 && !audioComponentDrive->IsPlaying()) {
+			audioComponentDeccelerate->Play();
+			movingStage = 0;
+		}
+		if (!audioComponentIdle->IsPlaying() && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentIdle->Play();
+		}
+
 		if (entitiesInRange.Num() > 0)
 		{
 			/// Check if entities are hostile
@@ -276,12 +286,54 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::MOVING)
 	{
 		// Ignore Combat until unit reaches destination
+		FHitResult* rayCastOne = new FHitResult();
+		FHitResult* rayCastTwo = new FHitResult();
+
+		FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 400);
+
+		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
+		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
+
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(135, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-135, FVector(0.0, 0.0, 1.0));
+
+		FVector EndTraceOne = ((ForwardVectorOne * 180) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 180) + StartTrace);
+
+		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastOne->GetActor())) {
+				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+				rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+			}
+		}
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
+				rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+			}
+		}
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 200.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
+		}
+
+		if (movingStage == 0 && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentAccelerate->Play();
+			movingStage++;
+		}
+		if (movingStage != 0 && !audioComponentAccelerate->IsPlaying()) {
+			audioComponentDrive->Play();
+			movingStage++;
 		}
 
 	}

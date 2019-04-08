@@ -13,6 +13,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	SetHitRadius(300);
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Barracks_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Barracks_Model/Barracks.Barracks")).Get());
 	buildingMesh->SetSimulatePhysics(false);
