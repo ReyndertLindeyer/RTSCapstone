@@ -16,6 +16,11 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	SetHitRadius(500);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Power_Plant_-_Select_Cue"));
+	selectCue = select.Object;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/OrbitalCannon_Model/Orbital_Cannon.Orbital_Cannon")).Get());
 	buildingMesh->SetSimulatePhysics(false);
 

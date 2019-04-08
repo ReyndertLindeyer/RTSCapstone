@@ -13,6 +13,26 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	isBuilding = true;
 	hasPower = true;
 	alternateShot = false;
+
+	SetHitRadius(20);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Tech_Centre_-_Select_Cue"));
+	selectCue = select.Object;
+
+	//Load our Sound Cue for the sound we created in the editor
+	static ConstructorHelpers::FObjectFinder<USoundCue> fire(TEXT("/Game/Game_Assets/Sounds/Infantry_Rifle_Sounds_V1_Fix/Inf_Rifle_-_Fire_Cue"));
+
+	//Store a reference to the Cue asset
+	fireCue = fire.Object;
+
+	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
+	audioComponentFire = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponentThree"));
+
+	//Stop sound from playing when it's created
+	audioComponentFire->bAutoActivate = false;
+
+	//Attach the audio component so that it follows the unit around
+	audioComponentFire->SetupAttachment(RootComponent);
 	
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Gattling_Turret/Gattling_Turret_V1_UNREAL_Base.Gattling_Turret_V1_UNREAL_Base'"));
@@ -88,6 +108,16 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
+}
+
+
+void ABuilding_Turret_Gattling::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (fireCue->IsValidLowLevelFast()) {
+		audioComponentFire->SetSound(fireCue);
 	}
 }
 
@@ -179,6 +209,7 @@ void ABuilding_Turret_Gattling::Tick(float DeltaTime)
 							alternateShot = true;
 						}
 
+						audioComponentFire->Play();
 
 						if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
 							targetActor = nullptr;

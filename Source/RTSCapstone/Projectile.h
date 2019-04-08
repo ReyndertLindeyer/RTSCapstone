@@ -33,6 +33,8 @@ public:
 
 	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, float blastRadius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB);
 
+	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, float blastRadius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB, bool shouldArc);
+
 	bool reachedTarget;
 	float countdown;
 
@@ -46,10 +48,13 @@ protected:
 	float projectileDamage;
 
 	FVector targetPosition;
+	FVector initialPosition;
 	float travelTime;
 	float travelDistance;
 
 	float blastRadius;
+
+	bool arcing;
 
 	UPROPERTY(EditAnywhere)
 		UParticleSystemComponent* particleComp;

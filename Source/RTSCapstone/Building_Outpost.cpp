@@ -10,7 +10,10 @@ ABuilding_Outpost::ABuilding_Outpost() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	SetHitRadius(40);
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Outpost_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Construction_Yard.Placeholder_Construction_Yard")).Get());
 	buildingMesh->SetSimulatePhysics(false);

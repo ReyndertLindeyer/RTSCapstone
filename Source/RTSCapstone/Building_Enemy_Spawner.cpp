@@ -7,9 +7,15 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 
 	PrimaryActorTick.bCanEverTick = false;
 
+	myManager = nullptr;
+
+	SetHitRadius(230);
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/ConstYard_-_Select_Cue"));
+	selectCue = select.Object;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ESpawner_Models/BasicEnemySpawner.BasicEnemySpawner")).Get());
 	buildingMesh->SetSimulatePhysics(false);
-	buildingMesh->SetRelativeScale3D(FVector(4.0f));
+	buildingMesh->SetRelativeScale3D(FVector(6.0f));
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
@@ -37,7 +43,7 @@ void ABuilding_Enemy_Spawner::BeginPlay()
 	constructed = true;
 
 	if (setPlayerOwner != nullptr) {
-		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Spawner", 100.0f);
+		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Spawner", 1000.0f);
 	}
 }
 
@@ -77,7 +83,12 @@ void ABuilding_Enemy_Spawner::SetMesh(UStaticMesh* inMesh) {
 void ABuilding_Enemy_Spawner::DestroyEntity()
 {
 	// Remove from Owner's Array
-	Cast<AEnemy_BaseManager>(myManager)->RemoveBuilding(this);
+	if (myManager != nullptr) {
+		Cast<AEnemy_BaseManager>(myManager)->RemoveBuilding(this);
+	}
+	else {
+		KillMe();
+	}
 }
 
 void ABuilding_Enemy_Spawner::KillMe() {

@@ -88,6 +88,8 @@ public:
 
 	UPROPERTY()
 		AActor* targetActor;
+	UPROPERTY()
+		TArray <AActor*> actorsToHeal;
 
 	TArray<AActor*> entitiesInRange;
 
@@ -105,6 +107,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY()
+		UParticleSystemComponent* particleComp;
+
+	UParticleSystem* healingPS;
 
 public:	
 	// Called every frame

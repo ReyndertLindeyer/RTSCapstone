@@ -10,7 +10,12 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	buildRadius = 500;
 	isBuilding = true;
 
+	SetHitRadius(200);
+
+	buildingMesh->SetWorldScale3D(FVector(6));
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Tech_Centre_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
 	buildingMesh->SetSimulatePhysics(false);
@@ -30,8 +35,6 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 void ABuilding_TechCenter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	buildingMesh->SetWorldScale3D(FVector(6));
 }
 
 void ABuilding_TechCenter::Tick(float DeltaTime)

@@ -11,12 +11,14 @@ AUNIT_Engineer::AUNIT_Engineer()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent->SetWorldScale3D(FVector(0.25f));
+	RootComponent->SetWorldScale3D(FVector(0.5f));
 	isSelected = false;
+
+	SetHitRadius(30);
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
-	BodyMesh->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.5f));
+	BodyMesh->SetRelativeScale3D(FVector(1.0f, 1.0f, 2.5f));
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cylinder.Cylinder'"));
 	UStaticMesh* Asset = MeshAsset.Object;
@@ -62,6 +64,12 @@ AUNIT_Engineer::AUNIT_Engineer()
 	audioComponentOrder->SetupAttachment(RootComponent);
 	audioComponentDeath->SetupAttachment(RootComponent);
 
+	healingPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_HealingArea.P_HealingArea'")).Get(); 
+	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSC"));
+	particleComp->SetupAttachment(RootComponent);
+	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 10.0));
+	particleComp->SetTemplate(healingPS);
+	particleComp->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -120,27 +128,37 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 
 	ignoreActors.Add(this);
 
-	//UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
 
 
 	switch (unitState)
 	{
 	case UNIT_STATE::IDLE:
-	case UNIT_STATE::SEEKING:
 		DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+	case UNIT_STATE::SEEKING:
+		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(1, 1, 1));
 		break;
 	case UNIT_STATE::ATTACKING:
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
 		break;
 	case UNIT_STATE::MOVING:
-		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+		DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	}
 
 
 	// Narrow down all the AActors to only ones with an II_Entity script
+	if(actorsToHeal.Num() > 0){
+		for (int i = 0; i < actorsToHeal.Num(); i++)
+		{
+			if (Cast<II_Entity>(actorsToHeal[i])->GetEntityOwner() == GetEntityOwner() && GetEntityOwner()->teamValue == Cast<II_Entity>(actorsToHeal[i])->GetEntityOwner()->teamValue)
+			{
+				Cast<II_Entity>(actorsToHeal[i])->SetIsBeingHealed(false);
+			}
+		}
+	}
 	entitiesInRange.Empty();
+	actorsToHeal.Empty();
 	for (int i = 0; i < outActors.Num(); i++)
 	{
 		if (Cast<II_Entity>(outActors[i]))
@@ -164,16 +182,35 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			/// Check if entities are hostile
 
 			// If there is a target, seek it.
-			if (targetActor != nullptr)
-				unitState = UNIT_STATE::SEEKING;
+			//if (targetActor != nullptr)
+				//unitState = UNIT_STATE::SEEKING;
 
 			// If there isn't a target, set a target.
-			else
-			{
+			//else
+			//{
 				// Do Nothing?
+			//}
+			for (int i = 0; i < entitiesInRange.Num(); i++)
+			{
+				if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() == GetEntityOwner() && GetEntityOwner()->teamValue == Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner()->teamValue)
+				{
+					if (!Cast<II_Entity>(entitiesInRange[i])->GetIsBeingHealed()) {
+						if (Cast<II_Entity>(entitiesInRange[i])->GetCurrentHealth() <= Cast<II_Entity>(entitiesInRange[i])->GetMaxHealth() - 10) {
+							Cast<II_Entity>(entitiesInRange[i])->SetIsBeingHealed(true);
+							Cast<II_Entity>(entitiesInRange[i])->SetCurrentHealth(Cast<II_Entity>(entitiesInRange[i])->GetCurrentHealth() + (20 * DeltaTime));
+							actorsToHeal.Add(entitiesInRange[i]);
+							if (!particleComp->bIsActive) {
+								particleComp->ActivateSystem(true);
+							}
+						}
+					}
+				}
 			}
-				
-
+			if (actorsToHeal.Num() == 0) {
+				if (particleComp->bIsActive) {
+					particleComp->ActivateSystem(false);
+				}
+			}
 		}
 	}
 
@@ -181,19 +218,54 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::MOVING)
 	{
 		// Ignore Combat until unit reaches destination
+		FHitResult* rayCastOne = new FHitResult();
+		FHitResult* rayCastTwo = new FHitResult();
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 60);
+
+		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
+		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
+
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(20, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-20, FVector(0.0, 0.0, 1.0));
+
+		FVector EndTraceOne = ((ForwardVectorOne * 100) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 100) + StartTrace);
+
+		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastOne->GetActor())) {
+				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 4, push.Y / 4, push.Z) + (BodyMesh->GetRightVector() * 2);
+				rayCastOne->GetActor()->SetActorLocation(rayCastOne->GetActor()->GetActorLocation() + push);
+			}
+		}
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+				push = FVector(push.X / 4, push.Y / 4, push.Z) + (-BodyMesh->GetRightVector() * 2);
+				rayCastTwo->GetActor()->SetActorLocation(rayCastTwo->GetActor()->GetActorLocation() + push);
+			}
+		}
+
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 80.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
 		}
+		particleComp->ActivateSystem(false);
 
 	}
 
 	// SEEKING STATE
-	if (unitState == UNIT_STATE::SEEKING)
-	{
+	//if (unitState == UNIT_STATE::SEEKING)
+	//{
+		/*
 		if (targetActor == nullptr)
 		{
 			unitState = UNIT_STATE::IDLE;
@@ -205,7 +277,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			//// Target is out of range: move towards it.
-			//if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			//if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			//{
 			//	SetDestination(GetController(), moveDestination);
 			//}
@@ -216,12 +288,14 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			//	unitState = UNIT_STATE::ATTACKING;
 			//}
 		}
-	}
+		*/
+	//}
 
 
 	// ATTACK STATE
-	if (unitState == UNIT_STATE::ATTACKING)
+	//if (unitState == UNIT_STATE::ATTACKING)
 	{
+		/*
 		if (targetActor == nullptr)
 			unitState = UNIT_STATE::IDLE;
 
@@ -231,7 +305,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			//// Target is out of range: chase it;
-			//if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			//if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			//{
 			//	unitState = UNIT_STATE::SEEKING;
 			//}
@@ -248,7 +322,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			//	}
 			//}
 		}
-
+		*/
 	}
 
 	/// Attack Rate Timer
@@ -351,6 +425,14 @@ void AUNIT_Engineer::DestroyEntity()
 			}
 		}
 	}
+	if (actorsToHeal.Num() > 0) {
+		for (int i = 0; i < actorsToHeal.Num(); i++)
+		{
+				Cast<II_Entity>(entitiesInRange[i])->SetIsBeingHealed(false);
+		}
+	}
+	entitiesInRange.Empty();
+	actorsToHeal.Empty();
 
 
 	if (!UObject::IsValidLowLevel()) return;

@@ -11,6 +11,11 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	isBuilding = true;
 	hasPower = true;
 
+	SetHitRadius(10);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Power_Plant_-_Select_Cue"));
+	selectCue = select.Object;
+
 	// Body
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Tesla_Tower/TeslaTower_v1.TeslaTower_v1'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
@@ -31,7 +36,7 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 	particleSystem = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Lightning.P_Lightning'")).Get();
 
 	particleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MyPSCA"));
-	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
+	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 40.0));
 	particleComp->SetTemplate(particleSystem);
 	particleComp->bAutoActivate = false;
 	particleComp->SetupAttachment(RootComponent);
@@ -118,6 +123,7 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 				{
 					if (chain1 && c1TargetActor != nullptr)
 					{
+						particleComp->ActivateSystem(false);
 						// Add Particle start to tesla and partile end to target location
 						particleComp->SetBeamSourcePoint(0, targetActor->GetActorLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, c1TargetActor->GetActorLocation(), 0);
@@ -168,6 +174,7 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 
 					else if (chain2 && c2TargetActor != nullptr)
 					{
+						particleComp->ActivateSystem(false);
 						// Add Particle start to tesla and partile end to target location
 						particleComp->SetBeamSourcePoint(0, c1TargetActor->GetActorLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, c2TargetActor->GetActorLocation(), 0);
@@ -188,6 +195,7 @@ void ABuilding_Turret_Tesla::Tick(float DeltaTime)
 
 					else
 					{
+						particleComp->ActivateSystem(false);
 						// Add Particle start to tesla and partile end to target location
 						particleComp->SetBeamSourcePoint(0, barrelPos->GetComponentLocation(), 0);
 						particleComp->SetBeamTargetPoint(0, targetActor->GetActorLocation(), 0);

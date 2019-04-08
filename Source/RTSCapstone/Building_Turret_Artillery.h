@@ -57,8 +57,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		USceneComponent* barrelPos;
 
+	void PostInitializeComponents();
+
 private:
 	uint32 range;
 	bool hasPower;
+
+	USoundCue* fireCue;
+
+	UAudioComponent* audioComponentFire;
 	
 };

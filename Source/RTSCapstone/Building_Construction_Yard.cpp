@@ -10,6 +10,11 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	buildRadius = 1200;
 	isBuilding = false;
 
+	SetHitRadius(600);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/ConstYard_-_Select_Cue"));
+	selectCue = select.Object;
+
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ConstructionYard_Model/Construction_Yard.Construction_Yard")).Get());
 	RootComponent = buildingMesh;
 	buildingMesh->SetSimulatePhysics(false);
