@@ -51,8 +51,6 @@ public:
 	virtual void ResetTarget();
 
 	FVector targetMoveDestination;
-	
-	TArray<II_Player*> selectingPlayerArray;
 
 	//Use for vehicle sounds, 0 for idle, 1 for driving, 2 for finished driving
 	int32 movingStage;
