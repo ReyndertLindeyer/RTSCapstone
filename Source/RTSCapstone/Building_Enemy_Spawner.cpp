@@ -21,7 +21,7 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	spawnPt = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Point"));
-	spawnPt->SetRelativeLocation(FVector(-90.0, 0.0f, 0.0f));
+	spawnPt->SetRelativeLocation(FVector(-90.0, 0.0f, 25.0f));
 
 	waypoint = buildingMesh->RelativeLocation + FVector(0.0f, 100.0f, 0.0f); //Creates a waypoint 100 units in front of the barracks
 	
