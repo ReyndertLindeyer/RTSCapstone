@@ -15,6 +15,8 @@ AUNIT_Rifleman::AUNIT_Rifleman()
 	RootComponent->SetWorldScale3D(FVector(0.5f));
 	isSelected = false;
 
+	weight = 1;
+
 	SetHitRadius(30);
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
@@ -215,18 +217,32 @@ void AUNIT_Rifleman::Tick(float DeltaTime)
 		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastOne->GetActor())) {
-				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
-				push = FVector(push.X / 4, push.Y / 4, push.Z) + (BodyMesh->GetRightVector() * 2);
-				rayCastOne->GetActor()->SetActorLocation(rayCastOne->GetActor()->GetActorLocation() + push);
+				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
+					FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 4, push.Y / 4, push.Z) + (BodyMesh->GetRightVector() * 2);
+					rayCastOne->GetActor()->SetActorLocation(rayCastOne->GetActor()->GetActorLocation() + push);
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastOne->GetActor()->GetActorLocation());
+					push = FVector(push.X / 4, push.Y / 4, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
 			}
 		}
 
 		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
-				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
-				push = FVector(push.X / 4, push.Y / 4, push.Z) + (-BodyMesh->GetRightVector() * 2);
-				rayCastTwo->GetActor()->SetActorLocation(rayCastTwo->GetActor()->GetActorLocation() + push);
+				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
+					FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 4, push.Y / 4, push.Z) + (-BodyMesh->GetRightVector() * 2);
+					rayCastTwo->GetActor()->SetActorLocation(rayCastTwo->GetActor()->GetActorLocation() + push);
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
+					push = FVector(push.X / 4, push.Y / 4, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
 			}
 		}
 

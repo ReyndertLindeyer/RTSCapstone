@@ -56,10 +56,10 @@ protected:
 
 	bool arcing;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		UParticleSystemComponent* particleComp;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		USphereComponent* root;
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects

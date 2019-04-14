@@ -15,6 +15,8 @@ AUNIT_MBT::AUNIT_MBT()
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	weight = 5;
+
 	SetHitRadius(160);
 
 	movingStage = 0;
@@ -55,6 +57,14 @@ AUNIT_MBT::AUNIT_MBT()
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+
+	//Dust Trail Particle System
+	DustPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_DustTrail.P_DustTrail'")).Get();
+	trailParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DustPS"));
+	trailParticleComp->SetupAttachment(RootComponent);
+	trailParticleComp->SetRelativeLocation(FVector(-100.0, 0.0, 0.0));
+	trailParticleComp->SetTemplate(DustPS);
+	trailParticleComp->bAutoActivate = false;
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -285,6 +295,9 @@ void AUNIT_MBT::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
+		if (!trailParticleComp->IsActive()) {
+			trailParticleComp->Activate(true);
+		}
 		// Ignore Combat until unit reaches destination
 		FHitResult* rayCastOne = new FHitResult();
 		FHitResult* rayCastTwo = new FHitResult();
@@ -305,18 +318,32 @@ void AUNIT_MBT::Tick(float DeltaTime)
 		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastOne->GetActor())) {
-				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
-				push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
-				rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
+					FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastOne->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
 			}
 		}
 
 		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
-				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
-				push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
-				rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
+					FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
+					rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
 			}
 		}
 
@@ -325,6 +352,8 @@ void AUNIT_MBT::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
+
+			trailParticleComp->Deactivate();
 		}
 
 		if (movingStage == 0 && !audioComponentDeccelerate->IsPlaying()) {

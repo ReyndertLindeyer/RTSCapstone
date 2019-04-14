@@ -66,7 +66,7 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 
 	currentAttackTimer = 0.0f;
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpArtillery.BlowingUpArtillery_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -85,6 +85,7 @@ void ABuilding_Turret_Artillery::PostInitializeComponents()
 void ABuilding_Turret_Artillery::BeginPlay()
 {
 	Super::BeginPlay();
+	selectedDecal->DecalSize = FVector(200, 60, 60);
 }
 
 void ABuilding_Turret_Artillery::Tick(float DeltaTime)

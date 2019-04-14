@@ -29,7 +29,7 @@ ABuilding_Enemy_Spawner::ABuilding_Enemy_Spawner() {
 	buildingType = 1;
 	
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpEnemySpawner.BlowingUpEnemySpawner_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -45,6 +45,8 @@ void ABuilding_Enemy_Spawner::BeginPlay()
 	if (setPlayerOwner != nullptr) {
 		InitializeStructure(Cast<II_Player>(setPlayerOwner), "Spawner", 1000.0f);
 	}
+
+	selectedDecal->DecalSize = FVector(200, 100, 100);
 }
 
 void ABuilding_Enemy_Spawner::SpawnUnit()

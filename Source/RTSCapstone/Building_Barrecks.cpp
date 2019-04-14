@@ -45,7 +45,8 @@ void ABuilding_Barrecks::BeginPlay()
 	waypointMesh->SetHiddenInGame(true);
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
-	waypointMesh->SetWorldLocation(wayPoint);
+
+	waypointMesh->SetWorldLocation(wayPoint); selectedDecal->DecalSize = FVector(200, 220, 220);
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)

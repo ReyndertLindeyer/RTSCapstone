@@ -77,6 +77,11 @@ private:
 
 	bool returning;
 
+	//Dust Trail Particle System Variables
+	UParticleSystem* DustPS;
+	UPROPERTY()
+		UParticleSystemComponent* trailParticleComp;
+
 	//Sound Stuff
 	USoundCue* selectCue;
 	USoundCue* orderCue;

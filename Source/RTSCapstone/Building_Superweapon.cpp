@@ -36,7 +36,7 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	isReady = true;
 	currentTimer = 0.0f;
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpSuperWeapon.BlowingUpSuperWeapon_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -45,7 +45,9 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 void ABuilding_Superweapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+
+	selectedDecal->DecalSize = FVector(200, 300, 300);
 
 }
 

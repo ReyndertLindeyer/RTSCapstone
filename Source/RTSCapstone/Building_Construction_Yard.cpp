@@ -24,7 +24,7 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpConYard.BlowingUpConYard_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -50,6 +50,7 @@ void ABuilding_Construction_Yard::Tick(float DeltaTime)
 		setPlayerOwner = nullptr;
 		return;
 	}
-		
+
+	selectedDecal->DecalSize = FVector(200, 360, 360);
 
 }

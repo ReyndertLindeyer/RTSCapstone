@@ -25,7 +25,7 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpTechCenter.BlowingUpTechCenter_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -35,6 +35,8 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 void ABuilding_TechCenter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	selectedDecal->DecalSize = FVector(200, 100, 100);
 }
 
 void ABuilding_TechCenter::Tick(float DeltaTime)

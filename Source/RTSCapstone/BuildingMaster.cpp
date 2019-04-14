@@ -163,12 +163,6 @@ void ABuildingMaster::BeginPlay()
 
 	DynamicMaterialInstB = UMaterialInstanceDynamic::Create(selectMaterial, selectedDecal);
 	selectedDecal->SetDecalMaterial(DynamicMaterialInstB);
-
-	if(buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y > buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X)
-		selectedDecal->DecalSize = FVector(200, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y + 20, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y + 20);
-	else
-		selectedDecal->DecalSize = FVector(200, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X + 20, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X + 20);
-
 }
 
 // Called every frame

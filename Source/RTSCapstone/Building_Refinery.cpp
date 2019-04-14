@@ -32,8 +32,8 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	harvestPt->SetRelativeLocation(FVector(0.0f, 400.0f, 10.0f));
 
 	isOccupied = false;
-	
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpRefinery.BlowingUpRefinery_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -44,6 +44,8 @@ void ABuilding_Refinery::BeginPlay()
 {
 	Super::BeginPlay();
 
+
+	selectedDecal->DecalSize = FVector(200, 220, 220);
 	
 }
 

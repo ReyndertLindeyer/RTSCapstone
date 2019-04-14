@@ -105,7 +105,7 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 
 	currentAttackTimer = 0.0f;
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpGattling.BlowingUpGattling_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -126,6 +126,7 @@ void ABuilding_Turret_Gattling::BeginPlay()
 	Super::BeginPlay();
 	
 	buildingMesh->SetWorldScale3D(FVector(5));
+	selectedDecal->DecalSize = FVector(200, 60, 60);
 
 }
 

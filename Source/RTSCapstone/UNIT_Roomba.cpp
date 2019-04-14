@@ -16,6 +16,8 @@ AUNIT_Roomba::AUNIT_Roomba()
 	RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	weight = 4;
+
 	SetHitRadius(160);
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));

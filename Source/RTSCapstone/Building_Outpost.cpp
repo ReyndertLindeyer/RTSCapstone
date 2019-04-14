@@ -21,7 +21,7 @@ ABuilding_Outpost::ABuilding_Outpost() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(10, buildRadius, buildRadius);
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpVehicleFactory.BlowingUpVehicleFactory_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -31,5 +31,6 @@ ABuilding_Outpost::ABuilding_Outpost() {
 void ABuilding_Outpost::BeginPlay()
 {
 	Super::BeginPlay();
+	selectedDecal->DecalSize = FVector(200, 60, 60);
 
 }

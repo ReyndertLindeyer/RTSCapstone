@@ -70,7 +70,7 @@ ABuilding_Turret_Cannon::ABuilding_Turret_Cannon() {
 
 	currentAttackTimer = 0.0f;
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpCannon.BlowingUpCannon_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -91,6 +91,7 @@ void ABuilding_Turret_Cannon::BeginPlay()
 	Super::BeginPlay();
 	
 	buildingMesh->SetWorldScale3D(FVector(5));
+	selectedDecal->DecalSize = FVector(200, 60, 60);
 }
 
 void ABuilding_Turret_Cannon::Tick(float DeltaTime)

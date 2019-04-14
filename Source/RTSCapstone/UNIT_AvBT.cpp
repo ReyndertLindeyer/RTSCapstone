@@ -12,7 +12,9 @@ AUNIT_AvBT::AUNIT_AvBT()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
-	isSelected = false; 
+	isSelected = false;
+
+	weight = 6;
 
 	movingStage = 0;
 	
@@ -22,23 +24,70 @@ AUNIT_AvBT::AUNIT_AvBT()
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/ADVBT_V1_UNREAL_Body.ADVBT_V1_UNREAL_Body'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/TankBody.TankBody'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	BodyMesh->SetStaticMesh(bodyMesh);
-	BodyMesh->SetRelativeLocation(FVector(0.0f, -20.0f, -80.0f));
-	BodyMesh->SetRelativeScale3D(FVector(3.0f));
+	BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
+	BodyMesh->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
+	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
 
 	// TURRET
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
 	TurretMesh->SetupAttachment(BodyMesh);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/ADVBT_V1_UNREAL_Turret.ADVBT_V1_UNREAL_Turret'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>TurretMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/TankTurret.TankTurret'"));
 	UStaticMesh* turretMesh = TurretMeshAsset.Object;
 	TurretMesh->SetStaticMesh(turretMesh);
-	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	TurretMesh->SetRelativeLocation(FVector(0.0f, -35.0f, 20.0f));
 	TurretMesh->SetRelativeScale3D(FVector(1.0f));
 	TurretMesh->SetCanEverAffectNavigation(false);
+
+	//Treads
+
+	//Front Right
+	TreadMeshA = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshA"));
+	TreadMeshA->SetupAttachment(BodyMesh);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>treadA(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/TankTreadsFront.TankTreadsFront'"));
+	UStaticMesh*  meshA = treadA.Object;
+	TreadMeshA->SetStaticMesh(meshA);
+	TreadMeshA->SetRelativeLocation(FVector(-45.0f, 40.0f, 4.0f));
+	TreadMeshA->SetRelativeRotation(FRotator(90.0, 90.0, -90.0));
+	TreadMeshA->SetRelativeScale3D(FVector(1.0f));
+	TreadMeshA->SetCanEverAffectNavigation(false);
+
+	//Front Left
+	TreadMeshB = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshB"));
+	TreadMeshB->SetupAttachment(BodyMesh);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>treadB(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/TankTreadsFront.TankTreadsFront'"));
+	UStaticMesh*  meshB = treadB.Object;
+	TreadMeshB->SetStaticMesh(meshB);
+	TreadMeshB->SetRelativeLocation(FVector(45.0f, 40.0f, 4.0f));
+	TreadMeshB->SetRelativeRotation(FRotator(90.0, 90.0, 90.0));
+	TreadMeshB->SetRelativeScale3D(FVector(1.0f));
+	TreadMeshB->SetCanEverAffectNavigation(false);
+
+	//Back Right
+	TreadMeshC = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshC"));
+	TreadMeshC->SetupAttachment(BodyMesh);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>treadC(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/TankTreadsBack.TankTreadsBack'"));
+	UStaticMesh*  meshC = treadC.Object;
+	TreadMeshC->SetStaticMesh(meshC);
+	TreadMeshC->SetRelativeLocation(FVector(-45.0f, -28.0f, 4.0f));
+	TreadMeshC->SetRelativeRotation(FRotator(90.0, -90.0, 90.0));
+	TreadMeshC->SetRelativeScale3D(FVector(1.0f));
+	TreadMeshC->SetCanEverAffectNavigation(false);
+
+	//Back Left
+	TreadMeshD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshD"));
+	TreadMeshD->SetupAttachment(BodyMesh);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>treadD(TEXT("StaticMesh'/Game/Game_Assets/Models/Units/AdvBT/TankTreadsBack.TankTreadsBack'"));
+	UStaticMesh*  meshD = treadD.Object;
+	TreadMeshD->SetStaticMesh(meshD);
+	TreadMeshD->SetRelativeLocation(FVector(45.0f, -28.0f, 4.0f));
+	TreadMeshD->SetRelativeRotation(FRotator(-90.0, 90.0, 90.0));
+	TreadMeshD->SetRelativeScale3D(FVector(1.0f));
+	TreadMeshD->SetCanEverAffectNavigation(false);
 
 	// SELECTION INDICATOR
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
@@ -49,16 +98,24 @@ AUNIT_AvBT::AUNIT_AvBT()
 
 	// PARTICLE SYSTEMS
 	barrelPos1 = CreateDefaultSubobject<USceneComponent>(TEXT("Left Barrel"));
-	barrelPos1->SetRelativeLocation(FVector(56.5f, -12.0f, 35.0f));
+	barrelPos1->SetRelativeLocation(FVector(100, -7, 7));
 	barrelPos1->SetupAttachment(TurretMesh);
 
 	barrelPos2 = CreateDefaultSubobject<USceneComponent>(TEXT("Right Barrel"));
-	barrelPos2->SetRelativeLocation(FVector(56.5f, 25.0f, 35.0f));
+	barrelPos2->SetRelativeLocation(FVector(100, 7, 7));
 	barrelPos2->SetupAttachment(TurretMesh);
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+
+	//Dust Trail Particle System
+	DustPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_DustTrail.P_DustTrail'")).Get();
+	trailParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DustPS"));
+	trailParticleComp->SetupAttachment(RootComponent);
+	trailParticleComp->SetRelativeLocation(FVector(-100.0, 0.0, 0.0));
+	trailParticleComp->SetTemplate(DustPS);
+	trailParticleComp->bAutoActivate = false;
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -285,38 +342,55 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
+		if (!trailParticleComp->IsActive()) {
+			trailParticleComp->Activate(true);
+		}
 		// Ignore Combat until unit reaches destination
 		FHitResult* rayCastOne = new FHitResult();
 		FHitResult* rayCastTwo = new FHitResult();
 
-		FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 400);
+		FVector StartTrace = RootComponent->GetComponentLocation() + (RootComponent->GetForwardVector() * 470);
 
-		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
-		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
+		FVector ForwardVectorOne = RootComponent->GetForwardVector();
+		FVector ForwardVectorTwo = RootComponent->GetForwardVector();
 
-		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(135, FVector(0.0, 0.0, 1.0));
-		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-135, FVector(0.0, 0.0, 1.0));
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(120, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-120, FVector(0.0, 0.0, 1.0));
 
-		FVector EndTraceOne = ((ForwardVectorOne * 180) + StartTrace);
-		FVector EndTraceTwo = ((ForwardVectorTwo * 180) + StartTrace);
+		FVector EndTraceOne = ((ForwardVectorOne * 250) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 250) + StartTrace);
 
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 
 		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastOne->GetActor())) {
-				FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
-				push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
-				rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
+					FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (RootComponent->GetRightVector() * 2);
+					rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastOne->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (RootComponent->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
 			}
 		}
 
 		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
-				FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
-				push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
-				rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
+					FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
+					rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
 			}
 		}
 
@@ -325,6 +399,8 @@ void AUNIT_AvBT::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
+
+			trailParticleComp->Deactivate();
 		}
 
 		if (movingStage == 0 && !audioComponentDeccelerate->IsPlaying()) {

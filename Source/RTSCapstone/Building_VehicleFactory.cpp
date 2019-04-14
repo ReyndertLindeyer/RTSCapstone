@@ -34,7 +34,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpVehicleFactory.BlowingUpVehicleFactory_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -47,6 +47,7 @@ void ABuilding_VehicleFactory::BeginPlay()
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
+	selectedDecal->DecalSize = FVector(200, 80, 80);
 }
 
 void ABuilding_VehicleFactory::Tick(float DeltaTime)

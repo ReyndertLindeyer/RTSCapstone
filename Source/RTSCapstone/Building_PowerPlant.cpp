@@ -21,7 +21,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(10, buildRadius, buildRadius);
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpPowerPlant.BlowingUpPowerPlant_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -31,6 +31,8 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 void ABuilding_PowerPlant::BeginPlay()
 {
 	Super::BeginPlay();
+
+	selectedDecal->DecalSize = FVector(200, 220, 220);
 
 }
 

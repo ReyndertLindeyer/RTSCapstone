@@ -45,7 +45,7 @@ ABuilding_Turret_Tesla::ABuilding_Turret_Tesla() {
 
 	chain1 = false;
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpTesla.BlowingUpTesla_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -56,6 +56,7 @@ void ABuilding_Turret_Tesla::BeginPlay()
 	Super::BeginPlay();
 	
 	buildingMesh->SetWorldScale3D(FVector(5));
+	selectedDecal->DecalSize = FVector(200, 60, 60);
 
 }
 

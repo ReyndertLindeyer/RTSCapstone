@@ -57,6 +57,9 @@ public:
 	//Use for vehicle sounds, 0 for idle, 1 for driving, 2 for finished driving
 	int32 movingStage;
 
+	//The weight that is compaired to see which unit should push the other out of the way
+	int32 weight;
+
 	UNIT_STATE unitState;
 	bool overrideAI;
 };

@@ -26,6 +26,11 @@ ABuilding_PlanetaryCannon::ABuilding_PlanetaryCannon() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);
 
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpPlanetaryCannon.BlowingUpPlanetaryCannon_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
+
 	buildingMesh->ComponentTags.Add(FName("Building"));
 }
 
