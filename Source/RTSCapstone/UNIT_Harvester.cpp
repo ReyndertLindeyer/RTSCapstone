@@ -18,6 +18,12 @@ AUNIT_Harvester::AUNIT_Harvester()
 	//RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	weight = 10;
+
+	SetHitRadius(160);
+
+	movingStage = 0;
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 
@@ -35,11 +41,19 @@ AUNIT_Harvester::AUNIT_Harvester()
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
 
+	//Dust Trail Particle System
+	DustPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_DustTrail.P_DustTrail'")).Get();
+	trailParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DustPS"));
+	trailParticleComp->SetupAttachment(RootComponent);
+	trailParticleComp->SetRelativeLocation(FVector(-100.0, 0.0, 0.0));
+	trailParticleComp->SetTemplate(DustPS);
+	trailParticleComp->bAutoActivate = false;
+
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
 
 	currentResources = 0.0f;
-	maxResources = 200.0f;
+	maxResources = 300.0f;
 
 
 	//Load our Sound Cue for the sound we created in the editor
@@ -133,7 +147,7 @@ void AUNIT_Harvester::PostInitializeComponents()
 	if (idleCue->IsValidLowLevelFast()) {
 		audioComponentIdle->SetSound(idleCue);
 	}
-	
+
 	if (accelerateCue->IsValidLowLevelFast()) {
 		audioComponentSelect->SetSound(accelerateCue);
 	}
@@ -215,6 +229,14 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 
 		SetDestination(GetController(), GetActorLocation());
 
+		if (movingStage == 2 && !audioComponentDrive->IsPlaying()) {
+			audioComponentDeccelerate->Play();
+			movingStage = 0;
+		}
+		if (!audioComponentIdle->IsPlaying() && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentIdle->Play();
+		}
+
 		if (entitiesInRange.Num() > 0)
 		{
 			/// Check if entities are hostile
@@ -252,14 +274,69 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
+		if (!trailParticleComp->IsActive()) {
+			trailParticleComp->Activate(true);
+		}
+		FHitResult* rayCastOne = new FHitResult();
+		FHitResult* rayCastTwo = new FHitResult();
+
+		FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 400);
+
+		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
+		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
+
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(135, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-135, FVector(0.0, 0.0, 1.0));
+
+		FVector EndTraceOne = ((ForwardVectorOne * 180) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 180) + StartTrace);
+
+		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastOne->GetActor())) {
+				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
+					FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+				}
+			}
+		}
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
+					FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
+					rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
+			}
+		}
+
+		if (movingStage == 0 && !audioComponentDeccelerate->IsPlaying()) {
+			audioComponentAccelerate->Play();
+			movingStage++;
+		}
+		if (movingStage != 0 && !audioComponentAccelerate->IsPlaying()) {
+			audioComponentDrive->Play();
+			movingStage++;
+		}
 
 		// Ignore Combat until unit reaches destination
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			unitState = UNIT_STATE::IDLE;
 			overrideAI = false;
-		}
 
+			trailParticleComp->Deactivate();
+		}
 	}
 
 	// SEEKING STATE
@@ -325,9 +402,9 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 				// Deposit Resources
 
 				/// Temp
-				if (currentResources - 20.0f >= 0) {
-					currentResources -= 20.0f;
-					GetEntityOwner()->ChangeResources(20);
+				if (currentResources - 50.0f >= 0) {
+					currentResources -= 50.0f;
+					GetEntityOwner()->ChangeResources(50);
 				}
 				else
 					currentResources = 0;
@@ -491,9 +568,20 @@ void AUNIT_Harvester::ResetTarget()
 	targetActor = nullptr;
 }
 
-void AUNIT_Harvester::SetSelection(bool state)
+void AUNIT_Harvester::SetSelection(bool state, II_Player* inPlayer)
 {
 	isSelected = state;
+	if (!selectingPlayerArray.Contains(inPlayer) && state == true) {
+		selectingPlayerArray.Add(inPlayer);
+	}
+	else if (selectingPlayerArray.Contains(inPlayer) && state == false) {
+		for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+			if (selectingPlayerArray[i] == inPlayer) {
+				selectingPlayerArray.RemoveAt(i);
+				break;
+			}
+		}
+	}
 	SelectionIndicator->SetVisibility(state);
 	if (state && !audioComponentSelect->IsPlaying()) {
 		audioComponentSelect->Play();
@@ -516,28 +604,46 @@ void AUNIT_Harvester::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
-				if (GetEntityOwner()->GetUnits()[i] == this)
+				if (GetEntityOwner()->GetUnits()[i] == this) {
 					GetEntityOwner()->RemoveUnitAtIndex(i);
+					break;
+				}
 			}
 		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
-				if (GetEntityOwner()->GetBuildings()[i] == this)
+				if (GetEntityOwner()->GetBuildings()[i] == this) {
 					GetEntityOwner()->RemoveBuildingAtIndex(i);
+					break;
+				}
 			}
 		}
 
 		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
-				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this) {
 					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+					break;
+				}
+			}
+		}
+
+		if (selectingPlayerArray.Num() > 0) {
+			for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+				if (selectingPlayerArray[i] != GetEntityOwner()) {
+					for (int j = 0; j < selectingPlayerArray[i]->GetSelectedCharacters().Num(); j++) {
+						if (selectingPlayerArray[i]->GetSelectedCharacters()[j] == this) {
+							selectingPlayerArray[i]->RemoveSelectedCharacterAtIndex(j);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

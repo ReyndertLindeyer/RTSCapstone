@@ -11,14 +11,47 @@ AResourceNode::AResourceNode()
 	this->Tags.Add(FName("ResourceNode"));
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ResourceMesh"));
-	mesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Soldier_Gun_Cylinder001.Placeholder_Soldier_Gun_Cylinder001")).Get());
+
+	int32 tempNum = FMath::RandRange(0, 2);
+
+	if (tempNum == 0) {
+		mesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ResourcePiles/ResourceOne.ResourceOne")).Get());
+	}
+	else if (tempNum == 1) {
+		mesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ResourcePiles/ResourceTwo.ResourceTwo")).Get());
+	}
+	else {
+		mesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/ResourcePiles/ResourceThree.ResourceThree")).Get());
+	}
 	mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));
 	RootComponent = mesh;
 	//mesh->SetupAttachment(RootComponent);
 	mesh->SetCollisionProfileName(FName("OverlapAll"));
 	mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	mesh->SetSimulatePhysics(false);
-	mesh->SetWorldScale3D(FVector(8, 8, 8));
+
+	tempNum = FMath::RandRange(0, 5);
+
+	if (tempNum == 0) {
+		resourceMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/ResourceMaterials/MAT_Emissive_Blue")).Get();
+	}
+	else if (tempNum == 1) {
+		resourceMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/ResourceMaterials/MAT_Emissive_Green")).Get();
+	}
+	else if (tempNum == 20) {
+		resourceMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/ResourceMaterials/MAT_Emissive_Orange")).Get();
+	}
+	else if (tempNum == 3) {
+		resourceMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/ResourceMaterials/MAT_Emissive_Purple")).Get();
+	}
+	else if (tempNum == 4) {
+		resourceMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/ResourceMaterials/MAT_Emissive_Red")).Get();
+	}
+	else {
+		resourceMaterial = ConstructorHelpers::FObjectFinderOptional<UMaterialInterface>(TEXT("/Game/Game_Assets/Materials/ResourceMaterials/MAT_Emissive_Yellow")).Get();
+	}
+
+	mesh->SetMaterial(0, resourceMaterial);
 
 	needsRespawning = false;
 	isOccupied = false;

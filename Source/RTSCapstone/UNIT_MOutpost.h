@@ -7,6 +7,7 @@
 
 // Components
 #include "Components/SphereComponent.h"
+#include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Components/CapsuleComponent.h"
 
@@ -46,7 +47,7 @@ public:
 	// FUNCTIONS
 public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
-	virtual void SetSelection(bool state) override;
+	virtual void SetSelection(bool state, II_Player* inPlayer) override;
 
 	virtual bool GetSelection() override;
 
@@ -68,6 +69,11 @@ private:
 	UStaticMesh* BuildingAsset;
 
 	ABuilding_Ghost* buildingGhost;
+
+	//Dust Trail Particle System Variables
+	UParticleSystem* DustPS;
+	UPROPERTY()
+		UParticleSystemComponent* trailParticleComp;
 
 public:
 

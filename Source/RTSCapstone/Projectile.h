@@ -33,6 +33,8 @@ public:
 
 	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, float blastRadius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB);
 
+	void InitializeProjectile(PROJECTILE_TYPE type, FVector targetPosition, float damage, float travelSpeed, float travelDistance, float blastRadius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB, bool shouldArc);
+
 	bool reachedTarget;
 	float countdown;
 
@@ -46,15 +48,18 @@ protected:
 	float projectileDamage;
 
 	FVector targetPosition;
+	FVector initialPosition;
 	float travelTime;
 	float travelDistance;
 
 	float blastRadius;
 
-	UPROPERTY(EditAnywhere)
+	bool arcing;
+
+	UPROPERTY()
 		UParticleSystemComponent* particleComp;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		USphereComponent* root;
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects

@@ -10,6 +10,11 @@ ABuilding_PlanetaryCannon::ABuilding_PlanetaryCannon() {
 	buildRadius = 500;
 	isBuilding = true;
 
+	SetHitRadius(1300);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Tech_Centre_-_Select_Cue"));
+	selectCue = select.Object;
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>BodyMeshAsset(TEXT("StaticMesh'/Game/Game_Assets/Models/Planetery_Cannon_Model/PlanetaryCannon_v1.PlanetaryCannon_v1'"));
 	UStaticMesh* bodyMesh = BodyMeshAsset.Object;
 	buildingMesh->SetStaticMesh(bodyMesh);
@@ -20,6 +25,11 @@ ABuilding_PlanetaryCannon::ABuilding_PlanetaryCannon() {
 
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(3, buildRadius, buildRadius);
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpPlanetaryCannon.BlowingUpPlanetaryCannon_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 }

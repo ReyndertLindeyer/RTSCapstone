@@ -95,9 +95,14 @@ Content/Game_Assets/Sounds/*
 #Destructable Meshes
 Content/Game_Assets/Props/*
 
-#Destructable Meshes
+#VFX
 Content/Game_Assets/VideogameFX/*
+
+#Trees and Stuff
+Content/KiteDemo/*
 
 Content/Hand_Painted_Starter_Kit/*
 Content/WaterMaterials*
 SP_Textures/Barracks/Game/Game_Assets/Models/Barracks_Model/Barracks.FBX
+Content/Game_Assets/Textures/TexturesCom_Grass0110_1_seamless_S.png
+Content/Game_Assets/Textures/TexturesCom_Grass0110_1_seamless_S.uasset

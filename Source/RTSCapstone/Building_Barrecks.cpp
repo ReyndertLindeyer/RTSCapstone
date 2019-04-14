@@ -10,7 +10,10 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	isBuilding = true;
 	hasPower = true;
 
+	SetHitRadius(300);
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Barracks_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Barracks_Model/Barracks.Barracks")).Get());
 	buildingMesh->SetSimulatePhysics(false);
@@ -42,7 +45,8 @@ void ABuilding_Barrecks::BeginPlay()
 	waypointMesh->SetHiddenInGame(true);
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
-	waypointMesh->SetWorldLocation(wayPoint);
+
+	waypointMesh->SetWorldLocation(wayPoint); selectedDecal->DecalSize = FVector(200, 220, 220);
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)
@@ -180,7 +184,7 @@ void ABuilding_Barrecks::SpawnUnit()
 		holder = World->SpawnActor<AUNIT_Engineer>(AUNIT_Engineer::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 350.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Engineer", 200.0f);
 	}
-	Cast<II_Unit>(holder)->SetDestination(holder->GetController(), wayPoint);
+	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 

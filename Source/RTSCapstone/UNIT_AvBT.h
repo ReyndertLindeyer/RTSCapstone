@@ -32,12 +32,20 @@ class RTSCAPSTONE_API AUNIT_AvBT : public ACharacter, public II_Unit, public II_
 		// VARIABLES & COMPONENTS
 public:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		UStaticMeshComponent* BodyMesh;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		UStaticMeshComponent* TurretMesh;
+	UPROPERTY()
+		UStaticMeshComponent* TreadMeshA;
+	UPROPERTY()
+		UStaticMeshComponent* TreadMeshB;
+	UPROPERTY()
+		UStaticMeshComponent* TreadMeshC;
+	UPROPERTY()
+		UStaticMeshComponent* TreadMeshD;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		UStaticMeshComponent* SelectionIndicator;
 
 	UPROPERTY(EditAnywhere)
@@ -55,7 +63,7 @@ public:
 	// FUNCTIONS
 public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
-	virtual void SetSelection(bool state) override;
+	virtual void SetSelection(bool state, II_Player* inPlayer) override;
 
 	virtual bool GetSelection() override;
 
@@ -80,6 +88,11 @@ private:
 
 	//The particle system that will be the reaction at the end, ex the explosion when the rocket connects
 	UParticleSystem* reactionPS;
+
+	//Dust Trail Particle System Variables
+	UParticleSystem* DustPS;
+	UPROPERTY()
+		UParticleSystemComponent* trailParticleComp;
 
 	//Sound Stuff
 	USoundCue* fireCue;

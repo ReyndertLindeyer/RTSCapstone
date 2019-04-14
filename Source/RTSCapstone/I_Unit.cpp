@@ -25,7 +25,7 @@ void II_Unit::ResetTarget()
 	// Virtual Function
 }
 
-void II_Unit::SetSelection(bool state)
+void II_Unit::SetSelection(bool state, II_Player* inPlayer)
 {
 	// Do Nothing
 }

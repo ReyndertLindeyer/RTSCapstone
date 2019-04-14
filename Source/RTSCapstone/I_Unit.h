@@ -44,13 +44,21 @@ public:
 	void MoveOrder(AController* controller, FVector destination);		// Overrides AI Decision Making
 
 
-	virtual void SetSelection(bool state);
+	virtual void SetSelection(bool state, II_Player* inPlayer);
 	virtual bool GetSelection();
 	virtual void AttackOrder(II_Entity* target);
 	
 	virtual void ResetTarget();
 
 	FVector targetMoveDestination;
+
+	TArray<II_Player*> selectingPlayerArray;
+
+	//Use for vehicle sounds, 0 for idle, 1 for driving, 2 for finished driving
+	int32 movingStage;
+
+	//The weight that is compaired to see which unit should push the other out of the way
+	int32 weight;
 
 	UNIT_STATE unitState;
 	bool overrideAI;

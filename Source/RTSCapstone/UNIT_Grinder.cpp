@@ -16,6 +16,10 @@ AUNIT_Grinder::AUNIT_Grinder()
 	RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	weight = 5;
+
+	SetHitRadius(160);
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetRelativeScale3D(FVector(3.0f));
@@ -31,6 +35,14 @@ AUNIT_Grinder::AUNIT_Grinder()
 	SelectionIndicator->SetupAttachment(BodyMesh);
 	SelectionIndicator->SetVisibility(false);
 	SelectionIndicator->SetWorldLocation(GetActorLocation() + FVector(0.0f, 0.0f, 100.0f));
+
+	//Dust Trail Particle System
+	DustPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_DustTrail.P_DustTrail'")).Get();
+	trailParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DustPS"));
+	trailParticleComp->SetupAttachment(RootComponent);
+	trailParticleComp->SetRelativeLocation(FVector(-100.0, 0.0, 0.0));
+	trailParticleComp->SetTemplate(DustPS);
+	trailParticleComp->bAutoActivate = false;
 
 	PSC = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
 	PSM = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RocketShooting.P_RocketShooting'")).Get();
@@ -143,12 +155,72 @@ void AUNIT_Grinder::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
-		// Ignore Combat until unit reaches destination
+		if (!trailParticleComp->IsActive()) {
+			trailParticleComp->Activate(true);
+		}
+		// if the unit encounters an enemy while moving
+		if (targetActor != nullptr)
+		{
+			// If the AI wasn't issued a player command, automatically engage the target
+			if (!overrideAI)
+			{
+				unitState = UNIT_STATE::ATTACKING;
+			}
+		}
 
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+		FHitResult* rayCastOne = new FHitResult();
+		FHitResult* rayCastTwo = new FHitResult();
+
+		FVector StartTrace = RootComponent->GetComponentLocation() + (RootComponent->GetForwardVector() * 120);
+
+		FVector ForwardVectorOne = RootComponent->GetForwardVector();
+		FVector ForwardVectorTwo = RootComponent->GetForwardVector();
+
+		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(100, FVector(0.0, 0.0, 1.0));
+		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-100, FVector(0.0, 0.0, 1.0));
+
+		FVector EndTraceOne = ((ForwardVectorOne * 120) + StartTrace);
+		FVector EndTraceTwo = ((ForwardVectorTwo * 120) + StartTrace);
+
+		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastOne->GetActor())) {
+				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
+					FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (RootComponent->GetRightVector() * 2);
+					rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastOne->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
+			}
+		}
+
+		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
+					FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (-RootComponent->GetRightVector() * 2);
+					rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+				}
+				else {
+					FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
+					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+				}
+			}
+		}
+		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 80.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
+
+			trailParticleComp->Deactivate();
 		}
 
 	}
@@ -240,9 +312,20 @@ void AUNIT_Grinder::ResetTarget()
 }
 
 
-void AUNIT_Grinder::SetSelection(bool state)
+void AUNIT_Grinder::SetSelection(bool state, II_Player* inPlayer)
 {
 	isSelected = state;
+	if (!selectingPlayerArray.Contains(inPlayer) && state == true) {
+		selectingPlayerArray.Add(inPlayer);
+	}
+	else if (selectingPlayerArray.Contains(inPlayer) && state == false) {
+		for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+			if (selectingPlayerArray[i] == inPlayer) {
+				selectingPlayerArray.RemoveAt(i);
+				break;
+			}
+		}
+	}
 	SelectionIndicator->SetVisibility(state);
 }
 
@@ -262,28 +345,46 @@ void AUNIT_Grinder::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
-				if (GetEntityOwner()->GetUnits()[i] == this)
+				if (GetEntityOwner()->GetUnits()[i] == this) {
 					GetEntityOwner()->RemoveUnitAtIndex(i);
+					break;
+				}
 			}
 		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
-				if (GetEntityOwner()->GetBuildings()[i] == this)
+				if (GetEntityOwner()->GetBuildings()[i] == this) {
 					GetEntityOwner()->RemoveBuildingAtIndex(i);
+					break;
+				}
 			}
 		}
 
 		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
-				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this) {
 					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+					break;
+				}
+			}
+		}
+
+		if (selectingPlayerArray.Num() > 0) {
+			for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+				if (selectingPlayerArray[i] != GetEntityOwner()) {
+					for (int j = 0; j < selectingPlayerArray[i]->GetSelectedCharacters().Num(); j++) {
+						if (selectingPlayerArray[i]->GetSelectedCharacters()[j] == this) {
+							selectingPlayerArray[i]->RemoveSelectedCharacterAtIndex(j);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

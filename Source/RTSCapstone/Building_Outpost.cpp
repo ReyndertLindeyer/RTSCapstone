@@ -10,7 +10,10 @@ ABuilding_Outpost::ABuilding_Outpost() {
 	buildRadius = 5000;
 	isBuilding = true;
 
+	SetHitRadius(40);
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Outpost_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Placeholder_Construction_Yard.Placeholder_Construction_Yard")).Get());
 	buildingMesh->SetSimulatePhysics(false);
@@ -18,7 +21,7 @@ ABuilding_Outpost::ABuilding_Outpost() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(10, buildRadius, buildRadius);
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpVehicleFactory.BlowingUpVehicleFactory_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -28,5 +31,6 @@ ABuilding_Outpost::ABuilding_Outpost() {
 void ABuilding_Outpost::BeginPlay()
 {
 	Super::BeginPlay();
+	selectedDecal->DecalSize = FVector(200, 60, 60);
 
 }

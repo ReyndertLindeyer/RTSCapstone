@@ -56,11 +56,6 @@ void ASample_Unit::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 //	return GetController();
 //}
 
-void ASample_Unit::SetSelection(bool state)
-{
-	SelectionIndicator->SetVisibility(state);
-}
-
 void ASample_Unit::DestroyEntity()
 {
 	Destroy(this);

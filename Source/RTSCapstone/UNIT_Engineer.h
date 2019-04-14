@@ -47,7 +47,7 @@ public:
 	// FUNCTIONS
 public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
-	virtual void SetSelection(bool state) override;
+	virtual void SetSelection(bool state, II_Player* inPlayer) override;
 
 	virtual bool GetSelection() override;
 
@@ -88,6 +88,8 @@ public:
 
 	UPROPERTY()
 		AActor* targetActor;
+	UPROPERTY()
+		TArray <AActor*> actorsToHeal;
 
 	TArray<AActor*> entitiesInRange;
 
@@ -105,6 +107,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY()
+		UParticleSystemComponent* particleComp;
+
+	UParticleSystem* healingPS;
 
 public:	
 	// Called every frame

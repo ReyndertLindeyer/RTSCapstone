@@ -10,7 +10,10 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	isBuilding = true;
 	hasPower = true;
 
+	SetHitRadius(275);
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Vehicle_Factory_-_Select_Cue"));
+	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/VehicleFactory_Model/Vehicle_factory.Vehicle_factory")).Get());
 	buildingMesh->SetSimulatePhysics(false);
@@ -31,7 +34,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/BarracksBlowingUp.BarracksBlowingUp_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpVehicleFactory.BlowingUpVehicleFactory_C'"));
 	if (ItemBlueprint.Object) {
 		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
 	}
@@ -44,6 +47,7 @@ void ABuilding_VehicleFactory::BeginPlay()
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
+	selectedDecal->DecalSize = FVector(200, 80, 80);
 }
 
 void ABuilding_VehicleFactory::Tick(float DeltaTime)
@@ -232,7 +236,7 @@ void ABuilding_VehicleFactory::SpawnUnit()
 	holder = World->SpawnActor<AUNIT_MOutpost>(AUNIT_MOutpost::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 500.0f, 200.0f), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Outpost", 1750.0f);
 	}
-	Cast<II_Unit>(holder)->SetDestination(holder->GetController(), wayPoint);
+	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), wayPoint);
 	unitQueue.RemoveAt(0);
 }
 

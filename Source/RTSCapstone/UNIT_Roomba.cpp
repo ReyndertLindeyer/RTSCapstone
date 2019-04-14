@@ -16,6 +16,10 @@ AUNIT_Roomba::AUNIT_Roomba()
 	RootComponent->SetWorldScale3D(FVector(0.25f));
 	isSelected = false;
 
+	weight = 4;
+
+	SetHitRadius(160);
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootComponent);
 	BodyMesh->SetRelativeScale3D(FVector(3.0f));
@@ -167,7 +171,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: move towards it.
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				SetDestination(GetController(), moveDestination);
 			}
@@ -193,7 +197,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 			FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
 
 			// Target is out of range: chase it;
-			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange)
+			if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
 			{
 				unitState = UNIT_STATE::SEEKING;
 			}
@@ -239,9 +243,20 @@ void AUNIT_Roomba::ResetTarget()
 	targetActor = nullptr;
 }
 
-void AUNIT_Roomba::SetSelection(bool state)
+void AUNIT_Roomba::SetSelection(bool state, II_Player* inPlayer)
 {
 	isSelected = state;
+	if (!selectingPlayerArray.Contains(inPlayer) && state == true) {
+		selectingPlayerArray.Add(inPlayer);
+	}
+	else if (selectingPlayerArray.Contains(inPlayer) && state == false) {
+		for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+			if (selectingPlayerArray[i] == inPlayer) {
+				selectingPlayerArray.RemoveAt(i);
+				break;
+			}
+		}
+	}
 	SelectionIndicator->SetVisibility(state);
 }
 
@@ -261,28 +276,46 @@ void AUNIT_Roomba::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I have died"));
 		if (GetEntityOwner()->GetUnits().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
-				if (GetEntityOwner()->GetUnits()[i] == this)
+				if (GetEntityOwner()->GetUnits()[i] == this) {
 					GetEntityOwner()->RemoveUnitAtIndex(i);
+					break;
+				}
 			}
 		}
 
 		if (GetEntityOwner()->GetBuildings().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
-				if (GetEntityOwner()->GetBuildings()[i] == this)
+				if (GetEntityOwner()->GetBuildings()[i] == this) {
 					GetEntityOwner()->RemoveBuildingAtIndex(i);
+					break;
+				}
 			}
 		}
 
 		if (GetEntityOwner()->GetSelectedCharacters().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetSelectedCharacters().Num(); i++) {
-				if (GetEntityOwner()->GetSelectedCharacters()[i] == this)
+				if (GetEntityOwner()->GetSelectedCharacters()[i] == this) {
 					GetEntityOwner()->RemoveSelectedCharacterAtIndex(i);
+					break;
+				}
+			}
+		}
+
+		if (selectingPlayerArray.Num() > 0) {
+			for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+				if (selectingPlayerArray[i] != GetEntityOwner()) {
+					for (int j = 0; j < selectingPlayerArray[i]->GetSelectedCharacters().Num(); j++) {
+						if (selectingPlayerArray[i]->GetSelectedCharacters()[j] == this) {
+							selectingPlayerArray[i]->RemoveSelectedCharacterAtIndex(j);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

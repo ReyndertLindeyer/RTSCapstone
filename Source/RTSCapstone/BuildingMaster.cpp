@@ -53,11 +53,9 @@ ABuildingMaster::ABuildingMaster()
 
 
 	//Load our Sound Cue for the sound we created in the editor
-	static ConstructorHelpers::FObjectFinder<USoundCue> select(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/ConstYard_-_Select_Cue"));
 	static ConstructorHelpers::FObjectFinder<USoundCue> build(TEXT("/Game/Game_Assets/Sounds/Building_Sounds_V1/Buildings_-_Plant_and_Build_Cue"));
 
 	//Store a reference to the Cue asset
-	selectCue = select.Object;
 	buildCue = build.Object;
 
 	//Create audio component that will wrap the Cue and allow us to interact with it and it's paramiters
@@ -116,10 +114,24 @@ float ABuildingMaster::GetSightRadius()
 	return sightRadius;
 }
 
-void ABuildingMaster::SetSelection(bool selectionType)
+void ABuildingMaster::SetSelection(bool selectionType, II_Player* inPlayer)
 {
-	if(selectionType == true)
+	if (selectionType == true) {
 		audioComponentSelect->Play();
+	}
+
+	if (!selectingPlayerArray.Contains(inPlayer) && selectionType == true) {
+		selectingPlayerArray.Add(inPlayer);
+	}
+	else if (selectingPlayerArray.Contains(inPlayer) && selectionType == false) {
+		for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+			if (selectingPlayerArray[i] == inPlayer) {
+				selectingPlayerArray.RemoveAt(i);
+				break;
+			}
+		}
+	}
+
 	selectedDecal->SetVisibility(selectionType);
 	selected = selectionType;
 }
@@ -151,12 +163,6 @@ void ABuildingMaster::BeginPlay()
 
 	DynamicMaterialInstB = UMaterialInstanceDynamic::Create(selectMaterial, selectedDecal);
 	selectedDecal->SetDecalMaterial(DynamicMaterialInstB);
-
-	if(buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y > buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X)
-		selectedDecal->DecalSize = FVector(200, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y + 20, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.Y + 20);
-	else
-		selectedDecal->DecalSize = FVector(200, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X + 20, buildingMesh->CalcBounds(buildingMesh->GetRelativeTransform()).BoxExtent.X + 20);
-
 }
 
 // Called every frame
@@ -203,20 +209,13 @@ void ABuildingMaster::DestroyEntity()
 	// Remove from Owner's Array
 	if (GetEntityOwner() != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I have died"));
-		if (GetEntityOwner()->GetUnits().Contains(this))
-		{
-			for (int i = 0; i < GetEntityOwner()->GetUnits().Num(); i++) {
-				if (GetEntityOwner()->GetUnits()[i] == this)
-					GetEntityOwner()->RemoveUnitAtIndex(i);
-			}
-		}
-
 		if (GetEntityOwner()->GetBuildings().Contains(this))
 		{
 			for (int i = 0; i < GetEntityOwner()->GetBuildings().Num(); i++) {
-				if (GetEntityOwner()->GetBuildings()[i] == this)
+				if (GetEntityOwner()->GetBuildings()[i] == this) {
 					GetEntityOwner()->RemoveBuildingAtIndex(i);
+					break;
+				}
 			}
 		}
 
@@ -224,7 +223,17 @@ void ABuildingMaster::DestroyEntity()
 		{
 			GetEntityOwner()->SetSelectedBuilding(nullptr);
 		}
+		
+		if (selectingPlayerArray.Num() > 0) {
+			for (int i = 0; i < selectingPlayerArray.Num(); i++) {
+				if (selectingPlayerArray[i] != GetEntityOwner()) {
+					selectingPlayerArray[i]->SetSelectedBuilding(nullptr);
+				}
+			}
+		}
 	}
+
+	
 
 	GetWorld()->SpawnActor<AExplosiveActor>(ExplosionBlueprint, buildingMesh->RelativeLocation, FRotator(0.0f, 0.0f, 0.0f));
 

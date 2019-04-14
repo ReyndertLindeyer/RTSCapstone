@@ -11,6 +11,8 @@ AProjectile::AProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	arcing = false;
+
 	root = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	root->InitSphereRadius(1);
 	root->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -39,8 +41,23 @@ void AProjectile::Tick(float DeltaTime)
 
 	if (GetActorLocation() != targetPosition)
 	{
-		//RootComponent->SetWorldLocation(FMath::VInterpTo(GetActorLocation(), targetPosition, DeltaTime, travelTime));
-		RootComponent->SetWorldLocation(FMath::VInterpConstantTo(GetActorLocation(), targetPosition, DeltaTime, travelTime));
+		//If the projectile is supposed to move in a arch
+		if (!arcing) {
+			RootComponent->SetWorldLocation(FMath::VInterpConstantTo(GetActorLocation(), targetPosition, DeltaTime, travelTime));
+		}
+		else {
+			RootComponent->SetWorldLocation(FMath::VInterpConstantTo(GetActorLocation(), targetPosition, DeltaTime, travelTime));
+
+			//Check to see how far into the shot the projectile is
+
+			float temp1 = FVector::Dist(GetActorLocation(), targetPosition);
+			float temp2 = FVector::Dist(initialPosition, targetPosition);
+
+			temp1 = temp1 / temp2;
+
+			//Move the projectile up or down depending on when in the arc it is and how far the shot is going in the first place
+			particleComp->SetRelativeLocation(FVector(0.0, 0.0, ((temp2) * cosf(1 - (temp1 * 2))) - temp2 / 2));
+		}
 
 	}
 
@@ -98,5 +115,22 @@ void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, flo
 	particleComp->ActivateSystem(true);
 	reactionPS = particleSystemB;
 	blastRadius = radius;
+	initialPosition = GetActorLocation();
+}
+
+
+void AProjectile::InitializeProjectile(PROJECTILE_TYPE type, FVector target, float damage, float speed, float distance, float radius, UParticleSystem* particleSystemA, UParticleSystem* particleSystemB, bool shouldArc)
+{
+	projectileType = type;
+	targetPosition = target;
+	travelTime = speed;
+	travelDistance = distance;
+	projectileDamage = damage;
+	particleComp->SetTemplate(particleSystemA);
+	particleComp->ActivateSystem(true);
+	reactionPS = particleSystemB;
+	blastRadius = radius;
+	initialPosition = GetActorLocation();
+	arcing = shouldArc;
 }
 

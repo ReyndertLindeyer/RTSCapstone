@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 #include "Engine/StaticMesh.h"
 #include "UObject/ConstructorHelpers.h"
 #include "ResourceNode.generated.h"
@@ -41,4 +42,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* mesh;
+	UPROPERTY()
+		UMaterialInterface* resourceMaterial;
 };

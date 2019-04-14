@@ -50,7 +50,7 @@ public:
 	// FUNCTIONS
 public:
 	// OVERRIDDEN CLASS [II_Unit] -- Handles Unit Selection
-	virtual void SetSelection(bool state) override;
+	virtual void SetSelection(bool state, II_Player* inPlayer) override;
 
 	virtual bool GetSelection() override;
 
@@ -76,6 +76,11 @@ private:
 	bool isSelected;
 
 	bool returning;
+
+	//Dust Trail Particle System Variables
+	UParticleSystem* DustPS;
+	UPROPERTY()
+		UParticleSystemComponent* trailParticleComp;
 
 	//Sound Stuff
 	USoundCue* selectCue;
