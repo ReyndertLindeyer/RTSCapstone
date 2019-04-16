@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "ConstructorHelpers.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -38,6 +39,8 @@ void AProjectile::BeginPlay()
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	DrawDebugSphere(GetWorld(), GetActorLocation(), blastRadius, 24, FColor(0, 0, 255));
 
 	if (GetActorLocation() != targetPosition)
 	{

@@ -69,6 +69,7 @@ void ABuilding_Enemy_Spawner::SpawnUnit()
 		holder = World->SpawnActor<AUNIT_Prism>(AUNIT_Prism::StaticClass(), buildingMesh->RelativeLocation + FVector(0.0f, 400.0f, 110.0f), FRotator(0.0f, 0.0f, 0.0f));
 		Cast<II_Entity>(holder)->InitializeEntity(GetEntityOwner(), "Roomba", 1000.0f);
 	}
+
 	Cast<II_Unit>(holder)->MoveOrder(holder->GetController(), waypoint);
 }
 

@@ -6,14 +6,12 @@
 
 void II_Unit::SetDestination(AController* controller, FVector destination)
 {
-	targetMoveDestination = destination;
-	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(controller, destination);
-
 	Cast<AAIController>(controller)->MoveToLocation(destination, 40, false, true, false, true, 0, true);
 }
 
 void II_Unit::MoveOrder(AController* controller, FVector destination)
 {
+	targetMoveDestination = destination;
 	SetDestination(controller, destination);
 	unitState = UNIT_STATE::MOVING;
 	ResetTarget();

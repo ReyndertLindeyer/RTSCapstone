@@ -45,8 +45,11 @@ void ABuilding_Barrecks::BeginPlay()
 	waypointMesh->SetHiddenInGame(true);
 
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f); //Updates Waypoint
+	waypointMesh->SetWorldLocation(wayPoint); 
 
-	waypointMesh->SetWorldLocation(wayPoint); selectedDecal->DecalSize = FVector(200, 220, 220);
+	waypointMesh->SetRelativeScale3D(FVector(5.0f));
+
+	selectedDecal->DecalSize = FVector(200, 220, 220);
 }
 
 void ABuilding_Barrecks::Tick(float DeltaTime)
@@ -62,8 +65,8 @@ void ABuilding_Barrecks::Tick(float DeltaTime)
 		return;
 	}
 
-	wayPoint = GetActorLocation() + FVector(0.0f, 600.0f, 0.0f); //Updates Waypoint
-	waypointMesh->SetWorldLocation(wayPoint);
+	//wayPoint = GetActorLocation() + FVector(0.0f, 600.0f, 0.0f); //Updates Waypoint
+	//waypointMesh->SetWorldLocation(wayPoint);
 
 	if (!constructingUnit && unitQueue.Num() > 0 && constructed) {
 		if (unitQueue[0] == 1) {
@@ -191,6 +194,8 @@ void ABuilding_Barrecks::SpawnUnit()
 void ABuilding_Barrecks::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
 	waypointMesh->SetWorldLocation(inVec);
+
+	UE_LOG(LogTemp, Warning, TEXT("(X:%f, Y:%f, Z:%f"), wayPoint.X, wayPoint.Y, wayPoint.Z);
 }
 
 void ABuilding_Barrecks::SetHasPower(bool inBool)

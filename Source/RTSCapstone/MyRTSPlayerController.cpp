@@ -482,7 +482,7 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 					SetSelectedCharacters(HUDPtr->FoundCharacters);
 
 					/// Debugging
-					for (int i = 0; i < GetSelectedCharacters().Num(); i++)
+					/*for (int i = 0; i < GetSelectedCharacters().Num(); i++)
 					{
 						II_Entity* entity = Cast<II_Entity>(GetSelectedCharacters()[i]);
 						if (entity->GetEntityOwner() != nullptr)
@@ -494,13 +494,17 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 						{
 							UE_LOG(LogTemp, Warning, TEXT("%s (none) : %f / %f  (%f%)"), *entity->GetName(), entity->GetCurrentHealth(), entity->GetMaxHealth(), entity->GetHealthPercentage());
 						}
-					}
+					}*/
 					/// End Debug
 				}
 
 				HUDPtr->bStartSelecting = false;
 
+				
+
 				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
+				
+					
 					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true, this);
 				}
 				//HUDPtr->grabEverything = true;

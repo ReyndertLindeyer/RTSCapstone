@@ -60,7 +60,7 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	decal->SetupAttachment(RootComponent);
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
-	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_RifleShooting.P_RifleShooting'")).Get();
+	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_ArtilleryShot.P_ArtilleryShot'")).Get();
 	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
 
 	currentAttackTimer = 0.0f;
@@ -152,7 +152,7 @@ void ABuilding_Turret_Artillery::Tick(float DeltaTime)
 					currentAttackTimer = 0.0f;
 
 					AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), barrelPos->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
-					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 4000.0f, 0.0f, 100.0f, PS, reactionPS, true);
+					projectile->InitializeProjectile(PROJECTILE_TYPE::CANNON, targetActor->GetActorLocation(), attackDamage, 2000.0f, 0.0f, 500.0f, PS, reactionPS, true);
 					projectile->SetActorEnableCollision(false);
 					audioComponentFire->Play();
 				}

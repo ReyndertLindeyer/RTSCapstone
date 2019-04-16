@@ -65,6 +65,7 @@ private:
 	bool isSelected;
 
 	bool hasRoom;
+	bool disabled;
 
 	UStaticMesh* BuildingAsset;
 

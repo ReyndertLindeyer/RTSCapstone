@@ -146,7 +146,22 @@ void AUNIT_Prism::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
-		// Ignore Combat until unit reaches destination
+
+		// Search for enemies
+		if (entitiesInRange.Num() > 0)
+		{
+			/// Check if entities are hostile
+			for (int i = 0; i < entitiesInRange.Num(); i++)
+			{
+				// Check if the entity does not belong to the owner
+				if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+					targetActor = entitiesInRange[i];
+					break;
+				}
+			}
+		}
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
 		{
@@ -179,7 +194,6 @@ void AUNIT_Prism::Tick(float DeltaTime)
 			else
 			{
 				unitState = UNIT_STATE::ATTACKING;
-				overrideAI = false;
 			}
 		}
 	}
