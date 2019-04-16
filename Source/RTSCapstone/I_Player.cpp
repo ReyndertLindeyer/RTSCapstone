@@ -136,6 +136,11 @@ void II_Player::RemoveSelectedCharacterAtIndex(int32 index)
 	SelectedCharacters.RemoveAt(index);
 }
 
+void II_Player::EmptySelectedCharacter()
+{
+	SelectedCharacters.Empty();
+}
+
 void II_Player::SetSelectedBuilding(AActor* inBuilding) {
 	selectedBuilding = inBuilding;
 }

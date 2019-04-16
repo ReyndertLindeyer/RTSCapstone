@@ -436,6 +436,10 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 			// But there is a HUD
 			if (HUDPtr != nullptr) 
 			{
+				if (hasMobileOutpostSelected == true) {
+					hasMobileOutpostSelected = false;
+				}
+
 				// Send out a Raycast
 				FHitResult hit;
 				GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, hit);
@@ -674,8 +678,14 @@ void AMyRTSPlayerController::StopGhostOutpost()
 
 void AMyRTSPlayerController::BuildGhostOutpost()
 {
+	FVector tempVec = GetSelectedCharacters()[0]->GetActorLocation();
+
 	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->BuildGhostBuilding();
-	GetSelectedCharacters().Empty();
+
+	EmptySelectedCharacter();
+
+	buildingManagerObject->ConstructOutpost(tempVec);
+
 	hasMobileOutpostSelected = false;
 }
 
