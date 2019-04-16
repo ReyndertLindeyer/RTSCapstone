@@ -28,6 +28,7 @@ AUNIT_Gattling::AUNIT_Gattling()
 	BodyMesh->SetRelativeLocation(FVector(0.0f, 17.5f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
+	BodyMesh->bReceivesDecals = false;
 
 	// TURRET
 	PivotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));

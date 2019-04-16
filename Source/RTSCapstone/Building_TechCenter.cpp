@@ -18,10 +18,11 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	selectCue = select.Object;
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/devTechCentre.devTechCentre")).Get());
+	RootComponent = buildingMesh;
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(3, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 

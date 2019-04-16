@@ -6,7 +6,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
-	buildRadius = 1000;
+	buildRadius = 500;
 	isBuilding = true;
 	hasPower = true;
 
@@ -29,7 +29,7 @@ ABuilding_Barrecks::ABuilding_Barrecks() {
 	constructingUnit = false;
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 

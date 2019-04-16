@@ -31,6 +31,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	BodyMesh->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
+	BodyMesh->bReceivesDecals = false;
 
 	// TURRET
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
@@ -42,6 +43,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	TurretMesh->SetRelativeLocation(FVector(0.0f, -35.0f, 20.0f));
 	TurretMesh->SetRelativeScale3D(FVector(1.0f));
 	TurretMesh->SetCanEverAffectNavigation(false);
+	TurretMesh->bReceivesDecals = false;
 
 	//Treads
 
@@ -55,6 +57,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	TreadMeshA->SetRelativeRotation(FRotator(90.0, 90.0, -90.0));
 	TreadMeshA->SetRelativeScale3D(FVector(1.0f));
 	TreadMeshA->SetCanEverAffectNavigation(false);
+	TreadMeshA->bReceivesDecals = false;
 
 	//Front Left
 	TreadMeshB = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshB"));
@@ -66,6 +69,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	TreadMeshB->SetRelativeRotation(FRotator(90.0, 90.0, 90.0));
 	TreadMeshB->SetRelativeScale3D(FVector(1.0f));
 	TreadMeshB->SetCanEverAffectNavigation(false);
+	TreadMeshB->bReceivesDecals = false;
 
 	//Back Right
 	TreadMeshC = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshC"));
@@ -77,6 +81,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	TreadMeshC->SetRelativeRotation(FRotator(90.0, -90.0, 90.0));
 	TreadMeshC->SetRelativeScale3D(FVector(1.0f));
 	TreadMeshC->SetCanEverAffectNavigation(false);
+	TreadMeshC->bReceivesDecals = false;
 
 	//Back Left
 	TreadMeshD = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreadMeshD"));
@@ -88,6 +93,7 @@ AUNIT_AvBT::AUNIT_AvBT()
 	TreadMeshD->SetRelativeRotation(FRotator(-90.0, 90.0, 90.0));
 	TreadMeshD->SetRelativeScale3D(FVector(1.0f));
 	TreadMeshD->SetCanEverAffectNavigation(false);
+	TreadMeshD->bReceivesDecals = false;
 
 	// SELECTION INDICATOR
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));

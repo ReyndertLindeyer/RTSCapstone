@@ -19,6 +19,7 @@ ABuildingMaster::ABuildingMaster()
 	buildingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BuildingMesh"));
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
+	buildingMesh->bReceivesDecals = false;
 
 	//Create the building area decal and sets the material, has to rotate by -90 for some reason
 	decal = CreateDefaultSubobject<UDecalComponent>(TEXT("buildAreaDecal"));

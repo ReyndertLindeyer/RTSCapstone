@@ -11,6 +11,7 @@ AResourceNode::AResourceNode()
 	this->Tags.Add(FName("ResourceNode"));
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ResourceMesh"));
+	mesh->bReceivesDecals = false;
 
 	int32 tempNum = FMath::RandRange(0, 2);
 

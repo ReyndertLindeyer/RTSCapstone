@@ -91,7 +91,8 @@ public:
 	UPROPERTY()
 		TArray <AActor*> actorsToHeal;
 
-	TArray<AActor*> entitiesInRange;
+	UPROPERTY()
+		TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
 		float startingHealth = 250.0f;

@@ -34,7 +34,7 @@ AUNIT_Harvester::AUNIT_Harvester()
 	BodyMesh->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f)); // Don't change this.  The issue is with the model, not the code.
 	BodyMesh->SetRelativeScale3D(FVector(5.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
-	//RootComponent = BodyMesh;
+	BodyMesh->bReceivesDecals = false;
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);

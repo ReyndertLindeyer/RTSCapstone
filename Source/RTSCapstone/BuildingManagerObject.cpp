@@ -39,11 +39,13 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 
 		buildingToBuild = World->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
 		whatBuilding = whatBuilding_ - 1;
-		if(whatBuilding > 5)
+		if (whatBuilding > 5)
 			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 4);
-		else if (whatBuilding == 3 || whatBuilding == 4)
+		else if (whatBuilding == 3)
+			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 10);
+		else if(whatBuilding == 4)
 			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 5);
-		else
+		else 
 			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 2);
 
 		EnableAllDecals();

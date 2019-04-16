@@ -27,6 +27,7 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -60.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
+	BodyMesh->bReceivesDecals = false;
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);
@@ -362,9 +363,10 @@ void AUNIT_MOutpost::BuildGhostBuilding()
 		buildingGhost = nullptr;
 	}
 	*/
+	BodyMesh->DestroyComponent();
 	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-	tempBuilding->InitializeEntity(GetEntityOwner(), "Outpost", 1000);
 	tempBuilding->constructAtLocation(GetEntityOwner());
+	tempBuilding->InitializeEntity(GetEntityOwner(), "Outpost", 1000);
 	DestroyEntity();
 }
 

@@ -28,6 +28,7 @@ AUNIT_Roomba::AUNIT_Roomba()
 	UStaticMesh* Asset = MeshAsset.Object;
 	BodyMesh->SetStaticMesh(Asset);
 	BodyMesh->SetRelativeLocation(FVector(0.0, 0.0f, -120.0f));
+	BodyMesh->bReceivesDecals = false;
 
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));
 	SelectionIndicator->SetupAttachment(BodyMesh);

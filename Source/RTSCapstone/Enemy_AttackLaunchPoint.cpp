@@ -13,8 +13,6 @@ AEnemy_AttackLaunchPoint::AEnemy_AttackLaunchPoint()
 	radiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	radiusSphere->SetSphereRadius(collectionRadius);
 	radiusSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	radiusSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy_AttackLaunchPoint::BeginOverlap);
-	radiusSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy_AttackLaunchPoint::OnOverlapEnd);
 }
 
 // Called when the game starts or when spawned
@@ -24,47 +22,44 @@ void AEnemy_AttackLaunchPoint::BeginPlay()
 	
 }
 
-void AEnemy_AttackLaunchPoint::BeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
-{
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
-		///Check to see if the colliding unit is an enemy unit, what kind it is, and add it to the correct array
-		if (Cast<AUNIT_Grinder>(OtherActor)) {
-			basicArrayA.Add(Cast<AUNIT_Grinder>(OtherActor));
-		}
-		if (Cast<AUNIT_Gattling>(OtherActor)) {
-			basicArrayB.Add(Cast<AUNIT_Gattling>(OtherActor));
-		}
-		if (Cast<AUNIT_Roomba>(OtherActor)) {
-			basicArrayC.Add(Cast<AUNIT_Roomba>(OtherActor));
-		}
-		if (Cast<AUNIT_Prism>(OtherActor)) {
-			basicArrayD.Add(Cast<AUNIT_Prism>(OtherActor));
-		}
-	}
-}
-
-void AEnemy_AttackLaunchPoint::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr)) {
-		if (Cast<AUNIT_Grinder>(OtherActor)) {
-			basicArrayA.Remove(Cast<AUNIT_Grinder>(OtherActor));
-		}
-		if (Cast<AUNIT_Gattling>(OtherActor)) {
-			basicArrayB.Remove(Cast<AUNIT_Gattling>(OtherActor));
-		}
-		if (Cast<AUNIT_Roomba>(OtherActor)) {
-			basicArrayC.Remove(Cast<AUNIT_Roomba>(OtherActor));
-		}
-		if (Cast<AUNIT_Prism>(OtherActor)) {
-			basicArrayD.Remove(Cast<AUNIT_Prism>(OtherActor));
-		}
-	}
-}
-
 // Called every frame
 void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Detect all AActors within a Radius
+	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+	TArray<AActor*> ignoreActors;
+	TArray<AActor*> outActors;
+
+	ignoreActors.Add(this);
+
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 800, objectTypes, nullptr, ignoreActors, outActors);
+
+	basicArrayA.Empty();
+	basicArrayB.Empty();
+	basicArrayC.Empty();
+	basicArrayD.Empty();
+
+	for (int i = 0; i < outActors.Num(); i++)
+	{
+		if (Cast<II_Entity>(outActors[i]))
+		{
+			///Check to see if the colliding unit is an enemy unit, what kind it is, and add it to the correct array
+			if (Cast<AUNIT_Grinder>(outActors[i])) {
+				basicArrayA.Add(Cast<AUNIT_Grinder>(outActors[i]));
+			}
+			if (Cast<AUNIT_Gattling>(outActors[i])) {
+				basicArrayB.Add(Cast<AUNIT_Gattling>(outActors[i]));
+			}
+			if (Cast<AUNIT_Roomba>(outActors[i])) {
+				basicArrayC.Add(Cast<AUNIT_Roomba>(outActors[i]));
+			}
+			if (Cast<AUNIT_Prism>(outActors[i])) {
+				basicArrayD.Add(Cast<AUNIT_Prism>(outActors[i]));
+			}
+		}
+	}
 
 	///If all of the arrays are full of the correct unit then launch a wave towards the nearest player structure
 	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee && basicArrayD.Num() >= numOfAdvancedRanged) { //Add more variables for more units

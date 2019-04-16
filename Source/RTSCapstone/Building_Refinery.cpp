@@ -22,7 +22,7 @@ ABuilding_Refinery::ABuilding_Refinery() {
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
