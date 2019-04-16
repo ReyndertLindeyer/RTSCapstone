@@ -416,7 +416,11 @@ void AMyRTSPlayerController::OnLeftMousePressed() {
 			if (!HUDPtr->isShift) 
 			{
 				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
-					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(false, this);
+					if (GetSelectedCharacters()[i] != nullptr)
+						Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(false, this);
+					
+					// Need to remove it if it is null
+					
 				}
 
 				GetSelectedCharacters().Empty();
@@ -504,8 +508,10 @@ void AMyRTSPlayerController::OnLeftMouseReleased() {
 
 				for (int i = 0; i < GetSelectedCharacters().Num(); i++) {
 				
-					
-					Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true, this);
+					if (GetSelectedCharacters()[i] != nullptr)
+						Cast<II_Unit>(GetSelectedCharacters()[i])->SetSelection(true, this);
+
+					// Need to remove it if it is null
 				}
 				//HUDPtr->grabEverything = true;
 			}

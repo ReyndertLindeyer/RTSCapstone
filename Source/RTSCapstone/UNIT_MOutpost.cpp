@@ -205,7 +205,7 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 				}
 			}
 
-			if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
+			if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 				unitState = UNIT_STATE::IDLE;
@@ -335,7 +335,7 @@ void AUNIT_MOutpost::BuildGhostBuilding()
 		buildingGhost = nullptr;
 	}
 	
-	//this->DestroyEntity();
+	this->DestroyEntity();
 }
 
 void AUNIT_MOutpost::DestroyEntity()

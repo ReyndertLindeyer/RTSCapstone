@@ -110,7 +110,6 @@ public:
 	void SetHasDestroyedObjective(bool inBool);
 	void SetStatistics(TArray<int32> inArray);
 
-
 	bool GetHasDestroyedObjective();
 	TArray<int32> GetStatistics();
 

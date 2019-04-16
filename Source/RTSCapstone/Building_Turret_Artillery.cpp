@@ -61,7 +61,7 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	decal->DecalSize = FVector(2, buildRadius, buildRadius);
 
 	PS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_ArtilleryShot.P_ArtilleryShot'")).Get();
-	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_Explosion.P_Explosion'")).Get();
+	reactionPS = ConstructorHelpers::FObjectFinderOptional<UParticleSystem>(TEXT("ParticleSystem'/Game/Game_Assets/Particle_Systems/P_BuildingExplosion.P_BuildingExplosion'")).Get();
 
 	currentAttackTimer = 0.0f;
 
