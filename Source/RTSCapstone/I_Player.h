@@ -96,6 +96,7 @@ public:
 	TArray<ACharacter*> GetSelectedCharacters();
 	void SetSelectedCharacters(TArray<ACharacter*> inArray);
 	void RemoveSelectedCharacterAtIndex(int32 index);
+	void EmptySelectedCharacter();
 
 	void SetSelectedBuilding(AActor* inBuilding);
 	AActor* GetSelectedBuilding();

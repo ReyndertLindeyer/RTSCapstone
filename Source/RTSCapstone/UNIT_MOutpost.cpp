@@ -363,11 +363,7 @@ void AUNIT_MOutpost::BuildGhostBuilding()
 		buildingGhost = nullptr;
 	}
 	*/
-	BodyMesh->DestroyComponent();
-	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-	tempBuilding->constructAtLocation(GetEntityOwner());
-	tempBuilding->InitializeEntity(GetEntityOwner(), "Outpost", 1000);
-	DestroyEntity();
+	this->DestroyEntity();
 }
 
 void AUNIT_MOutpost::DestroyEntity()

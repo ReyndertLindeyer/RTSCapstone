@@ -48,6 +48,33 @@ void UBuildingManagerObject::ghostBuilding(uint8 whatBuilding_, FVector spawnLoc
 		else 
 			buildingToBuild->SetMesh(buildingMeshArray[whatBuilding], 2);
 
+		if (whatBuilding_ == 1) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(5, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(6, canBuildIndicator);
+		}
+
+		if (whatBuilding_ == 2) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+		}
+
+		if (whatBuilding_ == 3) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+		}
+
+		if (whatBuilding_ == 4) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+		}
+
 		EnableAllDecals();
 
 		buildingToBuild->thePlayer = thePlayer;
@@ -145,6 +172,13 @@ void UBuildingManagerObject::MoveBuilding(FVector location)
 			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
 			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
 		}
+
+		if (whatBuilding == 3) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, canBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, canBuildIndicator);
+		}
 	}
 	else if (!buildingToBuild->GetIsInRadius() || buildingToBuild->GetIsOverlapping() && buildingToBuild->GetBuildingMesh()->GetMaterial(0) != cantBuildIndicator) {
 		buildingToBuild->GetBuildingMesh()->SetMaterial(0, cantBuildIndicator);
@@ -163,6 +197,13 @@ void UBuildingManagerObject::MoveBuilding(FVector location)
 		}
 
 		if (whatBuilding == 2) {
+			buildingToBuild->GetBuildingMesh()->SetMaterial(1, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(2, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(3, cantBuildIndicator);
+			buildingToBuild->GetBuildingMesh()->SetMaterial(4, cantBuildIndicator);
+		}
+
+		if (whatBuilding == 3) {
 			buildingToBuild->GetBuildingMesh()->SetMaterial(1, cantBuildIndicator);
 			buildingToBuild->GetBuildingMesh()->SetMaterial(2, cantBuildIndicator);
 			buildingToBuild->GetBuildingMesh()->SetMaterial(3, cantBuildIndicator);
@@ -545,4 +586,19 @@ bool UBuildingManagerObject::IsConstructionYardDestroyed() {
 	else {
 		return true;
 	}
+}
+
+void UBuildingManagerObject::ConstructOutpost(FVector spawnLocation)
+{
+	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+
+	tempBuilding->InitializeEntity(thePlayer, "Outpost", 1000);
+
+	tempBuilding->SetOwningEntity(thePlayer);
+
+	tempBuilding->constructAtLocation(thePlayer);
+
+	tempBuilding->GetBuildingMesh()->SetMaterial(0, regularMaterial);
+
+	masterArray.Add(tempBuilding);
 }

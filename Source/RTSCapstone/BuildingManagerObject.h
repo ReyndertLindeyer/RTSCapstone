@@ -18,6 +18,7 @@
 #include "Building_Turret_Cannon.h"
 #include "Building_Turret_Artillery.h"
 #include "Building_Turret_Tesla.h"
+#include "Building_Outpost.h"
 
 #include "Building_Ghost.h"
 
@@ -78,6 +79,8 @@ public:
 	void SetPlayer(II_Player* inPlayer);
 
 	bool IsConstructionYardDestroyed();
+
+	void ConstructOutpost(FVector spawnLocation);
 
 	UPROPERTY()
 		TArray <ABuilding_Ghost*> ghostBuildingArray;
