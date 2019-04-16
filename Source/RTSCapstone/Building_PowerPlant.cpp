@@ -7,7 +7,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
-	buildRadius = 5000;
+	buildRadius = 500;
 	isBuilding = true;
 
 	SetHitRadius(400);
@@ -19,7 +19,7 @@ ABuilding_PowerPlant::ABuilding_PowerPlant() {
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(10, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpPowerPlant.BlowingUpPowerPlant_C'"));
 	if (ItemBlueprint.Object) {

@@ -17,7 +17,6 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 
 	buildingMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/VehicleFactory_Model/Vehicle_factory.Vehicle_factory")).Get());
 	buildingMesh->SetSimulatePhysics(false);
-	buildingMesh->SetRelativeScale3D(FVector(10.0f));
 
 	waypointMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("waypointMesh"));
 	waypointMesh->SetStaticMesh(ConstructorHelpers::FObjectFinderOptional<UStaticMesh>(TEXT("/Game/Game_Assets/Models/Waypoint.Waypoint")).Get());
@@ -30,7 +29,7 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	constructingUnit = false;
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(2, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
@@ -48,6 +47,8 @@ void ABuilding_VehicleFactory::BeginPlay()
 	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
 	selectedDecal->DecalSize = FVector(200, 80, 80);
+
+	buildingMesh->SetRelativeScale3D(FVector(10.0f));
 }
 
 void ABuilding_VehicleFactory::Tick(float DeltaTime)

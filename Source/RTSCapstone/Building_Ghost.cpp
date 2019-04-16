@@ -14,6 +14,7 @@ ABuilding_Ghost::ABuilding_Ghost()
 	RootComponent = buildingMesh;
 	buildingMesh->SetWorldScale3D(FVector(2, 2, 2));
 	buildingMesh->SetCollisionProfileName(TEXT("OverlapAll"));
+	buildingMesh->bReceivesDecals = false;
 	radius = 2000000;
 
 	numOfBuildingCollisions = 0;

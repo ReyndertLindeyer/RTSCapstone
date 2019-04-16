@@ -30,6 +30,7 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	BodyMesh->SetRelativeLocation(FVector(0.0f, 13.5f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
+	BodyMesh->bReceivesDecals = false;
 
 	// TURRET
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
@@ -41,6 +42,7 @@ AUNIT_MArtillery::AUNIT_MArtillery()
 	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	TurretMesh->SetRelativeScale3D(FVector(1.0f));
 	TurretMesh->SetCanEverAffectNavigation(false);
+	TurretMesh->bReceivesDecals = false;
 
 	// SELECTION INDICATOR
 	SelectionIndicator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Selection Indicator"));

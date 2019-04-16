@@ -13,7 +13,7 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	//Setting up general values
 	team = 1;
 	spawnTime = 2;
-	buildRadius = 5000;
+	buildRadius = 500;
 	isBuilding = true;
 
 	SetHitRadius(500);
@@ -25,7 +25,7 @@ ABuilding_Superweapon::ABuilding_Superweapon() {
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(3, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 

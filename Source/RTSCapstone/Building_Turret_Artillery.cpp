@@ -39,7 +39,6 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	buildingMesh->SetStaticMesh(bodyMesh);
 	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	buildingMesh->SetRelativeScale3D(FVector(5.0f));
-	buildingMesh->SetCanEverAffectNavigation(false);
 	buildingMesh->SetSimulatePhysics(false);
 
 	// Pivot
@@ -51,7 +50,7 @@ ABuilding_Turret_Artillery::ABuilding_Turret_Artillery() {
 	PivotMesh->SetStaticMesh(pivotMesh);
 	PivotMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	PivotMesh->SetRelativeScale3D(FVector(1.0f));
-	PivotMesh->SetCanEverAffectNavigation(false);
+	PivotMesh->bReceivesDecals = false;
 
 	// PARTICLE SYSTEMS
 	barrelPos = CreateDefaultSubobject<USceneComponent>(TEXT("Barrel"));

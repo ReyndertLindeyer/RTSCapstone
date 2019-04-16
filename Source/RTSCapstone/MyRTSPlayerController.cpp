@@ -675,6 +675,8 @@ void AMyRTSPlayerController::StopGhostOutpost()
 void AMyRTSPlayerController::BuildGhostOutpost()
 {
 	Cast<AUNIT_MOutpost>(GetSelectedCharacters()[0])->BuildGhostBuilding();
+	GetSelectedCharacters().Empty();
+	hasMobileOutpostSelected = false;
 }
 
 void AMyRTSPlayerController::MoveUnitsToLocation(TArray<ACharacter*> unitsToMove, FVector MoveLocation)

@@ -41,6 +41,9 @@ public:
 		bool spawnCYForPlayer;
 
 	UPROPERTY(EditAnywhere)
+		bool winIsKillAllEnemyStructures;
+
+	UPROPERTY(EditAnywhere)
 		ABuildingMaster* objective;
 
 protected:

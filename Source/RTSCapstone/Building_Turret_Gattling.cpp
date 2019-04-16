@@ -40,7 +40,6 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	buildingMesh->SetStaticMesh(bodyMesh);
 	buildingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	buildingMesh->SetRelativeScale3D(FVector(3.0f));
-	buildingMesh->SetCanEverAffectNavigation(false);
 	buildingMesh->SetSimulatePhysics(false);
 
 	// Pivot
@@ -52,7 +51,7 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	PivotMesh->SetStaticMesh(pivotMesh);
 	PivotMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	PivotMesh->SetRelativeScale3D(FVector(1.0f));
-	PivotMesh->SetCanEverAffectNavigation(false);
+	PivotMesh->bReceivesDecals = false;
 
 	// Turret
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
@@ -63,7 +62,7 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	TurretMesh->SetStaticMesh(turretMesh);
 	TurretMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	TurretMesh->SetRelativeScale3D(FVector(1.0f));
-	TurretMesh->SetCanEverAffectNavigation(false);
+	TurretMesh->bReceivesDecals = false;
 
 	// Gun 1
 	RightGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Right Gun Mesh"));
@@ -74,7 +73,7 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	RightGunMesh->SetStaticMesh(rightGunMesh);
 	RightGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	RightGunMesh->SetRelativeScale3D(FVector(1.0f));
-	RightGunMesh->SetCanEverAffectNavigation(false);
+	RightGunMesh->bReceivesDecals = false;
 
 	// GUN 2
 	LeftGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Left Gun Mesh"));
@@ -85,7 +84,7 @@ ABuilding_Turret_Gattling::ABuilding_Turret_Gattling() {
 	LeftGunMesh->SetStaticMesh(leftGunMesh);
 	LeftGunMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	LeftGunMesh->SetRelativeScale3D(FVector(1.0f));
-	LeftGunMesh->SetCanEverAffectNavigation(false);
+	LeftGunMesh->bReceivesDecals = false;
 
 	// PARTICLE SYSTEMS
 	barrelPos1 = CreateDefaultSubobject<USceneComponent>(TEXT("Left Barrel"));

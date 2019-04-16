@@ -7,7 +7,7 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	PrimaryActorTick.bCanEverTick = true;
 	team = 1;
 	spawnTime = 0;
-	buildRadius = 1200;
+	buildRadius = 1000;
 	isBuilding = false;
 
 	SetHitRadius(600);
@@ -20,7 +20,7 @@ ABuilding_Construction_Yard::ABuilding_Construction_Yard() {
 	buildingMesh->SetSimulatePhysics(false);
 	
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(10, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius, buildRadius);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 

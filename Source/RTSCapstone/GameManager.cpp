@@ -18,6 +18,7 @@ AGameManager::AGameManager()
 	*/
 
 	assignToPlayer = false;
+	winIsKillAllEnemyStructures = false;
 }
 
 // Called when the game starts or when spawned
@@ -68,36 +69,53 @@ void AGameManager::Tick(float DeltaTime)
 	}
 
 	// Win Condition
-	if (objective != nullptr)
-	{
-	}
+	if (!winIsKillAllEnemyStructures) {
+		if (objective != nullptr)
+		{
+		}
 
-	else if (objective == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("WIN CONDITION CLEARED"));
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
-		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
-		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
-		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
-		Cast<II_Player>(playerList[0])->SetStatistics(statistics);
-		Cast<II_Player>(playerList[0])->SetHasDestroyedObjective(true);
-	}
+		else if (objective == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("WIN CONDITION CLEARED"));
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
+			Cast<II_Player>(playerList[0])->SetStatistics(statistics);
+			Cast<II_Player>(playerList[0])->SetHasDestroyedObjective(true);
+		}
 
-	if (Cast<AMyRTSPlayerController>(playerList[0])->GetUnits().Num() == 0 && Cast<AMyRTSPlayerController>(playerList[0])->GetBuildings().Num()) {
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
-		statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
-		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
-		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
-		statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
-		Cast<II_Player>(playerList[0])->SetStatistics(statistics);
-		Cast<AMyRTSPlayerController>(playerList[0])->SetTriggerEnd();
+		if (Cast<AMyRTSPlayerController>(playerList[0])->GetUnits().Num() == 0 && Cast<AMyRTSPlayerController>(playerList[0])->GetBuildings().Num()) {
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
+			Cast<II_Player>(playerList[0])->SetStatistics(statistics);
+			Cast<AMyRTSPlayerController>(playerList[0])->SetTriggerEnd();
+		}
+	}
+	else {
+		if (Cast<II_Player>(playerList[2])->GetBuildings().Num() == 0) {
+			UE_LOG(LogTemp, Warning, TEXT("WIN CONDITION CLEARED"));
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalResourcesCollected());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalBuildingsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalStructuresLost());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[0])->GetTotalUnitsLost());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalStructuresLost());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsConstructed());
+			statistics.Add(Cast<II_Player>(playerList[2])->GetTotalUnitsLost());
+			Cast<II_Player>(playerList[0])->SetStatistics(statistics);
+			Cast<II_Player>(playerList[0])->SetHasDestroyedObjective(true);
+		}
 	}
 
 	for (int i = 0; i < scriptedEventList.Num(); i++)

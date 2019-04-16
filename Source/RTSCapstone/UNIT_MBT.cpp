@@ -31,6 +31,7 @@ AUNIT_MBT::AUNIT_MBT()
 	BodyMesh->SetRelativeLocation(FVector(0.0f, -15.0f, -80.0f));
 	BodyMesh->SetRelativeScale3D(FVector(4.0f));
 	BodyMesh->SetCanEverAffectNavigation(false);
+	BodyMesh->bReceivesDecals = false;
 
 	// TURRET
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
