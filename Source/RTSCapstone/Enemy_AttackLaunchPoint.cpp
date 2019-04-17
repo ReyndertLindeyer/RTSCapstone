@@ -63,7 +63,7 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 
 	///If all of the arrays are full of the correct unit then launch a wave towards the nearest player structure
 	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee && basicArrayD.Num() >= numOfAdvancedRanged) { //Add more variables for more units
-		int32 closestBuilding = 10000;
+		int32 closestBuilding = 100000;
 		AActor* tempActor = nullptr;
 		TArray<AActor*> tempArray;
 
