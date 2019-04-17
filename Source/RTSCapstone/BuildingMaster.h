@@ -14,7 +14,6 @@
 #include "Components/SphereComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Runtime/Engine/Classes/Particles/ParticleSystemComponent.h"
-#include "ExplosiveActor.h"
 
 #include "Components/AudioComponent.h"
 #include "Runtime/Engine/Classes/Sound/SoundCue.h"

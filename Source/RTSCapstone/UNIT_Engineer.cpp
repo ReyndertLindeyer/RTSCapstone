@@ -94,6 +94,11 @@ void AUNIT_Engineer::BeginPlay()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Unit_Explosions/UnitExplosion.UnitExplosion_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 void AUNIT_Engineer::PostInitializeComponents()
@@ -451,6 +456,8 @@ void AUNIT_Engineer::DestroyEntity()
 	entitiesInRange.Empty();
 	actorsToHeal.Empty();
 
+
+	GetWorld()->SpawnActor<AExplosiveActor>(ExplosionBlueprint, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 
 	if (!UObject::IsValidLowLevel()) return;
 

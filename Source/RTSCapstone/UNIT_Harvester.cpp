@@ -105,6 +105,11 @@ AUNIT_Harvester::AUNIT_Harvester()
 	audioComponentDrive->SetupAttachment(RootComponent);
 	audioComponentDeccelerate->SetupAttachment(RootComponent);
 	audioComponentHarvest->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Unit_Explosions/UnitExplosion.UnitExplosion_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -648,6 +653,8 @@ void AUNIT_Harvester::DestroyEntity()
 		}
 	}
 
+
+	GetWorld()->SpawnActor<AExplosiveActor>(ExplosionBlueprint, GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 
 	if (!UObject::IsValidLowLevel()) return;
 

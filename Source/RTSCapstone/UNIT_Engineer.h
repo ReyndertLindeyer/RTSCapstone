@@ -84,6 +84,9 @@ private:
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* audioComponentDeath;
 
+	//Blueprint that will be spawned when the unit is destroyed
+	TSubclassOf<class AExplosiveActor> ExplosionBlueprint;
+
 public:
 
 	UPROPERTY()
