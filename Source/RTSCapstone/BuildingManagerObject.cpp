@@ -452,11 +452,11 @@ void UBuildingManagerObject::AddCost(int32 whatBuilding_)
 
 void UBuildingManagerObject::EnableAllDecals()
 {
-    if (thePlayer->GetBuildings().Num() > 0) {
-        for (int32 i = 0; i < thePlayer->GetBuildings().Num(); i++) {
-            Cast<ABuildingMaster>(thePlayer->GetBuildings()[i])->EnableBuildDecal();
-        }
-    }
+	if (thePlayer->GetBuildings().Num() > 0) {
+		for (int32 i = 0; i < thePlayer->GetBuildings().Num(); i++) {
+			Cast<ABuildingMaster>(thePlayer->GetBuildings()[i])->EnableBuildDecal();
+		}
+	}
 }
 
 void UBuildingManagerObject::DisableAllDecals()
