@@ -232,9 +232,11 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 	case UNIT_STATE::SEEKING:
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	case UNIT_STATE::ATTACKING:
 		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
 		break;
 	case UNIT_STATE::MOVING:
 		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
@@ -301,18 +303,16 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
+		
 		if (!trailParticleComp->IsActive()) {
 			trailParticleComp->Activate(true);
 		}
 		// if the unit encounters an enemy while moving
 		if (targetActor != nullptr)
 		{
-			// If the AI wasn't issued a player command, automatically engage the target
-			if (!overrideAI)
-			{
-				unitState = UNIT_STATE::ATTACKING;
-			}
+			unitState = UNIT_STATE::ATTACKING;
 		}
+
 		FHitResult* rayCastOne = new FHitResult();
 		FHitResult* rayCastTwo = new FHitResult();
 
@@ -362,14 +362,34 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 		}
 
 
+		// Search for enemies
+		if (entitiesInRange.Num() > 0)
+		{
+			/// Check if entities are hostile
+			for (int i = 0; i < entitiesInRange.Num(); i++)
+			{
+				// Check if the entity does not belong to the owner
+				if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+					targetActor = entitiesInRange[i];
+					break;
+				}
+			}
+		}
+
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
-			overrideAI = false;
 
 			trailParticleComp->Deactivate();
+		}
+
+		else
+		{
+			SetDestination(GetController(), targetMoveDestination);
 		}
 
 	}
@@ -379,7 +399,7 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 	{
 		if (targetActor == nullptr)
 		{
-			unitState = UNIT_STATE::IDLE;
+			unitState = UNIT_STATE::MOVING;
 		}
 
 		else
@@ -406,7 +426,10 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
 		if (targetActor == nullptr)
-			unitState = UNIT_STATE::IDLE;
+		{
+			unitState = UNIT_STATE::MOVING;
+		}
+			
 
 		else
 		{
@@ -444,9 +467,6 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 						alternateShot = true;
 					}
 					
-
-					
-
 					audioComponentFire->Play();
 
 					if (Cast<II_Entity>(targetActor)->GetCurrentHealth() - attackDamage <= 0)
@@ -458,6 +478,8 @@ void AUNIT_Gattling::Tick(float DeltaTime)
 
 	}
 
+	
+	
 	/// Attack Rate Timer
 	// Will count down regardless of whether it's combat or not.
 	// Think of it as a cooldown for an attack.

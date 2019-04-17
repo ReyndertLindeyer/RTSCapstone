@@ -147,13 +147,27 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 	// MOVEMENT STATE
 	if (unitState == UNIT_STATE::MOVING)
 	{
-		// Ignore Combat until unit reaches destination
+		// Search for enemies
+		if (entitiesInRange.Num() > 0)
+		{
+			/// Check if entities are hostile
+			for (int i = 0; i < entitiesInRange.Num(); i++)
+			{
+				// Check if the entity does not belong to the owner
+				if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+					targetActor = entitiesInRange[i];
+					break;
+				}
+			}
+		}
 
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
 			unitState = UNIT_STATE::IDLE;
-			overrideAI = false;
+			
 		}
 
 	}
@@ -163,7 +177,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 	{
 		if (targetActor == nullptr)
 		{
-			unitState = UNIT_STATE::IDLE;
+			unitState = UNIT_STATE::MOVING;
 		}
 
 		else
@@ -190,7 +204,7 @@ void AUNIT_Roomba::Tick(float DeltaTime)
 	if (unitState == UNIT_STATE::ATTACKING)
 	{
 		if (targetActor == nullptr)
-			unitState = UNIT_STATE::IDLE;
+			unitState = UNIT_STATE::MOVING;
 
 		else
 		{

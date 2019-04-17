@@ -461,11 +461,11 @@ void UBuildingManagerObject::EnableAllDecals()
 
 void UBuildingManagerObject::DisableAllDecals()
 {
-	if (thePlayer->GetBuildings().Num() > 0) {
-		for (int32 i = 0; i < thePlayer->GetBuildings().Num(); i++) {
-			Cast<ABuildingMaster>(thePlayer->GetBuildings()[i])->DisableBuildDecal();
-		}
-	}
+    if (thePlayer->GetBuildings().Num() > 0) {
+        for (int32 i = 0; i < thePlayer->GetBuildings().Num(); i++) {
+            Cast<ABuildingMaster>(thePlayer->GetBuildings()[i])->DisableBuildDecal();
+        }
+    }
 }
 
 void UBuildingManagerObject::CheckForDestroyedBuildings()
@@ -588,9 +588,11 @@ bool UBuildingManagerObject::IsConstructionYardDestroyed() {
 	}
 }
 
+
 void UBuildingManagerObject::ConstructOutpost(FVector spawnLocation)
 {
 	ABuildingMaster* tempBuilding = GetWorld()->SpawnActor<ABuilding_Outpost>(ABuilding_Outpost::StaticClass(), spawnLocation, FRotator(0.0f, 0.0f, 0.0f));
+	tempBuilding->SetActorScale3D(FVector(5));
 
 	tempBuilding->InitializeEntity(thePlayer, "Outpost", 1000);
 

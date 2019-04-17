@@ -29,8 +29,8 @@ ABuilding_VehicleFactory::ABuilding_VehicleFactory() {
 	constructingUnit = false;
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(100, buildRadius, buildRadius);
-
+	decal->DecalSize = FVector(100, buildRadius / 5, buildRadius / 5);
+	
 	buildingMesh->ComponentTags.Add(FName("Building"));
 
 	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpVehicleFactory.BlowingUpVehicleFactory_C'"));
@@ -49,6 +49,9 @@ void ABuilding_VehicleFactory::BeginPlay()
 	selectedDecal->DecalSize = FVector(200, 80, 80);
 
 	buildingMesh->SetRelativeScale3D(FVector(10.0f));
+	
+
+	
 }
 
 void ABuilding_VehicleFactory::Tick(float DeltaTime)
@@ -244,6 +247,8 @@ void ABuilding_VehicleFactory::SpawnUnit()
 void ABuilding_VehicleFactory::SetWaypoint(FVector inVec) {
 	wayPoint = inVec;
 	waypointMesh->SetWorldLocation(inVec);
+
+	UE_LOG(LogTemp, Warning, TEXT("(X:%f, Y:%f, Z:%f"), inVec.X, inVec.Y, inVec.Z);
 }
 
 void ABuilding_VehicleFactory::SetHasPower(bool inBool)

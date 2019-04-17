@@ -21,7 +21,7 @@ ABuilding_Outpost::ABuilding_Outpost() {
 	buildingMesh->bReceivesDecals = false;
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(100, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius / 2.5f, buildRadius / 2.5f);
 
 	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Props/BlowingUpVehicleFactory.BlowingUpVehicleFactory_C'"));
 	if (ItemBlueprint.Object) {

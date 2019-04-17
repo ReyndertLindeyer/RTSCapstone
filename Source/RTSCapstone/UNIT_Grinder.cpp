@@ -162,11 +162,7 @@ void AUNIT_Grinder::Tick(float DeltaTime)
 		// if the unit encounters an enemy while moving
 		if (targetActor != nullptr)
 		{
-			// If the AI wasn't issued a player command, automatically engage the target
-			if (!overrideAI)
-			{
-				unitState = UNIT_STATE::ATTACKING;
-			}
+			unitState = UNIT_STATE::ATTACKING;
 		}
 
 		FHitResult* rayCastOne = new FHitResult();
@@ -216,6 +212,24 @@ void AUNIT_Grinder::Tick(float DeltaTime)
 				}
 			}
 		}
+
+
+		// Search for enemies
+		if (entitiesInRange.Num() > 0)
+		{
+			/// Check if entities are hostile
+			for (int i = 0; i < entitiesInRange.Num(); i++)
+			{
+				// Check if the entity does not belong to the owner
+				if (Cast<II_Entity>(entitiesInRange[i])->GetEntityOwner() != GetEntityOwner())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("TARGET ACQUIRED"));
+					targetActor = entitiesInRange[i];
+					break;
+				}
+			}
+		}
+
 		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 80.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));

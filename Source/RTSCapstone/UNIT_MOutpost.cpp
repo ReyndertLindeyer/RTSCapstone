@@ -48,6 +48,7 @@ AUNIT_MOutpost::AUNIT_MOutpost()
 	buildingGhost = nullptr;
 
 	hasRoom = false;
+	disabled = false;
 
 	currentTimer = 0.0f;
 	unitState = UNIT_STATE::IDLE;
@@ -79,205 +80,176 @@ void AUNIT_MOutpost::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	isDestructable = SetDestructible;
-
-	// Detect all AActors within a Radius
-	TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
-	TArray<AActor*> ignoreActors;
-	TArray<AActor*> outActors;
-
-	ignoreActors.Add(this);
-
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
-
-
-	switch (unitState)
+	if (!disabled)
 	{
-	case UNIT_STATE::IDLE:
-	case UNIT_STATE::SEEKING:
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
-		break;
-	case UNIT_STATE::ATTACKING:
-		//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
-		break;
-	case UNIT_STATE::MOVING:
-		//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
-		break;
-	}
+		isDestructable = SetDestructible;
+
+		// Detect all AActors within a Radius
+		TArray<TEnumAsByte<EObjectTypeQuery>> objectTypes;
+		TArray<AActor*> ignoreActors;
+		TArray<AActor*> outActors;
+
+		ignoreActors.Add(this);
+
+		UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), detectRange, objectTypes, nullptr, ignoreActors, outActors);
 
 
-	// Narrow down all the AActors to only ones with an II_Entity script
-	entitiesInRange.Empty();
-	for (int i = 0; i < outActors.Num(); i++)
-	{
-		if (Cast<II_Entity>(outActors[i]))
+		switch (unitState)
 		{
-			if (!entitiesInRange.Contains(outActors[i]))
+		case UNIT_STATE::IDLE:
+		case UNIT_STATE::SEEKING:
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), detectRange, 24, FColor(0, 0, 255));
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+			break;
+		case UNIT_STATE::ATTACKING:
+			//DrawDebugSphere(GetWorld(), GetActorLocation(), attackRange, 24, FColor(255, 0, 0));
+			break;
+		case UNIT_STATE::MOVING:
+			//DrawDebugSphere(GetWorld(), targetMoveDestination, 40.0, 3, FColor(0, 255, 0));  // How close I am to destination
+			break;
+		}
+
+
+		// Narrow down all the AActors to only ones with an II_Entity script
+		entitiesInRange.Empty();
+		for (int i = 0; i < outActors.Num(); i++)
+		{
+			if (Cast<II_Entity>(outActors[i]))
 			{
-				entitiesInRange.Add(outActors[i]);
+				if (!entitiesInRange.Contains(outActors[i]))
+				{
+					entitiesInRange.Add(outActors[i]);
+				}
 			}
 		}
-	}
 
-	//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
+		//UE_LOG(LogTemp, Warning, TEXT("%i Actors In Radius"), entitiesInRange.Num());
 
-	// IDLE STATE
-	if (unitState == UNIT_STATE::IDLE)
-	{
-		SetDestination(GetController(), GetActorLocation());
-
-		if (entitiesInRange.Num() > 0)
+		// IDLE STATE
+		if (unitState == UNIT_STATE::IDLE)
 		{
-			/// Check if entities are hostile
+			SetDestination(GetController(), GetActorLocation());
 
-			// If there is a target, seek it.
-			if (targetActor != nullptr)
-				unitState = UNIT_STATE::SEEKING;
+			if (entitiesInRange.Num() > 0)
+			{
+				/// Check if entities are hostile
 
-			// If there isn't a target, set a target.
+				// If there is a target, seek it.
+				if (targetActor != nullptr)
+					unitState = UNIT_STATE::SEEKING;
+
+				// If there isn't a target, set a target.
+				else
+				{
+					// Do Nothing
+
+				}
+
+
+			}
+		}
+
+		// MOVEMENT STATE
+		if (unitState == UNIT_STATE::MOVING)
+		{
+			if (!trailParticleComp->IsActive()) {
+				trailParticleComp->Activate(true);
+			}
+			// Ignore Combat until unit reaches destination
+
+			FHitResult* rayCastOne = new FHitResult();
+			FHitResult* rayCastTwo = new FHitResult();
+
+			FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 400);
+
+			FVector ForwardVectorOne = BodyMesh->GetForwardVector();
+			FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
+
+			ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(135, FVector(0.0, 0.0, 1.0));
+			ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-135, FVector(0.0, 0.0, 1.0));
+
+			FVector EndTraceOne = ((ForwardVectorOne * 180) + StartTrace);
+			FVector EndTraceTwo = ((ForwardVectorTwo * 180) + StartTrace);
+
+			FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
+
+			DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+			if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
+				if (Cast<II_Unit>(rayCastOne->GetActor())) {
+					if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
+						FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
+						push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+						rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
+					}
+					else {
+						FVector push = (GetActorLocation() - rayCastOne->GetActor()->GetActorLocation());
+						push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+						SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+					}
+				}
+			}
+
+			DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+			if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
+				if (Cast<II_Unit>(rayCastTwo->GetActor())) {
+					if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
+						FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
+						push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
+						rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
+					}
+					else {
+						FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
+						push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
+						SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
+					}
+				}
+			}
+
+			if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 150.0f)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
+				unitState = UNIT_STATE::IDLE;
+				overrideAI = false;
+
+				trailParticleComp->Deactivate();
+			}
+
+		}
+
+		// SEEKING STATE
+		if (unitState == UNIT_STATE::SEEKING)
+		{
+			if (targetActor == nullptr)
+			{
+				unitState = UNIT_STATE::IDLE;
+			}
+
 			else
 			{
-				// Do Nothing
 				
 			}
+		}
+
+
+		// ATTACK STATE
+		if (unitState == UNIT_STATE::ATTACKING)
+		{
+			if (targetActor == nullptr)
+				unitState = UNIT_STATE::IDLE;
+
+			else
+			{
 				
-
-		}
-	}
-
-	// MOVEMENT STATE
-	if (unitState == UNIT_STATE::MOVING)
-	{
-		if (!trailParticleComp->IsActive()) {
-			trailParticleComp->Activate(true);
-		}
-		// Ignore Combat until unit reaches destination
-
-		FHitResult* rayCastOne = new FHitResult();
-		FHitResult* rayCastTwo = new FHitResult();
-
-		FVector StartTrace = BodyMesh->GetComponentLocation() + (BodyMesh->GetForwardVector() * 400);
-
-		FVector ForwardVectorOne = BodyMesh->GetForwardVector();
-		FVector ForwardVectorTwo = BodyMesh->GetForwardVector();
-
-		ForwardVectorOne = ForwardVectorOne.RotateAngleAxis(135, FVector(0.0, 0.0, 1.0));
-		ForwardVectorTwo = ForwardVectorTwo.RotateAngleAxis(-135, FVector(0.0, 0.0, 1.0));
-
-		FVector EndTraceOne = ((ForwardVectorOne * 180) + StartTrace);
-		FVector EndTraceTwo = ((ForwardVectorTwo * 180) + StartTrace);
-
-		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
-
-		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
-		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
-			if (Cast<II_Unit>(rayCastOne->GetActor())) {
-				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
-					FVector push = (rayCastOne->GetActor()->GetActorLocation() - GetActorLocation());
-					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
-					rayCastOne->GetActor()->SetActorLocation(FVector(rayCastOne->GetActor()->GetActorLocation().X + push.X, rayCastOne->GetActor()->GetActorLocation().Y + push.Y, rayCastOne->GetActor()->GetActorLocation().Z));
-				}
-				else {
-					FVector push = (GetActorLocation() - rayCastOne->GetActor()->GetActorLocation());
-					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
-					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
-				}
 			}
+
 		}
 
-		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
-		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
-			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
-				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {
-					FVector push = (rayCastTwo->GetActor()->GetActorLocation() - GetActorLocation());
-					push = FVector(push.X / 7, push.Y / 7, push.Z) + (-BodyMesh->GetRightVector() * 2);
-					rayCastTwo->GetActor()->SetActorLocation(FVector(rayCastTwo->GetActor()->GetActorLocation().X + push.X, rayCastTwo->GetActor()->GetActorLocation().Y + push.Y, rayCastTwo->GetActor()->GetActorLocation().Z));
-				}
-				else {
-					FVector push = (GetActorLocation() - rayCastTwo->GetActor()->GetActorLocation());
-					push = FVector(push.X / 7, push.Y / 7, push.Z) + (BodyMesh->GetRightVector() * 2);
-					SetActorLocation(FVector(GetActorLocation().X + push.X, GetActorLocation().Y + push.Y, GetActorLocation().Z));
-				}
-			}
+		/// Attack Rate Timer
+		// Will count down regardless of whether it's combat or not.
+		// Think of it as a cooldown for an attack.
+		if (currentTimer < 5.0f) {
+			currentTimer += DeltaTime;
 		}
-
-		if (FVector::Dist(GetActorLocation(), targetMoveDestination) < 40.0f)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("DESTINATION REACHED"));
-			unitState = UNIT_STATE::IDLE;
-			overrideAI = false;
-
-			trailParticleComp->Deactivate();
-		}
-
-	}
-
-	// SEEKING STATE
-	if (unitState == UNIT_STATE::SEEKING)
-	{
-		if (targetActor == nullptr)
-		{
-			unitState = UNIT_STATE::IDLE;
-		}
-
-		else
-		{
-			//FVector targetLocation = Cast<AActor>(targetEntity)->GetActorLocation();
-			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
-
-			//// Target is out of range: move towards it.
-			//if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
-			//{
-			//	SetDestination(GetController(), moveDestination);
-			//}
-
-			//// Target is in range: Attack it.
-			//else
-			//{
-			//	unitState = UNIT_STATE::ATTACKING;
-			//}
-		}
-	}
-
-
-	// ATTACK STATE
-	if (unitState == UNIT_STATE::ATTACKING)
-	{
-		if (targetActor == nullptr)
-			unitState = UNIT_STATE::IDLE;
-
-		else
-		{
-			//FVector targetLocation = Cast<AActor>(targetEntity)->GetActorLocation();
-			//FVector moveDestination = targetLocation - ((GetActorLocation() - targetLocation) / 2);
-
-			//// Target is out of range: chase it;
-			//if (FVector::Dist(GetActorLocation(), targetLocation) > attackRange + Cast<II_Entity>(targetActor)->GetHitRadius())
-			//{
-			//	unitState = UNIT_STATE::SEEKING;
-			//}
-
-			//// Target is in range: attack it.
-			//else
-			//{
-			//	SetDestination(GetController(), GetActorLocation());
-
-			//	if (currentTimer >= 1.0f)
-			//	{
-			//		currentTimer = 0.0f;
-			//		AttackOrder(targetEntity);
-			//	}
-			//}
-		}
-
-	}
-
-	/// Attack Rate Timer
-	// Will count down regardless of whether it's combat or not.
-	// Think of it as a cooldown for an attack.
-	if (currentTimer < 5.0f) {
-		currentTimer += DeltaTime;
 	}
 
 }
@@ -324,7 +296,7 @@ void AUNIT_MOutpost::AttackOrder(II_Entity* target)
 }
 
 bool AUNIT_MOutpost::StartGhostBuilding() {
-	/*
+	
 	UE_LOG(LogTemp, Warning, TEXT("StartGhostBuilding"));
 	if (buildingGhost != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("CheckGhost")); 
@@ -336,33 +308,33 @@ bool AUNIT_MOutpost::StartGhostBuilding() {
 		buildingGhost = GetWorld()->SpawnActor<ABuilding_Ghost>(ABuilding_Ghost::StaticClass(), GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 		buildingGhost->SetIgnoreActor(this);
 		buildingGhost->SetMesh(BuildingAsset, 6);
-
+		
 		return buildingGhost->GetIsOverlapping();
 	}
-	*/
+	
 	return false;
 }
 
 void AUNIT_MOutpost::StopGhostBuilding()
 {
-	/*
+	
 	UE_LOG(LogTemp, Warning, TEXT("StopGhost"));
 	if (buildingGhost != nullptr) {
 		buildingGhost->Destroy();
 		buildingGhost = nullptr;
 	}
-	*/
+	
 }
 
 void AUNIT_MOutpost::BuildGhostBuilding()
 {
-	/*/
+	
 	UE_LOG(LogTemp, Warning, TEXT("BuildGhost"));
 	if (buildingGhost != nullptr) {
 		buildingGhost->Destroy();
 		buildingGhost = nullptr;
 	}
-	*/
+	
 	this->DestroyEntity();
 }
 
