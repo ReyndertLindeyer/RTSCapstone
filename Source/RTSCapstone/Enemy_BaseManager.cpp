@@ -74,7 +74,7 @@ void AEnemy_BaseManager::Tick(float DeltaTime)
 				if (adjacentManagerArray[i] != nullptr)
 					adjacentManagerArray[i]->ActivateManager();
 			}
-			Destroy(this);
+			Destroy();
 		}
 	}
 }

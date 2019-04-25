@@ -58,6 +58,6 @@ void ASample_Unit::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ASample_Unit::DestroyEntity()
 {
-	Destroy(this);
+	Destroy();
 }
 
