@@ -134,14 +134,14 @@ public:
 		TArray<AActor*> entitiesInRange;
 
 	UPROPERTY(EditAnywhere)
-		float startingHealth = 2500.0f;
+		float startingHealth = 7500.0f;
 	UPROPERTY(EditAnywhere)
 		float detectRange = 2000.0f;
 
 	UPROPERTY(EditAnywhere)
 		float cannonRange = 1800.0f;
 	UPROPERTY(EditAnywhere)
-		float cannonDamage = 125.0f;
+		float cannonDamage = 400.0f;
 	UPROPERTY(EditAnywhere)
 		float cannonTimer = 3.0f;
 

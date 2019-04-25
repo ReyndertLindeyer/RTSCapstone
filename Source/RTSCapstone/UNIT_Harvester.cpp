@@ -251,11 +251,14 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			{
 				for (int i = 0; i < entitiesInRange.Num(); i++)
 				{
-					if (FVector::Dist(GetActorLocation(), entitiesInRange[i]->GetActorLocation()) < FVector::Dist(GetActorLocation(), targetNode->GetActorLocation()))
+					if (entitiesInRange[i] != nullptr)
 					{
-						if (!Cast<AResourceNode>(entitiesInRange[i])->isOccupied)
+						if (FVector::Dist(GetActorLocation(), entitiesInRange[i]->GetActorLocation()) < FVector::Dist(GetActorLocation(), targetNode->GetActorLocation()))
 						{
-							targetNode = Cast<AResourceNode>(entitiesInRange[i]);
+							if (!Cast<AResourceNode>(entitiesInRange[i])->isOccupied)
+							{
+								targetNode = Cast<AResourceNode>(entitiesInRange[i]);
+							}
 						}
 					}
 				}
@@ -298,7 +301,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 
-		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		//DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastOne->GetActor())) {
 				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
@@ -309,7 +312,7 @@ void AUNIT_Harvester::Tick(float DeltaTime)
 			}
 		}
 
-		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		//DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
 				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {

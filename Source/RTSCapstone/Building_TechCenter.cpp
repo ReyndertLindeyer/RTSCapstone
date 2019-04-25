@@ -22,7 +22,7 @@ ABuilding_TechCenter::ABuilding_TechCenter() {
 	buildingMesh->SetSimulatePhysics(false);
 
 	decal->SetupAttachment(RootComponent);
-	decal->DecalSize = FVector(100, buildRadius, buildRadius);
+	decal->DecalSize = FVector(100, buildRadius / 2.5f, buildRadius / 2.5f);
 
 	buildingMesh->ComponentTags.Add(FName("Building"));
 

@@ -302,55 +302,55 @@ bool UBuildingManagerObject::constructBuilding()
 
 		if (thePlayer->GetPower() < 0) {
 			power = false;
-			for (int i = 0; i < masterArray.Num(); i++) {
-				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
-					Cast<ABuilding_Barrecks>(masterArray[i])->SetHasPower(false);
+			for (int i = 0; i < thePlayer->GetBuildings().Num(); i++) {
+				if (Cast<ABuilding_Barrecks>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Barrecks>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
-				else if (Cast<ABuilding_VehicleFactory>(masterArray[i])) {
-					Cast<ABuilding_VehicleFactory>(masterArray[i])->SetHasPower(false);
+				else if (Cast<ABuilding_VehicleFactory>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_VehicleFactory>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
-				else if (Cast<ABuilding_Superweapon>(masterArray[i])) {
-					Cast<ABuilding_Superweapon>(masterArray[i])->SetHasPower(false);
+				else if (Cast<ABuilding_Superweapon>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Superweapon>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
 
-				if (Cast<ABuilding_Turret_Gattling>(masterArray[i])) {
-					Cast<ABuilding_Turret_Gattling>(masterArray[i])->SetHasPower(false);
+				if (Cast<ABuilding_Turret_Gattling>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Gattling>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
-				else if (Cast<ABuilding_Turret_Cannon>(masterArray[i])) {
-					Cast<ABuilding_Turret_Cannon>(masterArray[i])->SetHasPower(false);
+				else if (Cast<ABuilding_Turret_Cannon>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Cannon>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
-				else if (Cast<ABuilding_Turret_Artillery>(masterArray[i])) {
-					Cast<ABuilding_Turret_Artillery>(masterArray[i])->SetHasPower(false);
+				else if (Cast<ABuilding_Turret_Artillery>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Artillery>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
-				else if (Cast<ABuilding_Turret_Tesla>(masterArray[i])) {
-					Cast<ABuilding_Turret_Tesla>(masterArray[i])->SetHasPower(false);
+				else if (Cast<ABuilding_Turret_Tesla>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Tesla>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
 			}
 		}
 		else if (thePlayer->GetPower() >= 0 && !power) {
 			power = true;
-			for (int i = 0; i < masterArray.Num(); i++) {
-				if (Cast<ABuilding_Barrecks>(masterArray[i])) {
-					Cast<ABuilding_Barrecks>(masterArray[i])->SetHasPower(true);
+			for (int i = 0; i < thePlayer->GetBuildings().Num(); i++) {
+				if (Cast<ABuilding_Barrecks>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Barrecks>(thePlayer->GetBuildings()[i])->SetHasPower(true);
 				}
-				else if (Cast<ABuilding_VehicleFactory>(masterArray[i])) {
-					Cast<ABuilding_VehicleFactory>(masterArray[i])->SetHasPower(true);
+				else if (Cast<ABuilding_VehicleFactory>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_VehicleFactory>(thePlayer->GetBuildings()[i])->SetHasPower(true);
 				}
-				else if (Cast<ABuilding_Superweapon>(masterArray[i])) {
-					Cast<ABuilding_Superweapon>(masterArray[i])->SetHasPower(false);
+				else if (Cast<ABuilding_Superweapon>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Superweapon>(thePlayer->GetBuildings()[i])->SetHasPower(false);
 				}
 
-				if (Cast<ABuilding_Turret_Gattling>(masterArray[i])) {
-					Cast<ABuilding_Turret_Gattling>(masterArray[i])->SetHasPower(true);
+				if (Cast<ABuilding_Turret_Gattling>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Gattling>(thePlayer->GetBuildings()[i])->SetHasPower(true);
 				}
-				else if (Cast<ABuilding_Turret_Cannon>(masterArray[i])) {
-					Cast<ABuilding_Turret_Cannon>(masterArray[i])->SetHasPower(true);
+				else if (Cast<ABuilding_Turret_Cannon>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Cannon>(thePlayer->GetBuildings()[i])->SetHasPower(true);
 				}
-				else if (Cast<ABuilding_Turret_Artillery>(masterArray[i])) {
-					Cast<ABuilding_Turret_Artillery>(masterArray[i])->SetHasPower(true);
+				else if (Cast<ABuilding_Turret_Artillery>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Artillery>(thePlayer->GetBuildings()[i])->SetHasPower(true);
 				}
-				else if (Cast<ABuilding_Turret_Tesla>(masterArray[i])) {
-					Cast<ABuilding_Turret_Tesla>(masterArray[i])->SetHasPower(true);
+				else if (Cast<ABuilding_Turret_Tesla>(thePlayer->GetBuildings()[i])) {
+					Cast<ABuilding_Turret_Tesla>(thePlayer->GetBuildings()[i])->SetHasPower(true);
 				}
 			}
 		}

@@ -40,7 +40,8 @@ void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	DrawDebugSphere(GetWorld(), GetActorLocation(), blastRadius, 24, FColor(0, 0, 255));
+	// Debug the blast radius
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), blastRadius, 24, FColor(0, 0, 255));
 
 	if (GetActorLocation() != targetPosition)
 	{

@@ -73,6 +73,11 @@ AUNIT_Engineer::AUNIT_Engineer()
 	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 10.0));
 	particleComp->SetTemplate(healingPS);
 	particleComp->bAutoActivate = false;
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Unit_Explosions/UnitExplosion.UnitExplosion_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -95,10 +100,7 @@ void AUNIT_Engineer::BeginPlay()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Unit_Explosions/UnitExplosion.UnitExplosion_C'"));
-	if (ItemBlueprint.Object) {
-		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
-	}
+	
 }
 
 void AUNIT_Engineer::PostInitializeComponents()
@@ -242,7 +244,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 
 		FCollisionQueryParams* TraceParams = new FCollisionQueryParams();
 
-		DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
+		//DrawDebugLine(GetWorld(), StartTrace, EndTraceOne, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastOne, StartTrace, EndTraceOne, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastOne->GetActor())) {
 				if (Cast<II_Unit>(rayCastOne->GetActor())->weight <= weight) {
@@ -258,7 +260,7 @@ void AUNIT_Engineer::Tick(float DeltaTime)
 			}
 		}
 
-		DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
+		//DrawDebugLine(GetWorld(), StartTrace, EndTraceTwo, FColor(255, 0, 0), false, 1);
 		if (GetWorld()->LineTraceSingleByChannel(*rayCastTwo, StartTrace, EndTraceTwo, ECC_Visibility, *TraceParams)) {
 			if (Cast<II_Unit>(rayCastTwo->GetActor())) {
 				if (Cast<II_Unit>(rayCastTwo->GetActor())->weight <= weight) {

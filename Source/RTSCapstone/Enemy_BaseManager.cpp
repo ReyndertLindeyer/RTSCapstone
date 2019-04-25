@@ -37,9 +37,9 @@ void AEnemy_BaseManager::BeginPlay()
 			buildingsArray[i]->SetMesh(baseMeshes[buildingsArray[i]->buildingType - 1]);
 			buildingsArray[i]->myManager = this;
 			if(!isStartingArea)
-				counterArray.Add(FMath::RandRange(10.0f, 15.0f));
+				counterArray.Add(FMath::RandRange(20.0f, 20.0f));
 			else
-				counterArray.Add(FMath::RandRange(60.0f, 70.0f));
+				counterArray.Add(FMath::RandRange(120.0f, 120.0f));
 
 			if (launchPoint) {
 				buildingsArray[i]->SetupBulding(launchPoint->GetActorLocation());
@@ -64,7 +64,7 @@ void AEnemy_BaseManager::Tick(float DeltaTime)
 				counterArray[i] -= DeltaTime;
 				if (counterArray[i] <= 0.0f) {
 					buildingsArray[i]->SpawnUnit();
-					counterArray[i] = FMath::RandRange(10.0f, 15.0f);
+					counterArray[i] = FMath::RandRange(20.0f, 20.0f);
 				}
 			}
 		}
