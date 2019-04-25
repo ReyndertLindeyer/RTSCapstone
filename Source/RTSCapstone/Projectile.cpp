@@ -101,7 +101,7 @@ void AProjectile::Tick(float DeltaTime)
 	}
 
 	if (countdown <= 0.0f) {
-		Destroy(this);
+		Destroy();
 	}
 
 

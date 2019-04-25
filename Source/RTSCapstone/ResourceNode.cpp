@@ -90,13 +90,13 @@ void AResourceNode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (yield <= 0 && respawnable) {
-		Destroy(this);
+		Destroy();
 		//SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 20.0f));
 		//respawnTime = FMath::RandRange(30.0f, 60.0f);
 		//needsRespawning = true;
 	}
 	if (yield <= 0 && !respawnable) {
-		Destroy(this);
+		Destroy();
 	}
 	if (respawnTime >= 0.0f && needsRespawning) {
 		yield = FMath::RandRange(100, 120);

@@ -10,9 +10,10 @@ AEnemy_AttackLaunchPoint::AEnemy_AttackLaunchPoint()
 
 	collectionRadius = 800;
 
+	///Uneeded code
 	radiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("baseRadius"));
 	radiusSphere->SetSphereRadius(collectionRadius);
-	radiusSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	radiusSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +35,7 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 
 	ignoreActors.Add(this);
 
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 800, objectTypes, nullptr, ignoreActors, outActors);
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), collectionRadius, objectTypes, nullptr, ignoreActors, outActors);
 
 	basicArrayA.Empty();
 	basicArrayB.Empty();
@@ -50,7 +51,8 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 				basicArrayA.Add(Cast<AUNIT_Grinder>(outActors[i]));
 			}
 			if (Cast<AUNIT_Gattling>(outActors[i])) {
-				basicArrayB.Add(Cast<AUNIT_Gattling>(outActors[i]));
+				basicArrayB.Add(Cast<AUNIT_Gattling>(outActors[i])); 
+				UE_LOG(LogTemp, Warning, TEXT("Found Gattling"));
 			}
 			if (Cast<AUNIT_Roomba>(outActors[i])) {
 				basicArrayC.Add(Cast<AUNIT_Roomba>(outActors[i]));
@@ -62,7 +64,7 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 	}
 
 	///If all of the arrays are full of the correct unit then launch a wave towards the nearest player structure
-	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee && basicArrayD.Num() >= numOfAdvancedRanged) { //Add more variables for more units
+	if (basicArrayA.Num() >= numOfBasicMelee && basicArrayB.Num() >= numOfBasicRanged && basicArrayC.Num() >= numOfAdvancedMelee && basicArrayD.Num() >= numOfAdvancedRanged) {
 		int32 closestBuilding = 100000;
 		AActor* tempActor = nullptr;
 		TArray<AActor*> tempArray;
@@ -142,6 +144,9 @@ void AEnemy_AttackLaunchPoint::Tick(float DeltaTime)
 			}
 			for (int i = 0; i < basicArrayC.Num(); i++) {
 				basicArrayC[i]->MoveOrder(basicArrayC[i]->GetController(), tempActor->GetActorLocation());
+			}
+			for (int i = 0; i < basicArrayD.Num(); i++) {
+				basicArrayD[i]->MoveOrder(basicArrayD[i]->GetController(), tempActor->GetActorLocation());
 			}
 		}
 

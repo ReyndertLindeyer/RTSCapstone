@@ -73,6 +73,11 @@ AUNIT_Engineer::AUNIT_Engineer()
 	particleComp->SetRelativeLocation(FVector(0.0, 0.0, 10.0));
 	particleComp->SetTemplate(healingPS);
 	particleComp->bAutoActivate = false;
+
+	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Unit_Explosions/UnitExplosion.UnitExplosion_C'"));
+	if (ItemBlueprint.Object) {
+		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -94,11 +99,6 @@ void AUNIT_Engineer::BeginPlay()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-
-	static ConstructorHelpers::FObjectFinder<UClass> ItemBlueprint(TEXT("Class'/Game/Game_Assets/Blueprints/Unit_Explosions/UnitExplosion.UnitExplosion_C'"));
-	if (ItemBlueprint.Object) {
-		ExplosionBlueprint = (UClass*)ItemBlueprint.Object;
-	}
 }
 
 void AUNIT_Engineer::PostInitializeComponents()
