@@ -73,8 +73,9 @@ void ABuilding_Refinery::Tick(float DeltaTime)
 
 void ABuilding_Refinery::InitializeRefinery()
 {
+	//Spawn the harvester
 	FActorSpawnParameters SpawnInfo;
-	AActor* spawnedHarvy = GetWorld()->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), harvestPt->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
+	AActor* spawnedHarvy = GetWorld()->SpawnActor<AUNIT_Harvester>(AUNIT_Harvester::StaticClass(), FVector(harvestPt->GetComponentLocation().X, harvestPt->GetComponentLocation().Y, harvestPt->GetComponentLocation().Z + 100), FRotator(0.0f, 0.0f, 0.0f));
 	Cast<II_Entity>(spawnedHarvy)->InitializeEntity(GetEntityOwner(), "Harvester", 2000.0f);
 }
 

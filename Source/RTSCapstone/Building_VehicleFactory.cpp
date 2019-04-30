@@ -44,7 +44,7 @@ void ABuilding_VehicleFactory::BeginPlay()
 	Super::BeginPlay();
 	waypointMesh->SetHiddenInGame(true);
 
-	wayPoint = GetActorLocation() + FVector(0.0f, 500.0f, 0.0f);
+	wayPoint = GetActorLocation() + FVector(0.0f, 1000.0f, 0.0f);
 	waypointMesh->SetWorldLocation(wayPoint);
 	selectedDecal->DecalSize = FVector(200, 80, 80);
 

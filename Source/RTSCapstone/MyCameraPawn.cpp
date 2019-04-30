@@ -113,7 +113,8 @@ void AMyCameraPawn::Tick(float DeltaTime)
 		moveVec = FVector(MovementInput.X * cameraSensitivity * 7, MovementInput.Y * cameraSensitivity * 7, 0.0);
 	}
 	else {
-		moveVec = FVector(MovementInput.X * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 1.5), MovementInput.Y * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 1.5), 0.0);
+		//If the camera is farther out then make it faster
+		moveVec = FVector(MovementInput.X * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 3), MovementInput.Y * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 3), 0.0);
 	}
 
 	//Get the mouse's position and use that to move the camera
@@ -124,17 +125,41 @@ void AMyCameraPawn::Tick(float DeltaTime)
 		//For some reason I had to switch around the X and Y's
 		//Using 15 as the margin size
 		if (mousePos.X < 15.0f) {
-			moveVec.Y += -1 * cameraSensitivity * 6;
+			if (OurCameraSpringArm->TargetArmLength > 1000) {
+				moveVec.Y += -1 * cameraSensitivity * 7;
+			}
+			else {
+				//If the camera is farther out then make it faster
+				moveVec.Y += -1 * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 3);
+			}
 		}
 		else if (mousePos.X > screenSizeX - 15.0f) {
-			moveVec.Y += 1 * cameraSensitivity * 6;
+			if (OurCameraSpringArm->TargetArmLength > 1000) {
+				moveVec.Y += 1 * cameraSensitivity * 7;
+			}
+			else {
+				//If the camera is farther out then make it faster
+				moveVec.Y += 1 * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 3);
+			}
 		}
 
 		if (mousePos.Y < 15.0f) {
-			moveVec.X += 1 * cameraSensitivity * 6;
+			if (OurCameraSpringArm->TargetArmLength > 1000) {
+				moveVec.X += 1 * cameraSensitivity * 7;
+			}
+			else {
+				//If the camera is farther out then make it faster
+				moveVec.X += 1 * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 3);
+			}
 		}
 		else if (mousePos.Y > screenSizeY - 15.0f) {
-			moveVec.X += -1 * cameraSensitivity * 6;
+			if (OurCameraSpringArm->TargetArmLength > 1000) {
+				moveVec.X += -1 * cameraSensitivity * 7;
+			}
+			else {
+				//If the camera is farther out then make it faster
+				moveVec.X += -1 * cameraSensitivity * 7 * (OurCameraSpringArm->TargetArmLength / 1000.0f * 3);
+			}
 		}
 	}
 

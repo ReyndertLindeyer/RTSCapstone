@@ -51,6 +51,7 @@ void AMyRTSPlayerController::BeginPlay()
 
 	HUDPtr->SetPlayer(this);
 
+	//Set initial values
 	int32 temp1, temp2;
 	GetViewportSize(temp1, temp2);
 	FHitResult hit;
@@ -73,12 +74,16 @@ void AMyRTSPlayerController::BeginPlay()
 		//Cast<II_Player>(playerList[0])->SetBuildingDataTable(buildingDataTable);
 		//Cast<II_Player>(playerList[0])->SetUnitConstructionDataTable(unitConstructionDataTable);
 	}
-	
+
+
+	//Fog of War cut from game
+	/////////////////////////////////////////////////////
 	/// Disabled for debugging
 	//m_fow = GetWorld()->SpawnActor<AProFow>(AProFow::StaticClass()); 
 
 	/// Disabled for debugging
 	//m_fow->revealSmoothCircle(FVector2D(hit.Location.X, hit.Location.Y), buildingManagerObject->getBuilding(0)->GetSightRadius());
+	/////////////////////////////////////////////////////
 
 	
 }
