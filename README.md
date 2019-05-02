@@ -32,4 +32,4 @@ Michael Wood.
 
 # Download
 
-The downloadable file will be available as soon as I am done uploading the finished product to my Google Drive.
+Here is a link to the game on Google Drive https://drive.google.com/open?id=1oPP_kbhvruETMIDTgYa7RR-IMsmlGZGJ
