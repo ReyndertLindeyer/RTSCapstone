@@ -7,7 +7,7 @@ We have a small tutorial map with a few scripted events as well as a skirmish ma
 
 
 
-# Credits:
+# Credits
 
 Game Lead:
 Reyndert Lindeyer.
