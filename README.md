@@ -32,6 +32,8 @@ Reyndert Lindeyer.
 Lore Creator:
 Michael Wood.
 
+Note: Due to an error on my part many commits I made while using my laptop list my non-student account Eugenides as a contributor, all commits from that account were made by me.
+
 # Download
 
 Here is a link to the game on Google Drive https://drive.google.com/open?id=1oPP_kbhvruETMIDTgYa7RR-IMsmlGZGJ
